@@ -27,11 +27,13 @@ const requiredEnv = (key) => {
 /**
  * Core environment flags
  */
+
+const nodeEnv = getEnv('NODE_ENV', 'development')
 export const env = {
-    isProd: process.env.NODE_ENV === 'production',
-    isDev: process.env.NODE_ENV === 'development',
-    isTest: process.env.NODE_ENV === 'test',
-    nodeEnv: getEnv('NODE_ENV', 'development'),
+    isProd: nodeEnv === 'production',
+    isDev: nodeEnv === 'development',
+    isTest: nodeEnv === 'test',
+    nodeEnv,
 }
 
 /**
@@ -68,6 +70,7 @@ export const cookieConfig = {
  */
 export const serverConfig = {
     port: Number(getEnv('PORT', 5000)),
+    name: getEnv(process.env.APP_NAME, 'Dukatiq'),
 }
 
 /**

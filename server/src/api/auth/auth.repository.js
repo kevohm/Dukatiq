@@ -1,6 +1,7 @@
 import { Op } from 'sequelize'
 import { RefreshToken, User } from './auth.model.js'
 import { hash } from 'argon2'
+import { hashPassword } from '../../utils/auth/password.js'
 
 export class AuthRepository {
     // Get account by ID
@@ -14,7 +15,7 @@ export class AuthRepository {
 
     // sign up
     static async create(data, transaction = null) {
-        const hashed = await hashPassword(data.password)
+        const password = await hashPassword(data.password)
         return await User.create({ ...data, password }, { transaction })
     }
 
@@ -37,7 +38,7 @@ export class AuthRepository {
     }
 
     static async saveRefreshToken(data, transaction = null) {
-        console.log(data)
+       // console.log(data)
         return await RefreshToken.create(
             {
                 ...data,

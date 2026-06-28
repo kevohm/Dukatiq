@@ -1,15 +1,26 @@
-import { Sequelize, QueryTypes, DataTypes } from "sequelize";
-import { config} from "./env.config.js";
-import { logger } from "./logger.config.js";
+// @ts-check
+import { Sequelize, QueryTypes, DataTypes } from 'sequelize'
+import { config } from './env.config.js'
+import { logger } from './logger.config.js'
 
+if (!config.env.isProd) {
+    logger.debug(
+        `Running DB: ${config.env.isTest ? 'TEST (memory)' : 'DEV (file)'}`
+    )
+}
+/** @type {Sequelize} */
 const sequelize = new Sequelize({
-  dialect: "sqlite",
-  storage: config.db.path, // file-based DB
-  logging: msg=>logger.debug(msg),
-  define: {
-    freezeTableName: true,
-    timestamps:true
-  },
-});
+    dialect: 'sqlite',
 
-export {sequelize, DataTypes}
+    // 🔑 Switch DB based on environment
+    storage: config.env.isTest ? ':memory:' : config.db.path,
+
+    logging: config.env.isTest ? false : (msg) => logger.debug(msg),
+
+    define: {
+        freezeTableName: true,
+        timestamps: true,
+    },
+})
+
+export { sequelize, DataTypes, QueryTypes }

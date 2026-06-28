@@ -9,17 +9,29 @@ import {
 } from '../../utils/auth/crypto.js'
 import dayjs from 'dayjs'
 import { signAccessToken } from '../../utils/auth/jwt.js'
+import { AuthSerializer } from './auth.serializer.js'
 
 export class AuthService {
     static async signup(body) {
         const data = await AuthValidator.signupSchema.parseAsync(body)
 
         const existing = await AuthRepository.findByEmail(data.email)
-        if (existing) throw new Error('User already exists')
+        if (existing) {
+            return {
+                status: StatusCodes.BAD_REQUEST,
+                success: false,
+                message: 'Account already exists',
+            }
+        }
 
         const user = await AuthRepository.create(data)
 
-        return { user }
+         return {
+                status: StatusCodes.CREATED,
+                success: true,
+                data: AuthSerializer.baseSerializer(user),
+                message: 'Account created successfully',
+            }
     }
 
     static async login(body) {
@@ -58,7 +70,11 @@ export class AuthService {
         return {
             status: StatusCodes.OK,
             success: true,
-            data: { accessToken, refreshToken: `${rt?.id}:${refreshToken}` },
+            data: {
+                accessToken,
+                refreshToken: `${rt?.id}:${refreshToken}`,
+                user: AuthSerializer.baseSerializer(user),
+            },
             message: 'Login successfull',
         }
     }
