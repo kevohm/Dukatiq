@@ -16,6 +16,10 @@ jobs:
 
     env:
       NODE_ENV: test
+      COOKIE_SECRET: test_cookie_secret
+      DB_PATH: ":memory:"
+      JWT_SECRET: test_jwt_secret
+
 
     steps:
       - name: Checkout code
