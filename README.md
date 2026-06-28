@@ -2,7 +2,6 @@
 
 ### Complete Retail Intelligence System for Small Shops
 
----
 
 ## 📖 Overview
 
@@ -14,7 +13,6 @@
 
 Plus, it provides **smart bundling suggestions** to increase average order value at checkout.
 
----
 
 ## ✨ Key Features
 
