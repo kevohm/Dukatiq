@@ -19,7 +19,7 @@ jobs:
       COOKIE_SECRET: test_cookie_secret
       DB_PATH: ":memory:"
       JWT_SECRET: test_jwt_secret
-
+      ACCESS_TOKEN_SECRET: test_access_secret
 
     steps:
       - name: Checkout code
