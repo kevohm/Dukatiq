@@ -2,7 +2,6 @@
 
 ### Complete Retail Intelligence System for Small Shops
 
-
 ## 📖 Overview
 
 **Shop Profit Booster** is a lightweight, zero-cost web application that helps small retail shops (selling **clothes, tissues, and plastics**) make data-driven decisions. It answers the three most critical questions every shop owner asks:
