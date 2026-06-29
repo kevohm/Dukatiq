@@ -1,18 +1,15 @@
 import { hashToken, verifyToken } from '../../../src/utils/auth/crypto.js'
 import { AuthRepository } from '../../../src/api/auth/auth.repository.js'
+import { userFactory } from '../../utils/factory.js'
 
 async function generateToken(token = 'sample-refresh-token') {
     const token_hash = await hashToken(token)
     return { rawToken: token, token_hash }
 }
 
-async function createUser() {
-    return await AuthRepository.create({
-        email: `user-${Date.now()}@test.com`,
-        first_name: 'Test',
-        last_name: 'User',
-        password: 'Password123',
-    })
+export const createUser = async (overrides = {}) => {
+    const data = userFactory(overrides)
+    return AuthRepository.create(data)
 }
 
 describe('RefreshToken', () => {

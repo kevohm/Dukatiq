@@ -5,6 +5,7 @@ export  class ExpenseValidator {
     static baseSchema = z.object({
         name: z.string().min(1, 'Expense name is required'),
         amount: z.number({ error: 'Expense amount is required' }),
+        category: z.string().optional()
     })
 
     static createSchema = this.baseSchema

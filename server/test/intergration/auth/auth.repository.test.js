@@ -1,20 +1,12 @@
 import { AuthRepository } from "../../../src/api/auth/auth.repository.js";
 import {describe, it,expect} from "vitest"
+import { userFactory } from "../../utils/factory.js";
 
-const createUser = (overrides = {email:undefined,
-    first_name:undefined,
-    last_name:undefined,
-    password:undefined,
-}) => {
-  const unique = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+export const createUser = async (overrides = {}) => {
+    const data = userFactory(overrides)
+    return AuthRepository.create(data)
+}
 
-  return AuthRepository.create({
-    email: overrides.email || `${unique}@test.com`,
-    first_name: overrides.first_name || "Kevin",
-    last_name: overrides.last_name || "Kibet",
-    password: overrides.password || "Kevin",
-  });
-};
 
 describe("AuthRepository", () => {
   it("should hash password on create", async () => {
