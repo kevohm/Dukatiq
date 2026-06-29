@@ -50,3 +50,12 @@ jobs:
         with:
           name: coverage-report
           path: server/coverage
+      - name: Prepare coverage for GitHub Pages
+        run: |
+          mkdir -p public
+          cp -r coverage/* public/
+      - name: Deploy coverage to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./server/public
