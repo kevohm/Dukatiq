@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">85.71% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/7</span>
+                <span class='fraction'>6/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/14</span>
+                <span class='fraction'>8/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">85.71% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/7</span>
+                <span class='fraction'>6/7</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -98,15 +98,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -124,20 +124,20 @@ import {logger} from "../config/logger.config.js"
 import { StatusCodes } from "http-status-codes";
 import { config } from "../config/env.config.js";
 &nbsp;
-export function <span class="fstat-no" title="function not covered" >errorHandler(</span>err, req, res, next) {
+export function errorHandler(err, req, res, next) {
   // logger.error('❌ Error:', err.stack);
-<span class="cstat-no" title="statement not covered" >  if(!config.env.isProd){</span>
-<span class="cstat-no" title="statement not covered" >    console.log(err)</span>
+  <span class="missing-if-branch" title="else path not taken" >E</span>if(!config.env.isProd){
+    console.log(err instanceof ZodError?`(Zod Error) ${err?.issues[0]?.path} =&gt; ${err?.issues[0]?.message}`:<span class="branch-1 cbranch-no" title="branch not covered" >err)</span>
   }
 &nbsp;
-  const statusCode = <span class="cstat-no" title="statement not covered" >err.statusCode || 500;</span>
-  const message = <span class="cstat-no" title="statement not covered" >err.message || 'Internal Server Error';</span>
+  const statusCode = err.statusCode || 500;
+  const message = err.message || <span class="branch-1 cbranch-no" title="branch not covered" >'Internal Server Error';</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  if(err instanceof ZodError){</span>
-<span class="cstat-no" title="statement not covered" >     return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({</span>
+  <span class="missing-if-branch" title="else path not taken" >E</span>if(err instanceof ZodError){
+     return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
          success: false,
-         message: err?.issues[0]?.message ?? "Validation error",
-         stack: config.env.isDev ? err.stack : undefined,
+         message: err?.issues[0]?.message ?? <span class="branch-1 cbranch-no" title="branch not covered" >"Validation error",</span>
+         stack: config.env.isDev ? <span class="branch-0 cbranch-no" title="branch not covered" >err.stack </span>: undefined,
      })
   }
 &nbsp;
@@ -154,7 +154,7 @@ export function <span class="fstat-no" title="function not covered" >errorHandle
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-06-29T09:12:14.033Z
+                at 2026-06-29T10:52:03.743Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
