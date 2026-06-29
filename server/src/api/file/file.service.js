@@ -9,7 +9,7 @@ import { s3 } from '../../config/b2.js'
 import { config } from '../../config/env.config.js'
 
 export class FileService {
-    static async upload(file, folder = 'uploads') {
+    static async upload(file, folder = config.b2.defaultFolder) {
         if (!file || !file.buffer) {
             throw new Error('Invalid file upload')
         }
@@ -45,7 +45,7 @@ export class FileService {
         return true
     }
 
-    static async getSignedFileUrl(key, expiresIn = 3600) {
+    static async getSignedFileUrl(key, expiresIn = config.b2.signedUrl.expiresIn) {
         if (!key) throw new Error('File key is required')
 
         const command = new GetObjectCommand({

@@ -82,16 +82,8 @@ export const b2Config = {
         accessKeyId: requiredEnv('B2_KEY_ID'),
         secretAccessKey: requiredEnv('B2_APP_KEY'),
     },
-
-    /**
-     * Optional settings
-     */
-    publicBaseUrl: getEnv('B2_PUBLIC_URL'), // only if using public bucket
     defaultFolder: getEnv('B2_DEFAULT_FOLDER', 'uploads'),
-
-    /**
-     * Signed URL defaults
-     */
+    
     signedUrl: {
         expiresIn: Number(getEnv('B2_SIGNED_URL_EXPIRES', 3600)), // seconds
     },
