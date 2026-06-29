@@ -5,7 +5,13 @@ import { ProductCategoryRepository } from './category/product.category.repositor
 
 export class ProductService {
     static async findMany() {
-        return ProductRepository.getAll()
+        const data = await  ProductRepository.getAll()
+          return {
+              status: StatusCodes.OK,
+              success: true,
+              data,
+              message: 'Products found',
+          }
     }
 
     static async findById(id) {
@@ -17,7 +23,12 @@ export class ProductService {
                 message: 'Product not found',
             }
         }
-        return product
+         return {
+                status: StatusCodes.OK,
+                success: true,
+                data:product,
+                message: 'Product found',
+            }
     }
     static async add(body, transaction = null) {
         const data = await ProductValidator.createSchema.parseAsync(body)
@@ -26,7 +37,7 @@ export class ProductService {
         const product = await ProductRepository.create(data, transaction)
 
         return {
-            status: StatusCodes.OK,
+            status: StatusCodes.CREATED,
             success: true,
             data: product,
             message: 'Successfully added',

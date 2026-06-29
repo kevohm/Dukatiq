@@ -19,3 +19,20 @@ export const expenseFactory = (overrides = {}) => {
         ...overrides,
     }
 }
+
+export const productFactory = (overrides = {}) => {
+    const unique = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+
+    return {
+        name: `Product-${unique}`,
+        cost_price: 100 + Math.floor(Math.random() * 500),
+        selling_price: 600 + Math.floor(Math.random() * 1000),
+        stock: Math.floor(Math.random() * 50) + 1,
+
+        // IMPORTANT: matches ProductRepository.create()
+        // It expects `category` as a string name
+        category: `Category-${unique}`,
+
+        ...overrides,
+    }
+}

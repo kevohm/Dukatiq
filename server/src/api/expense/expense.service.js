@@ -4,7 +4,13 @@ import { ExpenseValidator } from './expense.validator.js'
 
 export class ExpenseService {
     static async findMany() {
-        return ExpenseRepository.getAll()
+        const data = await ExpenseRepository.getAll()
+        return {
+            status: StatusCodes.OK,
+            success: true,
+            data,
+            message: 'Expenses found',
+        }
     }
 
     static async findById(id) {
@@ -17,16 +23,14 @@ export class ExpenseService {
             }
         }
         return {
-                status: StatusCodes.OK,
-                success: true,
-                data: expense,
-                message: 'Expense found',
-            }
-
+            status: StatusCodes.OK,
+            success: true,
+            data: expense,
+            message: 'Expense found',
+        }
     }
     static async add(body, transaction = null) {
         const data = await ExpenseValidator.createSchema.parseAsync(body)
-
 
         const expense = await ExpenseRepository.create(data, transaction)
 

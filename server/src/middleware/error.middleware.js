@@ -6,7 +6,7 @@ import { config } from "../config/env.config.js";
 export function errorHandler(err, req, res, next) {
   // logger.error('❌ Error:', err.stack);
   if(!config.env.isProd){
-    console.log(err)
+    console.log(err instanceof ZodError?`(Zod Error) ${err?.issues[0]?.path} => ${err?.issues[0]?.message}`:err)
   }
 
   const statusCode = err.statusCode || 500;

@@ -3,12 +3,20 @@ import { ProductService } from './product.service.js'
 import { StatusCodes } from 'http-status-codes'
 
 export const getAllProducts = async (req, res) => {
-    const products = await ProductService.findMany()
-    res.json({ success: true, data: products })
+    const response = await ProductService.findMany()
+    res.status(response.status).json({
+        success: response.success,
+        data: response?.data,
+        message: response?.message,
+    })
 }
 export const getProduct = async (req, res) => {
-    const product = await ProductService.findById(req.params.id)
-    res.json({ success: true, data: product })
+    const response = await ProductService.findById(req.params.id)
+    res.status(response.status).json({
+        success: response.success,
+        data: response?.data,
+        message: response?.message,
+    })
 }
 
 export const createProduct = async (req, res) => {

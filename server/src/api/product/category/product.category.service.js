@@ -1,10 +1,16 @@
 import { StatusCodes } from 'http-status-codes'
-import { ProductCategoryRepository} from './product.category.repository.js'
+import { ProductCategoryRepository } from './product.category.repository.js'
 import { ProductCategoryValidator } from './product.category.validator.js'
 
 export class ProductCategoryService {
     static async findMany() {
-        return ProductCategoryRepository.getAll()
+        const data = await ProductCategoryRepository.getAll()
+        return {
+            status: StatusCodes.OK,
+            success: true,
+            data,
+            message: 'Expense category found',
+        }
     }
 
     static async findById(id) {
@@ -16,12 +22,20 @@ export class ProductCategoryService {
                 message: 'Category not found',
             }
         }
-        return category
+        return {
+            status: StatusCodes.OK,
+            success: true,
+            data: category,
+            message: 'Expense category found',
+        }
     }
     static async add(body) {
-        const data = await ProductCategoryValidator.createSchema.parseAsync(body)
-        const existingCat = await ProductCategoryRepository.getByName(data?.name);
-        if(existingCat){
+        const data =
+            await ProductCategoryValidator.createSchema.parseAsync(body)
+        const existingCat = await ProductCategoryRepository.getByName(
+            data?.name
+        )
+        if (existingCat) {
             return {
                 status: StatusCodes.BAD_REQUEST,
                 success: false,
@@ -32,7 +46,7 @@ export class ProductCategoryService {
         const category = await ProductCategoryRepository.create(data)
 
         return {
-            status: StatusCodes.OK,
+            status: StatusCodes.CREATED,
             success: true,
             data: category,
             message: 'Successfully added',
@@ -41,7 +55,8 @@ export class ProductCategoryService {
     static async update(id, body) {
         const category = await this.findById(id)
 
-        const data = await ProductCategoryValidator.updateSchema.parseAsync(body)
+        const data =
+            await ProductCategoryValidator.updateSchema.parseAsync(body)
 
         const result = await ProductCategoryRepository.update(id, data)
         if (result[0] === 0) {

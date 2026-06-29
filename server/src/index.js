@@ -38,8 +38,7 @@ export const createApp = () => {
 
     // Health check (use logger if needed)
     app.get('/api/health', (req, res) => {
-        logger.info('Health check called')
-
+        // logger.info('Health check called')
         res.json({
             app:config.server.name,
             status: 'OK',
