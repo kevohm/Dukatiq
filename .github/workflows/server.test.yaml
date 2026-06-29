@@ -12,14 +12,21 @@ jobs:
 
     defaults:
       run:
-        working-directory: server   # 👈 KEY FIX
+        working-directory: server
 
     env:
       NODE_ENV: test
-      COOKIE_SECRET: test_cookie_secret
+      COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+      B2_KEY_ID: ${{ secrets.B2_KEY_ID }}
+      B2_APP_KEY: ${{ secrets.B2_APP_KEY }}
+      B2_BUCKET_NAME: ${{ secrets.B2_BUCKET_NAME }}
+      B2_REGION: ${{ secrets.B2_REGION }}
+      B2_ENDPOINT: ${{ secrets.B2_ENDPOINT }}
+      B2_DEFAULT_FOLDER: ${{ secrets.B2_DEFAULT_FOLDER }}
+      B2_SIGNED_URL_EXPIRES: ${{ secrets.B2_SIGNED_URL_EXPIRES }}
       DB_PATH: ":memory:"
-      JWT_SECRET: test_jwt_secret
-      ACCESS_TOKEN_SECRET: test_access_secret
 
     steps:
       - name: Checkout code
@@ -28,12 +35,18 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 22  
           cache: npm
           cache-dependency-path: server/package-lock.json
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci   # ✅ deterministic install (better than npm install)
 
-      - name: Run tests
-        run: npm test
+      - name: Run tests with coverage
+        run: npm run test:coverage
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: server/coverage
