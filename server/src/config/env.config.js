@@ -73,6 +73,22 @@ export const serverConfig = {
     name: getEnv(process.env.APP_NAME, 'Dukatiq'),
 }
 
+export const b2Config = {
+    endpoint: requiredEnv('B2_ENDPOINT'),
+    region: requiredEnv('B2_REGION'),
+    bucket: requiredEnv('B2_BUCKET_NAME'),
+
+    credentials: {
+        accessKeyId: requiredEnv('B2_KEY_ID'),
+        secretAccessKey: requiredEnv('B2_APP_KEY'),
+    },
+    defaultFolder: getEnv('B2_DEFAULT_FOLDER', 'uploads'),
+    
+    signedUrl: {
+        expiresIn: Number(getEnv('B2_SIGNED_URL_EXPIRES', 3600)), // seconds
+    },
+}
+
 /**
  * Optional: grouped export (best for large apps)
  */
@@ -82,4 +98,5 @@ export const config = {
     cors: corsConfig,
     cookie: cookieConfig,
     server: serverConfig,
+    b2: b2Config,
 }

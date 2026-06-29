@@ -7,8 +7,12 @@ export const getAllExpenses = async (req, res) => {
     res.json({ success: true, data: expenses })
 }
 export const getExpense = async (req, res) => {
-    const expense = await ExpenseService.findById(req.params.id)
-    res.json({ success: true, data: expense })
+    const response = await ExpenseService.findById(req.params.id)
+    res.status(response.status).json({
+        success: response.success,
+        data: response?.data,
+        message: response?.message,
+    })
 }
 
 export const createExpense = async (req, res) => {

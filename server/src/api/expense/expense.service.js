@@ -16,7 +16,13 @@ export class ExpenseService {
                 message: 'Expense not found',
             }
         }
-        return expense
+        return {
+                status: StatusCodes.OK,
+                success: true,
+                data: expense,
+                message: 'Expense found',
+            }
+
     }
     static async add(body, transaction = null) {
         const data = await ExpenseValidator.createSchema.parseAsync(body)
@@ -25,7 +31,7 @@ export class ExpenseService {
         const expense = await ExpenseRepository.create(data, transaction)
 
         return {
-            status: StatusCodes.OK,
+            status: StatusCodes.CREATED,
             success: true,
             data: expense,
             message: 'Successfully added',
