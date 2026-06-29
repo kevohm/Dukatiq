@@ -1,10 +1,17 @@
 import { StatusCodes } from 'http-status-codes'
-import { ExpenseCategoryRepository} from './expense.category.repository.js'
+import { ExpenseCategoryRepository } from './expense.category.repository.js'
 import { ExpenseCategoryValidator } from './expense.category.validator.js'
 
 export class ExpenseCategoryService {
     static async findMany() {
-        return ExpenseCategoryRepository.getAll()
+        const categories = await ExpenseCategoryRepository.getAll()
+
+        return {
+            status: StatusCodes.OK,
+            success: true,
+            data: categories,
+            message: 'Categories found',
+        }
     }
 
     static async findById(id) {
@@ -16,12 +23,20 @@ export class ExpenseCategoryService {
                 message: 'Category not found',
             }
         }
-        return category
+        return {
+            status: StatusCodes.OK,
+            success: true,
+            data: category,
+            message: 'Category found',
+        }
     }
     static async add(body) {
-        const data = await ExpenseCategoryValidator.createSchema.parseAsync(body)
-        const existingCat = await ExpenseCategoryRepository.getByName(data?.name);
-        if(existingCat){
+        const data =
+            await ExpenseCategoryValidator.createSchema.parseAsync(body)
+        const existingCat = await ExpenseCategoryRepository.getByName(
+            data?.name
+        )
+        if (existingCat) {
             return {
                 status: StatusCodes.BAD_REQUEST,
                 success: false,
@@ -32,7 +47,7 @@ export class ExpenseCategoryService {
         const category = await ExpenseCategoryRepository.create(data)
 
         return {
-            status: StatusCodes.OK,
+            status: StatusCodes.CREATED,
             success: true,
             data: category,
             message: 'Successfully added',
@@ -41,7 +56,8 @@ export class ExpenseCategoryService {
     static async update(id, body) {
         const category = await this.findById(id)
 
-        const data = await ExpenseCategoryValidator.updateSchema.parseAsync(body)
+        const data =
+            await ExpenseCategoryValidator.updateSchema.parseAsync(body)
 
         const result = await ExpenseCategoryRepository.update(id, data)
         if (result[0] === 0) {
@@ -60,12 +76,14 @@ export class ExpenseCategoryService {
     }
 
     static async remove(id) {
-        const category = await this.findById(id)
+        const response = await this.findById(id)
+        if (!response?.success) {
+            return response
+        }
         await ExpenseCategoryRepository.delete(id)
         return {
             status: StatusCodes.NO_CONTENT,
             success: true,
-            data: category,
             message: 'Category deleted',
         }
     }

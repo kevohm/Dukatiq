@@ -3,8 +3,12 @@ import { ExpenseService } from './expense.service.js'
 import { StatusCodes } from 'http-status-codes'
 
 export const getAllExpenses = async (req, res) => {
-    const expenses = await ExpenseService.findMany()
-    res.json({ success: true, data: expenses })
+    const response = await ExpenseService.findMany()
+     res.status(response.status).json({
+         success: response.success,
+         data: response.data,
+         message: response.message,
+     })
 }
 export const getExpense = async (req, res) => {
     const response = await ExpenseService.findById(req.params.id)

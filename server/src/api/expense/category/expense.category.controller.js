@@ -4,12 +4,22 @@ import { StatusCodes } from 'http-status-codes'
 
 
 export const getAll = async (req, res) => {
-    const expenses = await ExpenseCategoryService.findMany()
-    res.json({ success: true, data: expenses })
+     const response = await ExpenseCategoryService.findMany()
+
+     res.status(response.status).json({
+         success: response.success,
+         data: response.data,
+         message: response.message,
+     })
 }
 export const getCategory = async (req, res) => {
-    const expense = await ExpenseCategoryService.findById(req.params.id)
-    res.json({ success: true, data: expense })
+    const response = await ExpenseCategoryService.findById(req.params.id)
+
+     res.status(response.status).json({
+         success: response.success,
+         data: response.data,
+         message: response.message,
+     })
 }
 
 export const createCategory = async (req, res) => {
