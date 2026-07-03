@@ -7,19 +7,39 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import crypto from 'crypto'
 import { s3 } from '../../config/b2.js'
 import { config } from '../../config/env.config.js'
+import { StatusCodes } from 'http-status-codes'
+import { success } from 'zod'
+import { FileValidator } from './file.validator.js'
+import { generateFileKey } from '../../utils/file/index.js'
 
 export class FileService {
-    static async upload(file, folder = config.b2.defaultFolder) {
-        if (!file || !file.buffer) {
-            throw new Error('Invalid file upload')
+    static async upload(body) {
+        if(!body.file){
+              return {
+                  status: StatusCodes.BAD_REQUEST,
+                  success: false,
+                  message: 'No file provided',
+              }
+        }
+        const data = await FileValidator.uploadSchema.safeParseAsync(body)
+        if (!data.success) {
+            return {
+                status: StatusCodes.BAD_REQUEST,
+                success: false,
+                message: 'Invalid file upload',
+            }
+        }
+        const { file, folder } = data.data
+        if (file?.buffer?.length === 0) {
+            return {
+                status: StatusCodes.BAD_REQUEST,
+                success: false,
+                message: 'Empty file buffer',
+            }
         }
 
-        if (file.buffer.length === 0) {
-            throw new Error('Empty file buffer')
-        }
-
-        const key = `${folder}/${crypto.randomUUID()}-${file.originalname}`
-
+        const key = generateFileKey(folder, file?.originalname)
+     
         await s3.send(
             new PutObjectCommand({
                 Bucket: process.env.B2_BUCKET_NAME,
@@ -29,24 +49,59 @@ export class FileService {
                 ContentLength: file.buffer.length,
             })
         )
+        const response = await FileService.getSignedFileUrl({key})
 
-        return key
+        if (!response.success) {
+            return response
+        }
+
+        return {
+            status: StatusCodes.CREATED,
+            success: true,
+            message: 'file uploaded',
+            data: {
+                ...response.data,
+                key,
+            },
+        }
     }
-    static async deleteFile(key) {
-        if (!key) throw new Error('File key is required')
+    static async deleteFile(body) {
+        const parsedData = await FileValidator.deleteSchema.safeParseAsync(body)
+        if (!parsedData.success) {
+            return {
+                status: StatusCodes.BAD_REQUEST,
+                success: false,
+                message: 'key is required',
+            }
+        }
 
-        await s3.send(
+        const {key} = parsedData.data
+
+        const data = await s3.send(
             new DeleteObjectCommand({
                 Bucket: config.b2.bucket,
                 Key: key,
             })
         )
 
-        return true
+        return {
+            status: StatusCodes.NO_CONTENT,
+            success: true,
+            message: 'File deleted',
+            data,
+        }
     }
 
-    static async getSignedFileUrl(key, expiresIn = config.b2.signedUrl.expiresIn) {
-        if (!key) throw new Error('File key is required')
+    static async getSignedFileUrl(body) {
+        const data = await FileValidator.signedUrlSchema.safeParseAsync(body)
+        if (!data.success) {
+            return {
+                status: StatusCodes.BAD_REQUEST,
+                success: false,
+                message: 'key is required',
+            }
+        }
+        const {key, expiresIn} = data.data
 
         const command = new GetObjectCommand({
             Bucket: config.b2.bucket,
@@ -57,6 +112,11 @@ export class FileService {
             expiresIn, // seconds (default 1 hour)
         })
 
-        return signedUrl
+        return {
+            status: StatusCodes.OK,
+            success: true,
+            message: 'Url generated',
+            data: { url: signedUrl, expires_in: expiresIn },
+        }
     }
 }

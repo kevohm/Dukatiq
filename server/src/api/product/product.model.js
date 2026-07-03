@@ -32,6 +32,16 @@ export const Product = sequelize.define('Product', {
         type: DataTypes.INTEGER,
         defaultValue: 5,
     },
+
+    image_url: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+
+    image_key: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
 })
 
 // Associations
