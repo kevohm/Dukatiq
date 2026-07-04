@@ -1,8 +1,11 @@
 import { DataTypes } from 'sequelize'
 import { sequelize } from '../../config/database.js'
 import { Category } from './category/product.category.model.js'
+import { Unit } from './unit/unit.model.js'
+import { ProductUnit } from './product-unit/product.unit.model.js'
 
-export const Product = sequelize.define('Product', {
+
+export const Product = sequelize.define('product', {
     id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
@@ -33,17 +36,21 @@ export const Product = sequelize.define('Product', {
         defaultValue: 5,
     },
 
-    image_url: {
-        type: DataTypes.STRING,
-        allowNull: true,
-    },
+    image_url: DataTypes.STRING,
 
-    image_key: {
-        type: DataTypes.STRING,
-        allowNull: true,
-    },
+    image_key: DataTypes.STRING
 })
 
 // Associations
 Product.belongsTo(Category, { foreignKey: 'category_id' })
 Category.hasMany(Product, { foreignKey: 'category_id' })
+
+Product.belongsToMany(Unit, {
+    through: ProductUnit,
+    foreignKey: 'product_id',
+})
+
+Unit.belongsToMany(Product, {
+    through: ProductUnit,
+    foreignKey: 'unit_id',
+})

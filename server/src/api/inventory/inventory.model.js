@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize'
-import { sequelize } from '../config/database.js'
-import { Product } from '../api/product/product.model.js'
+import { sequelize } from '../../config/database.js'
+import { Product } from '../product/product.model.js'
+import { Unit } from '../product/unit/unit.model.js'
 
 export const Inventory = sequelize.define('Inventory', {
     id: {
@@ -8,28 +9,45 @@ export const Inventory = sequelize.define('Inventory', {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
     },
-    shop_id: {
-        type: DataTypes.UUID,
-        allowNull: false,
-    },
     type: {
         type: DataTypes.ENUM('stock_in', 'stock_out', 'adjustment'),
         allowNull: false,
     },
-    quantity_change: {
-        type: DataTypes.INTEGER,
+
+    quantity: {
+        type: DataTypes.FLOAT,
         allowNull: false,
     },
+
+    normalized_quantity: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+    },
+
+    adjustment_type: {
+        type: DataTypes.ENUM('increase', 'decrease'),
+        allowNull: true,
+        defaultValue: null
+    },
+
     reference_type: {
-        type: DataTypes.STRING, // "sale", "restock", "manual"
+        type: DataTypes.ENUM(
+            'purchase',
+            'sale',
+            'adjustment',
+            'transfer',
+            'return'
+        ),
         allowNull: true,
     },
     reference_id: {
         type: DataTypes.UUID,
-        allowNull: true,
     },
 })
 
 // Associations
-InventoryLog.belongsTo(Product, { foreignKey: 'product_id' })
+Inventory.belongsTo(Product, { foreignKey: 'product_id' })
 Product.hasMany(Inventory, { foreignKey: 'product_id' })
+
+Inventory.belongsTo(Unit, { foreignKey: 'unit_id' })
+Unit.hasMany(Inventory, { foreignKey: 'unit_id' })

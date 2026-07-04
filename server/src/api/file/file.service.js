@@ -11,35 +11,39 @@ import { StatusCodes } from 'http-status-codes'
 import { success } from 'zod'
 import { FileValidator } from './file.validator.js'
 import { generateFileKey } from '../../utils/file/index.js'
+import { AppError, ERROR_CODES } from '../../errors/app.error.js'
 
 export class FileService {
     static async upload(body) {
-        if(!body.file){
-              return {
-                  status: StatusCodes.BAD_REQUEST,
-                  success: false,
-                  message: 'No file provided',
-              }
+        if (!body.file) {
+            throw new AppError({
+                message: 'No file provided',
+                code: ERROR_CODES.FILE.NO_FILE_PROVIDED,
+                status: StatusCodes.BAD_REQUEST,
+                meta: { resource: 'file' },
+            })
         }
         const data = await FileValidator.uploadSchema.safeParseAsync(body)
         if (!data.success) {
-            return {
-                status: StatusCodes.BAD_REQUEST,
-                success: false,
+            throw new AppError({
                 message: 'Invalid file upload',
-            }
+                code: ERROR_CODES.FILE.INVALID_UPLOAD,
+                status: StatusCodes.BAD_REQUEST,
+                meta: { resource: 'file' },
+            })
         }
         const { file, folder } = data.data
         if (file?.buffer?.length === 0) {
-            return {
-                status: StatusCodes.BAD_REQUEST,
-                success: false,
+            throw new AppError({
                 message: 'Empty file buffer',
-            }
+                code: ERROR_CODES.FILE.EMPTY_FILE_BUFFER,
+                status: StatusCodes.BAD_REQUEST,
+                meta: { resource: 'file' },
+            })
         }
 
         const key = generateFileKey(folder, file?.originalname)
-     
+
         await s3.send(
             new PutObjectCommand({
                 Bucket: process.env.B2_BUCKET_NAME,
@@ -49,7 +53,7 @@ export class FileService {
                 ContentLength: file.buffer.length,
             })
         )
-        const response = await FileService.getSignedFileUrl({key})
+        const response = await FileService.getSignedFileUrl({ key })
 
         if (!response.success) {
             return response
@@ -68,14 +72,15 @@ export class FileService {
     static async deleteFile(body) {
         const parsedData = await FileValidator.deleteSchema.safeParseAsync(body)
         if (!parsedData.success) {
-            return {
-                status: StatusCodes.BAD_REQUEST,
-                success: false,
+            throw new AppError({
                 message: 'key is required',
-            }
+                code: ERROR_CODES.FILE.KEY_REQUIRED,
+                status: StatusCodes.BAD_REQUEST,
+                meta: { resource: 'file' },
+            })
         }
 
-        const {key} = parsedData.data
+        const { key } = parsedData.data
 
         const data = await s3.send(
             new DeleteObjectCommand({
@@ -95,13 +100,14 @@ export class FileService {
     static async getSignedFileUrl(body) {
         const data = await FileValidator.signedUrlSchema.safeParseAsync(body)
         if (!data.success) {
-            return {
-                status: StatusCodes.BAD_REQUEST,
-                success: false,
+            throw new AppError({
                 message: 'key is required',
-            }
+                code: ERROR_CODES.FILE.KEY_REQUIRED,
+                status: StatusCodes.BAD_REQUEST,
+                meta: { resource: 'file' },
+            })
         }
-        const {key, expiresIn} = data.data
+        const { key, expiresIn } = data.data
 
         const command = new GetObjectCommand({
             Bucket: config.b2.bucket,

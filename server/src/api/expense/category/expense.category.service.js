@@ -1,6 +1,7 @@
 import { StatusCodes } from 'http-status-codes'
 import { ExpenseCategoryRepository } from './expense.category.repository.js'
 import { ExpenseCategoryValidator } from './expense.category.validator.js'
+import { AppError, ERROR_CODES } from '../../../errors/app.error.js'
 
 export class ExpenseCategoryService {
     static async findMany() {
@@ -17,11 +18,12 @@ export class ExpenseCategoryService {
     static async findById(id) {
         const category = await ExpenseCategoryRepository.getById(id)
         if (!category) {
-            return {
-                status: StatusCodes.NOT_FOUND,
-                success: false,
+            throw new AppError({
                 message: 'Category not found',
-            }
+                code: ERROR_CODES.EXPENSE_CATEGORY.NOT_FOUND,
+                status: StatusCodes.NOT_FOUND,
+                meta: { resource: 'expense_category', id },
+            })
         }
         return {
             status: StatusCodes.OK,
@@ -37,12 +39,12 @@ export class ExpenseCategoryService {
             data?.name
         )
         if (existingCat) {
-            return {
-                status: StatusCodes.BAD_REQUEST,
-                success: false,
-                data: existingCat,
+            throw new AppError({
                 message: 'Category already exists',
-            }
+                code: ERROR_CODES.EXPENSE_CATEGORY.ALREADY_EXISTS,
+                status: StatusCodes.BAD_REQUEST,
+                meta: { resource: 'expense_category', name: data?.name },
+            })
         }
         const category = await ExpenseCategoryRepository.create(data)
 
@@ -61,11 +63,12 @@ export class ExpenseCategoryService {
 
         const result = await ExpenseCategoryRepository.update(id, data)
         if (result[0] === 0) {
-            return {
-                status: StatusCodes.INTERNAL_SERVER_ERROR,
-                success: false,
+            throw new AppError({
                 message: 'Failed to update category',
-            }
+                code: ERROR_CODES.EXPENSE_CATEGORY.UPDATE_FAILED,
+                status: StatusCodes.INTERNAL_SERVER_ERROR,
+                meta: { resource: 'expense_category', id },
+            })
         }
         return {
             status: StatusCodes.NO_CONTENT,

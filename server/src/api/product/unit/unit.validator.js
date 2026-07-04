@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { paginationSchema } from "../../base.validator.js";
+import {paginationSchema} from "../../base.validator.js"
 
-export  class ProductCategoryValidator {
+export  class UnitValidator {
     // Base schema (reusable)
     static baseSchema = z.object({
         name: z.string().min(1, 'Name is required'),
@@ -16,8 +16,7 @@ export  class ProductCategoryValidator {
     // FILTERS (for fetch all with query params)
     static filterSchema = paginationSchema.extend({
         name: z.string().optional(),
-
-        sort_by: z.enum(['name']).optional(),
+        sort_by: z.enum(['name' ]).optional(),
         order: z.enum(['asc', 'desc']).optional(),
     })
 }

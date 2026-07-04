@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize'
 import { sequelize } from '../../../config/database.js'
 
-export const Category = sequelize.define('ProductCategory', {
+export const Category = sequelize.define('product_category', {
     id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,

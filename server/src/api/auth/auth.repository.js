@@ -2,6 +2,7 @@ import { Op } from 'sequelize'
 import { RefreshToken, User } from './auth.model.js'
 import { hash } from 'argon2'
 import { hashPassword } from '../../utils/auth/password.js'
+import { AppError, ERROR_CODES } from '../../errors/app.error.js'
 
 export class AuthRepository {
     // Get account by ID
@@ -34,11 +35,20 @@ export class AuthRepository {
     }
 
     static async delete(id) {
-        return await User.destroy({ where: { id } })
+        const deleted = await User.destroy({ where: { id } })
+        if (!deleted) {
+            throw new AppError({
+                message: 'Failed to delete user',
+                code: ERROR_CODES.AUTH.INVALID_REFRESH_TOKEN,
+                status: 500,
+                meta: { resource: 'auth', id },
+            })
+        }
+        return deleted
     }
 
     static async saveRefreshToken(data, transaction = null) {
-       // console.log(data)
+        // console.log(data)
         return await RefreshToken.create(
             {
                 ...data,

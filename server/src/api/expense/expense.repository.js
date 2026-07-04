@@ -2,6 +2,7 @@ import { QueryTypes } from 'sequelize'
 import { sequelize } from '../../config/database.js'
 import { Expense } from './expense.model.js'
 import { ExpenseCategoryRepository } from './category/expense.category.repository.js'
+import { AppError, ERROR_CODES } from '../../errors/app.error.js'
 
 export class ExpenseRepository {
     // Get all expenses
@@ -11,7 +12,16 @@ export class ExpenseRepository {
 
     // Get expense by ID
     static async getById(id) {
-        return await Expense.findByPk(id)
+        const expense = await Expense.findByPk(id)
+        if (!expense) {
+            throw new AppError({
+                message: 'Expense not found',
+                code: ERROR_CODES.EXPENSE.NOT_FOUND,
+                status: 404,
+                meta: { resource: 'expense', id },
+            })
+        }
+        return expense
     }
 
     // Create new expense
@@ -35,6 +45,15 @@ export class ExpenseRepository {
         return expense
     }
     static async delete(id) {
-        return await Expense.destroy({ where: { id } })
+        const deleted = await Expense.destroy({ where: { id } })
+        if (!deleted) {
+            throw new AppError({
+                message: 'Failed to delete expense',
+                code: ERROR_CODES.EXPENSE.DELETE_FAILED,
+                status: 500,
+                meta: { resource: 'expense', id },
+            })
+        }
+        return deleted
     }
 }

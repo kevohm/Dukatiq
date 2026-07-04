@@ -2,6 +2,7 @@ import { StatusCodes } from 'http-status-codes'
 import { AuthValidator } from './auth.validator.js'
 import { AuthRepository } from './auth.repository.js'
 import { verifyPassword } from '../../utils/auth/password.js'
+import { AppError, ERROR_CODES } from '../../errors/app.error.js'
 import {
     generateToken,
     hashToken,
@@ -17,41 +18,44 @@ export class AuthService {
 
         const existing = await AuthRepository.findByEmail(data.email)
         if (existing) {
-            return {
-                status: StatusCodes.BAD_REQUEST,
-                success: false,
+            throw new AppError({
                 message: 'Account already exists',
-            }
+                code: ERROR_CODES.AUTH.ACCOUNT_ALREADY_EXISTS,
+                status: StatusCodes.BAD_REQUEST,
+                meta: { resource: 'auth', email: data.email },
+            })
         }
 
         const user = await AuthRepository.create(data)
 
-         return {
-                status: StatusCodes.CREATED,
-                success: true,
-                data: AuthSerializer.baseSerializer(user),
-                message: 'Account created successfully',
-            }
+        return {
+            status: StatusCodes.CREATED,
+            success: true,
+            data: AuthSerializer.baseSerializer(user),
+            message: 'Account created successfully',
+        }
     }
 
     static async login(body) {
         const data = await AuthValidator.loginSchema.parseAsync(body)
         const user = await AuthRepository.findByEmail(data.email)
         if (!user) {
-            return {
-                status: StatusCodes.UNAUTHORIZED,
-                success: false,
+            throw new AppError({
                 message: 'Invalid credentials',
-            }
+                code: ERROR_CODES.AUTH.INVALID_CREDENTIALS,
+                status: StatusCodes.UNAUTHORIZED,
+                meta: { resource: 'auth', email: data.email },
+            })
         }
 
         const valid = await verifyPassword(user.password, data.password)
         if (!valid) {
-            return {
-                status: StatusCodes.UNAUTHORIZED,
-                success: false,
+            throw new AppError({
                 message: 'Invalid credentials',
-            }
+                code: ERROR_CODES.AUTH.INVALID_CREDENTIALS,
+                status: StatusCodes.UNAUTHORIZED,
+                meta: { resource: 'auth', email: data.email },
+            })
         }
 
         const refreshToken = generateToken()
@@ -85,21 +89,23 @@ export class AuthService {
     ) {
         const token = await AuthRepository.findActiveTokenById(id, transaction)
         if (!token) {
-            return {
-                status: StatusCodes.FORBIDDEN,
-                success: false,
+            throw new AppError({
                 message: 'Invalid refresh token',
-            }
+                code: ERROR_CODES.AUTH.INVALID_REFRESH_TOKEN,
+                status: StatusCodes.FORBIDDEN,
+                meta: { resource: 'refresh_token', id },
+            })
         }
 
         const isTokenMatch = await verifyToken(token.token_hash, old_token)
 
         if (!isTokenMatch) {
-            return {
-                status: StatusCodes.FORBIDDEN,
-                success: false,
+            throw new AppError({
                 message: 'Invalid refresh token',
-            }
+                code: ERROR_CODES.AUTH.INVALID_REFRESH_TOKEN,
+                status: StatusCodes.FORBIDDEN,
+                meta: { resource: 'refresh_token', id },
+            })
         }
 
         // 🔁 rotation (VERY IMPORTANT)
@@ -139,7 +145,7 @@ export class AuthService {
             }
         }
         await AuthRepository.revokeToken(token.id)
-        
+
         return {
             status: StatusCodes.NO_CONTENT,
             success: true,
