@@ -83,6 +83,9 @@ export class SaleRepository {
                     as: 'items',
                 },
             ],
+            // limit
+            // offset
+            // order
             order: [['createdAt', 'DESC']],
         })
     }

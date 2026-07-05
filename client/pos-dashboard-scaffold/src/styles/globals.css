@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+/*
+  Tailwind v4 uses CSS-based config instead of tailwind.config.js.
+  Define design tokens here with @theme — they become available as
+  utility classes automatically (e.g. --color-brand -> bg-brand, text-brand).
+*/
+@theme {
+  /* Neutrals */
+  --color-sidebar: #f7f8fa;
+  --color-border: #e5e7eb;
+  --color-surface: #ffffff;
+  --color-muted: #6b7280;
+
+  /* Brand */
+  --color-brand: #2563eb;
+  --color-brand-hover: #1d4ed8;
+
+  /* Priority palette */
+  --color-priority-low-bg: #dcfce7;
+  --color-priority-low-text: #16a34a;
+  --color-priority-medium-bg: #fef3c7;
+  --color-priority-medium-text: #b45309;
+  --color-priority-high-bg: #fee2e2;
+  --color-priority-high-text: #dc2626;
+
+  /* Radius */
+  --radius-DEFAULT: 8px;
+
+  /* Font */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  @apply bg-white text-gray-900 font-sans antialiased;
+}
