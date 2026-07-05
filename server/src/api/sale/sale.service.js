@@ -3,97 +3,89 @@ import { SaleRepository } from './sale.repository.js'
 import { SaleItem } from './saleItem/sale.item.model.js'
 import { Product } from '../product/product.model.js'
 import { AppError, ERROR_CODES } from '../../errors/app.error.js'
+import { SaleValidator } from './sale.validator.js'
+import { ProductUnitService } from '../product/product-unit/product.unit.service.js'
+import { ProductUnitRepository } from '../product/product-unit/product.unit.repository.js'
 
 export class SaleService {
-    static async createSale({ items, payment_method }) {
-        const t = await sequelize.transaction()
+    static async createSale(body) {
+        const { items, payment_method } =
+            await SaleValidator.createSchema.parseAsync(body)
+        let total_amount = 0
+        let total_profit = 0
 
-        try {
-            let total_amount = 0
-            let total_profit = 0
+        const enrichedItems = []
 
-            const sale = await SaleRepository.create(
-                {
-                    total_amount: 0,
-                    total_profit: 0,
-                },
-                t
-            )
+        for (const item of items) {
+            const product = await Product.findByPk(item.product_id)
 
-            for (const item of items) {
-                const product = await Product.findByPk(item.product_id, {
-                    transaction: t,
-                    lock: t.LOCK.UPDATE,
+            if (!product) {
+                throw new AppError({
+                    message: `Product not found: ${item.product_id}`,
+                    code: ERROR_CODES.PRODUCT.NOT_FOUND,
+                    status: 404,
                 })
-
-                if (!product) {
-                    throw new AppError({
-                        message: `Product not found: ${item.product_id}`,
-                        code: ERROR_CODES.PRODUCT.NOT_FOUND,
-                        status: 404,
-                    })
-                }
-
-                if (product.stock_quantity < item.quantity) {
-                    throw new AppError({
-                        message: `Insufficient stock for ${product.name}`,
-                        code: ERROR_CODES.PRODUCT.INSUFFICIENT_STOCK,
-                        status: 400,
-                    })
-                }
-
-                const selling_price =
-                    item.selling_price ?? product.selling_price
-
-                const cost_price = product.cost_price ?? 0
-
-                const profit = (selling_price - cost_price) * item.quantity
-
-                const line_total = selling_price * item.quantity
-
-                await SaleItem.create(
-                    {
-                        sale_id: sale.id,
-                        product_id: product.id,
-                        quantity: item.quantity,
-                        selling_price,
-                        cost_price,
-                        profit,
-                    },
-                    { transaction: t }
-                )
-
-                await product.decrement(
-                    { stock_quantity: item.quantity },
-                    { transaction: t }
-                )
-
-                total_amount += line_total
-                total_profit += profit
             }
 
-            await SaleRepository.update(
-                sale.id,
-                { total_amount, total_profit },
-                t
+            const productUnit = await ProductUnitRepository.getByUnit(
+                item?.product_id,
+                item?.unit_id
             )
 
-            await t.commit()
+            if (!productUnit) {
+                throw new AppError({
+                    message: `Invalid unit for product`,
+                    code: ERROR_CODES.PRODUCT.INVALID_UNIT,
+                    status: 400,
+                })
+            }
+            const factor = productUnit.conversion_factor
 
-            return sale
-        } catch (error) {
-            await t.rollback()
-            throw error
+            const requestedStock = item.quantity * factor
+
+            if (product.stock_quantity < requestedStock) {
+                throw new AppError({
+                    message: `Insufficient stock for ${product.name}`,
+                    code: ERROR_CODES.PRODUCT.INSUFFICIENT_STOCK,
+                    status: 400,
+                })
+            }
+
+            //TODO: Unit-aware pricing (BEST PRACTICE: store on ProductUnit)
+            const selling_price = product.selling_price * factor
+            const cost_price = product.cost_price * factor
+
+            const line_total = selling_price * item.quantity
+            const profit = (selling_price - cost_price) * item.quantity
+
+            enrichedItems.push({
+                product_id: product.id,
+                unit_id: item?.unit_id,
+                quantity: item.quantity,
+                normalized_quantity: requestedStock,
+                selling_price,
+                cost_price,
+                profit,
+            })
+
+            total_amount += line_total
+            total_profit += profit
         }
+        const sale = await SaleRepository.create({
+            payment_method,
+            totals: {
+                total_amount,
+                total_profit,
+            },
+            items: enrichedItems,
+        })
+        return sale
     }
 
     static async getAll() {
         const sales = await SaleRepository.getAll()
 
-        return {
-            count: sales.length,
-            data: sales,
-        }
+        return sales
     }
 
     static async getById(id) {

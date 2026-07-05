@@ -20,6 +20,7 @@ app.listen(PORT, async () => {
             `${APP_NAME} started successfully`
         )
     } catch (error) {
+       
         logger.error(error?.message ?? 'Error starting app')
     }
 })
