@@ -24,12 +24,12 @@ export function DataTablePagination({
   canNext,
 }: DataTablePaginationProps) {
   return (
-    <div className="flex items-center justify-between px-4 py-3 text-sm text-gray-600">
+    <div className="flex items-center justify-between px-4 py-3 text-sm text-muted">
       <label className="flex items-center gap-2">
         <select
           value={pageSize}
           onChange={(e) => onPageSizeChange(Number(e.target.value))}
-          className="rounded-lg border border-border px-2 py-1"
+          className="rounded-lg border border-border bg-surface px-2 py-1"
         >
           {[10, 25, 50].map((size) => (
             <option key={size} value={size}>
@@ -47,7 +47,7 @@ export function DataTablePagination({
           <button
             onClick={onPrev}
             disabled={!canPrev}
-            className="rounded-lg p-1.5 hover:bg-gray-100 disabled:opacity-40"
+            className="rounded-lg p-1.5 hover:bg-hover disabled:opacity-40"
             aria-label="Previous page"
           >
             <ChevronLeft size={16} />
@@ -55,7 +55,7 @@ export function DataTablePagination({
           <button
             onClick={onNext}
             disabled={!canNext}
-            className="rounded-lg p-1.5 hover:bg-gray-100 disabled:opacity-40"
+            className="rounded-lg p-1.5 hover:bg-hover disabled:opacity-40"
             aria-label="Next page"
           >
             <ChevronRight size={16} />

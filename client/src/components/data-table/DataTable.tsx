@@ -1,32 +1,27 @@
-import { useState } from "react";
-import { cn } from "../../lib/utils";
+import { useMemo, useState } from "react";
+import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
+import { cn } from '../../lib/cn'
+import type { ColumnDef, DataTableProps, SortDirection, SortState } from "./types";
 
-export type ColumnDef<T> = {
-  id: string;
-  header: string;
-  cell: (row: T) => React.ReactNode;
-  className?: string;
-};
 
-type DataTableProps<T> = {
-  columns: ColumnDef<T>[];
-  data: T[];
-  getRowId: (row: T) => string;
-  selectable?: boolean;
-};
 
-/**
- * Domain-agnostic table shell. Any feature (work orders, assets, inventory)
- * plugs in its own column config + row data — the table itself never
- * changes when a new module is added.
- */
+
 export function DataTable<T>({
   columns,
   data,
   getRowId,
   selectable = true,
+  sort: controlledSort,
+  onSortChange,
 }: DataTableProps<T>) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [internalSort, setInternalSort] = useState<SortState>({
+    columnId: "",
+    direction: null,
+  });
+
+  const sort = controlledSort ?? internalSort;
+  const isControlled = controlledSort !== undefined || onSortChange !== undefined;
 
   const allSelected = data.length > 0 && selected.size === data.length;
 
@@ -42,35 +37,86 @@ export function DataTable<T>({
     });
   }
 
+  function handleSortClick(col: ColumnDef<T>) {
+    if (!col.sortable) return;
+    const direction: SortDirection =
+      sort.columnId !== col.id
+        ? "asc"
+        : sort.direction === "asc"
+        ? "desc"
+        : sort.direction === "desc"
+        ? null
+        : "asc";
+    const next: SortState = { columnId: direction ? col.id : "", direction };
+    onSortChange ? onSortChange(next) : setInternalSort(next);
+  }
+
+  const sortedData = useMemo(() => {
+    if (isControlled) return data; // parent owns ordering
+    const col = columns.find((c) => c.id === sort.columnId);
+    if (!col?.sortValue || !sort.direction) return data;
+    const sign = sort.direction === "asc" ? 1 : -1;
+    return [...data].sort((a, b) => {
+      const av = col.sortValue!(a);
+      const bv = col.sortValue!(b);
+      if (av < bv) return -1 * sign;
+      if (av > bv) return 1 * sign;
+      return 0;
+    });
+  }, [data, sort, columns, isControlled]);
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse text-sm">
         <thead>
-          <tr className="border-b border-border text-left text-gray-500">
+          <tr className="border-b border-border text-left text-muted">
             {selectable && (
               <th className="w-10 px-4 py-3">
                 <input
                   type="checkbox"
                   checked={allSelected}
                   onChange={toggleAll}
-                  className="h-4 w-4 rounded border-gray-300"
+                  className="h-4 w-4 rounded border-border"
                 />
               </th>
             )}
-            {columns.map((col) => (
-              <th key={col.id} className="whitespace-nowrap px-4 py-3 font-medium">
-                {col.header}
-              </th>
-            ))}
+            {columns.map((col) => {
+              const active = sort.columnId === col.id && sort.direction;
+              return (
+                <th key={col.id} className="whitespace-nowrap px-4 py-3 font-medium">
+                  {col.sortable ? (
+                    <button
+                      type="button"
+                      onClick={() => handleSortClick(col)}
+                      className={cn(
+                        "inline-flex items-center gap-1 hover:text-heading",
+                        active && "text-heading"
+                      )}
+                    >
+                      {col.header}
+                      {sort.columnId === col.id && sort.direction === "asc" ? (
+                        <ChevronUp size={14} />
+                      ) : sort.columnId === col.id && sort.direction === "desc" ? (
+                        <ChevronDown size={14} />
+                      ) : (
+                        <ChevronsUpDown size={14} className="text-muted/60" />
+                      )}
+                    </button>
+                  ) : (
+                    col.header
+                  )}
+                </th>
+              );
+            })}
           </tr>
         </thead>
         <tbody>
-          {data.map((row) => {
+          {sortedData.map((row) => {
             const id = getRowId(row);
             return (
               <tr
                 key={id}
-                className="border-b border-border last:border-0 hover:bg-gray-50"
+                className="border-b border-border last:border-0 hover:bg-hover"
               >
                 {selectable && (
                   <td className="px-4 py-3">
@@ -78,7 +124,7 @@ export function DataTable<T>({
                       type="checkbox"
                       checked={selected.has(id)}
                       onChange={() => toggleRow(id)}
-                      className="h-4 w-4 rounded border-gray-300"
+                      className="h-4 w-4 rounded border-border"
                     />
                   </td>
                 )}
@@ -95,6 +141,10 @@ export function DataTable<T>({
           })}
         </tbody>
       </table>
+
+      {sortedData.length === 0 && (
+        <div className="py-12 text-center text-sm text-muted">No results found.</div>
+      )}
     </div>
   );
 }

@@ -7,7 +7,7 @@ import { DataTablePagination } from '../components/data-table/DataTablePaginatio
 import { FilterBar } from '../features/work-orders/components/FilterBar'
 import { workOrderColumns } from '../features/work-orders/columns'
 import { mockWorkOrders } from '../features/work-orders/mock-data'
-
+import ThemeTrigger from '../components/theme/ThemeTrigger'
 
 export function WorkOrdersPage() {
     const [search, setSearch] = useState('')
@@ -28,9 +28,11 @@ export function WorkOrdersPage() {
             <Topbar
                 title="Work Orders"
                 actions={
+                    <>
                     <Button variant="primary" icon={<Plus size={16} />}>
                         New Work Order
                     </Button>
+                    </>
                 }
             />
 
