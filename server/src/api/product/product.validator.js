@@ -5,11 +5,36 @@ export  class ProductValidator {
     // Base schema (reusable)
     static baseSchema = z.object({
         name: z.string().min(1, 'Name is required'),
+
         category: z.string().min(1, 'Category is required'),
-        cost_price: z.number().min(0),
-        selling_price: z.number().min(0),
-        stock_quantity: z.number().int().min(0).default(0),
-        low_stock_threshold: z.number().int().min(0).default(10),
+
+        cost_price: z
+            .number({
+                error: 'Cost price is required',
+            })
+            .min(0, 'Cost price cannot be negative'),
+
+        selling_price: z
+            .number({
+                error: 'Selling price is required',
+            })
+            .min(0, 'Selling price cannot be negative'),
+
+        stock_quantity: z
+            .number({
+                error: 'Stock quantity is required',
+            })
+            .int('Stock quantity must be a whole number')
+            .min(0, 'Stock quantity cannot be negative')
+            .default(0),
+
+        low_stock_threshold: z
+            .number({
+                error: 'Low stock threshold is required',
+            })
+            .int('Low stock threshold must be a whole number')
+            .min(0, 'Low stock threshold cannot be negative')
+            .default(10),
     })
 
     // CREATE (all required except defaults)
