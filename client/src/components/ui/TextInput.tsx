@@ -40,7 +40,7 @@ export function TextInput({
         >
             <div className="relative">
                 {LeadingIcon && (
-                    <LeadingIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-muted)]" />
+                    <LeadingIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
                 )}
                 <input
                     id={inputId}
@@ -56,7 +56,7 @@ export function TextInput({
                         type="button"
                         onClick={() => setShow((s) => !s)}
                         tabIndex={-1}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-muted)] hover:text-[var(--color-heading)]"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-heading"
                         aria-label={show ? 'Hide password' : 'Show password'}
                     >
                         {show ? (

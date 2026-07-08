@@ -48,11 +48,11 @@ export function Field({
             {label && (
                 <label
                     htmlFor={id}
-                    className="text-sm font-medium text-[var(--color-heading)]"
+                    className="text-sm capitalize font-medium text--heading"
                 >
                     {label}
                     {required && (
-                        <span className="text-[var(--color-priority-high-text)]">
+                        <span className="text-danger">
                             {' '}
                             *
                         </span>
@@ -65,8 +65,8 @@ export function Field({
                     id={hintId}
                     className={
                         error
-                            ? 'flex items-center gap-1 text-xs text-[var(--color-priority-high-text)]'
-                            : 'text-xs text-[var(--color-muted)]'
+                            ? 'flex items-center gap-1 text-xs text-danger'
+                            : 'text-xs text-muted'
                     }
                 >
                     {error && <AlertCircle className="h-3.5 w-3.5 shrink-0" />}
@@ -80,14 +80,14 @@ export function Field({
 
 // Base classes shared by every "box" style control (text input, search, select, textarea).
 export const controlBase =
-    'w-full rounded-lg border bg-[var(--color-surface)] text-sm text-[var(--color-heading)] ' +
-    'placeholder:text-[var(--color-muted)] outline-none transition-colors duration-150 ' +
-    'disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-[var(--color-hover)]'
+    'w-full rounded-lg border bg-surface text-sm text-heading ' +
+    'placeholder:text-muted outline-none transition-colors duration-150 ' +
+    'disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-hover'
 
 export const controlBorder = (error?: string | boolean) =>
     error
-        ? 'border-[var(--color-priority-high-text)]/40 focus:border-[var(--color-priority-high-text)] focus:ring-2 focus:ring-[var(--color-priority-high-text)]/15'
-        : 'border-[var(--color-border)] focus:border-[var(--color-brand)] focus:ring-2 focus:ring-[var(--color-brand)]/15'
+        ? 'border-danger/40 focus:border-danger focus:ring-2 focus:ring-danger/15'
+        : 'border-border focus:border-brand focus:ring-2 focus:ring-brand/15'
 
 // Fields shared by every labeled control (Field's props, minus the ones each
 // component supplies itself: id and children).

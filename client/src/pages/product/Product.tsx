@@ -1,15 +1,18 @@
 import { useMemo, useState } from 'react'
 import { Plus } from 'lucide-react'
-import { useProducts } from '../features/product/hooks'
+import { useProducts } from '../../features/product/hooks'
 
-import { DataTable } from '../components/data-table/DataTable'
-import { DataTablePagination } from '../components/data-table/DataTablePagination'
-import { DataTableToolbar } from '../components/data-table/DataTableToolbar'
+import { DataTable } from '../../components/data-table/DataTable'
+import { DataTablePagination } from '../../components/data-table/DataTablePagination'
+import { DataTableToolbar } from '../../components/data-table/DataTableToolbar'
 
-import { Button } from '../components/ui/Button'
+import { Button } from '../../components/ui/Button'
 
 // You will create this
-import { productColumns } from '../features/product/columns'
+import { productColumns } from '../../features/product/columns'
+import { Topbar } from '../../components/layout/Topbar'
+import AppBodyWrapper from '../../components/layout/AppBodyWrapper'
+import { Link } from '@tanstack/react-router'
 
 const Product = () => {
     const { data = [], isLoading, error } = useProducts()
@@ -41,15 +44,18 @@ const Product = () => {
         return <div className="p-6 text-red-500">Failed to load products</div>
 
     return (
-        <div className="flex flex-col h-full">
-            {/* ---------------- TOPBAR ---------------- */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-                <h1 className="text-lg font-semibold">Products</h1>
-
-                <Button variant="primary" icon={<Plus size={16} />}>
-                    Add Product
-                </Button>
-            </div>
+        <AppBodyWrapper>
+            <Topbar
+                title="Products"
+                actions={
+                    <Link to="/products/add">
+                  
+                    <Button variant="primary" icon={<Plus size={16} />}>
+                        Add Product
+                    </Button>
+                    </Link>
+                }
+            ></Topbar>
 
             {/* ---------------- TOOLBAR ---------------- */}
             <DataTableToolbar
@@ -84,7 +90,7 @@ const Product = () => {
                 canPrev={page > 1}
                 canNext={page < totalPages}
             />
-        </div>
+        </AppBodyWrapper>
     )
 }
 

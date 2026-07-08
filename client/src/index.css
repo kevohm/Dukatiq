@@ -13,6 +13,9 @@
   --color-brand: #3376f8;
   --color-brand-hover: #1d5fe0;
 
+  --color-danger: #fb2c36;
+  --color-success: oklch(69.6% 0.17 162.48);
+
   /* Priority badges — sampled from the reference screenshot */
   --color-priority-low-bg: #c6f3db;
   --color-priority-low-text: #0e4f30;
@@ -28,6 +31,8 @@
   --color-border: #eaeaea;
   --color-heading: #111111;
   --color-muted: #6b7280;
+
+
 }
 
 /*

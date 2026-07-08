@@ -14,6 +14,7 @@ export function errorHandler(err, req, res, next) {
     }
 
     if (err instanceof ZodError) {
+        console.log(err)
         return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
             success: false,
             message: err?.issues[0]?.message ?? 'Validation error',

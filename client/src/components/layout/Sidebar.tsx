@@ -23,8 +23,8 @@ type NavItem = {
 
 // 🔥 POS DOMAIN NAVIGATION
 const posNav: NavItem[] = [
-    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard }, // 👈 NEW
-    { name: 'POS / Sales', path: '/pos', icon: ShoppingCart }, // main screen
+    { name: 'Dashboard', path: '/', icon: LayoutDashboard }, // 👈 NEW
+    { name: 'POS / Sales', path: '/sales', icon: ShoppingCart }, // main screen
     // { name: 'Transactions', path: '/sales', icon: Receipt },
 
     { name: 'Inventory', path: '/inventory', icon: Boxes },
@@ -46,12 +46,14 @@ function NavItems({ items }: { items: NavItem[] }) {
     return (
         <nav className="flex flex-col gap-1">
             {items.map(({ name, path, icon: Icon }) => {
-                const active = pathname.startsWith(path)
+                // console.log(pathname)
+                const active = path !== "/" ? pathname.startsWith(path) : path === pathname
 
                 return (
                     <Link
                         key={path}
                         to={path}
+                        
                         className={cn(
                             'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                             active

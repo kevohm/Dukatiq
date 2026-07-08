@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { networkEvents } from './network-events'
 
 const BASE_URL = import.meta.env.VITE_API_URL
 
@@ -20,9 +21,15 @@ apiClient.interceptors.request.use((config) => {
 })
 
 apiClient.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        networkEvents.setApiAvailable(true)
+        return response
+    },
     (error) => {
         const status = error.response?.status
+        if (!error.response) {
+            networkEvents.setApiAvailable(false)
+        }
 
         if (status === 401) {
             localStorage.removeItem('token')

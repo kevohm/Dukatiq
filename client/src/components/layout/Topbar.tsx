@@ -3,15 +3,23 @@ import { Bell } from 'lucide-react'
 import { Button } from '../ui/Button'
 
 type TopbarProps = {
-    title: string
+    title: string | ReactNode
+    subTitle?: string
     actions?: ReactNode // e.g. <Button>New Work Order</Button>
     toggles?: ReactNode // e.g. Auto Refresh switch
 }
 
-export function Topbar({ title, actions, toggles }: TopbarProps) {
+export function Topbar({ title, subTitle, actions, toggles }: TopbarProps) {
     return (
-        <header className="flex items-center justify-between px-6 py-5">
-            <h1 className="text-2xl font-semibold text-gray-900">{title}</h1>
+        <header className="flex items-center justify-between px-6 py-4 border-b border-border mb-5">
+            <div className="">
+                <h1 className="text-2xl font-bold text-gray-900">
+                    {title}
+                </h1>
+                {subTitle && (
+                    <p className="text-sm text-gray-500 mt-1">{subTitle}</p>
+                )}
+            </div>
 
             <div className="flex items-center gap-4">
                 {toggles}
@@ -22,7 +30,7 @@ export function Topbar({ title, actions, toggles }: TopbarProps) {
                     aria-label="Notifications"
                 >
                     <Bell size={20} />
-                    <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500" />
+                    <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-danger" />
                 </Button>
                 {actions}
             </div>
