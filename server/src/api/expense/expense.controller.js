@@ -1,4 +1,4 @@
-import { sequelize } from '../../config/database.js'
+
 import { ExpenseService } from './expense.service.js'
 import { StatusCodes } from 'http-status-codes'
 
@@ -20,19 +20,13 @@ export const getExpense = async (req, res) => {
 }
 
 export const createExpense = async (req, res) => {
-    const t = await sequelize.transaction()
-    try {
-        const response = await ExpenseService.add(req.body, t)
-        await t.commit()
+        const response = await ExpenseService.add(req.body)
+ 
         res.status(response.status).json({
             success: response.success,
             data: response?.data,
             message: response?.message,
         })
-    } catch (error) {
-        await t.rollback()
-        throw error
-    }
 }
 
 export const updateExpense = async (req, res) => {

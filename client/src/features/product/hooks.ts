@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { productApi } from './api'
-import type { Product } from './types'
+import type { IProductUpdatePayload, Product } from './types'
+import { AxiosError, isAxiosError } from 'axios'
 
 const PRODUCT_KEY = ['products']
 
@@ -17,7 +18,7 @@ export function useProducts() {
 /* -----------------------------
    GET SINGLE PRODUCT
 ------------------------------*/
-export function useProduct(id: string) {
+export function useProduct(id?: string) {
     return useQuery({
         queryKey: ['product', id],
         queryFn: () => productApi.getOne(id),
@@ -36,6 +37,13 @@ export function useCreateProduct() {
         onSuccess: () => {
             qc.invalidateQueries({ queryKey: PRODUCT_KEY })
         },
+        onError: (error) => {
+            if (isAxiosError(error)) {
+                return error.response?.data
+            } else {
+                return error
+            }
+        },
     })
 }
 
@@ -46,7 +54,7 @@ export function useUpdateProduct() {
     const qc = useQueryClient()
 
     return useMutation({
-        mutationFn: ({ id, data }: { id: string; data: Partial<Product> }) =>
+        mutationFn: ({ id, data }: { id: string; data: IProductUpdatePayload }) =>
             productApi.update(id, data),
 
         onSuccess: (_, variables) => {

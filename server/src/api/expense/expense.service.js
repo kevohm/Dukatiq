@@ -2,6 +2,7 @@ import { StatusCodes } from 'http-status-codes'
 import { ExpenseRepository } from './expense.repository.js'
 import { ExpenseValidator } from './expense.validator.js'
 import { AppError, ERROR_CODES } from '../../errors/app.error.js'
+import { db } from '../../config/database.js'
 
 export class ExpenseService {
     static async findMany() {
@@ -31,10 +32,10 @@ export class ExpenseService {
             message: 'Expense found',
         }
     }
-    static async add(body, transaction = null) {
+    static async add(body) {
         const data = await ExpenseValidator.createSchema.parseAsync(body)
-
-        const expense = await ExpenseRepository.create(data, transaction)
+        
+        const expense = await ExpenseRepository.create(data)
 
         return {
             status: StatusCodes.CREATED,

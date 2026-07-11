@@ -15,6 +15,11 @@ import { Route as ProductsIndexRouteImport } from './routes/products/index'
 import { Route as InventoryIndexRouteImport } from './routes/inventory/index'
 import { Route as ExpensesIndexRouteImport } from './routes/expenses/index'
 import { Route as ProductsAddRouteImport } from './routes/products/add'
+import { Route as ExpensesAddRouteImport } from './routes/expenses/add'
+import { Route as ProductsViewIdRouteImport } from './routes/products/view/$id'
+import { Route as ProductsEditIdRouteImport } from './routes/products/edit/$id'
+import { Route as ExpensesViewIdRouteImport } from './routes/expenses/view/$id'
+import { Route as ExpensesEditIdRouteImport } from './routes/expenses/edit/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,61 +51,126 @@ const ProductsAddRoute = ProductsAddRouteImport.update({
   path: '/products/add',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExpensesAddRoute = ExpensesAddRouteImport.update({
+  id: '/expenses/add',
+  path: '/expenses/add',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductsViewIdRoute = ProductsViewIdRouteImport.update({
+  id: '/products/view/$id',
+  path: '/products/view/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductsEditIdRoute = ProductsEditIdRouteImport.update({
+  id: '/products/edit/$id',
+  path: '/products/edit/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExpensesViewIdRoute = ExpensesViewIdRouteImport.update({
+  id: '/expenses/view/$id',
+  path: '/expenses/view/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExpensesEditIdRoute = ExpensesEditIdRouteImport.update({
+  id: '/expenses/edit/$id',
+  path: '/expenses/edit/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/expenses/add': typeof ExpensesAddRoute
   '/products/add': typeof ProductsAddRoute
   '/expenses/': typeof ExpensesIndexRoute
   '/inventory/': typeof InventoryIndexRoute
   '/products/': typeof ProductsIndexRoute
   '/sales/': typeof SalesIndexRoute
+  '/expenses/edit/$id': typeof ExpensesEditIdRoute
+  '/expenses/view/$id': typeof ExpensesViewIdRoute
+  '/products/edit/$id': typeof ProductsEditIdRoute
+  '/products/view/$id': typeof ProductsViewIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/expenses/add': typeof ExpensesAddRoute
   '/products/add': typeof ProductsAddRoute
   '/expenses': typeof ExpensesIndexRoute
   '/inventory': typeof InventoryIndexRoute
   '/products': typeof ProductsIndexRoute
   '/sales': typeof SalesIndexRoute
+  '/expenses/edit/$id': typeof ExpensesEditIdRoute
+  '/expenses/view/$id': typeof ExpensesViewIdRoute
+  '/products/edit/$id': typeof ProductsEditIdRoute
+  '/products/view/$id': typeof ProductsViewIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/expenses/add': typeof ExpensesAddRoute
   '/products/add': typeof ProductsAddRoute
   '/expenses/': typeof ExpensesIndexRoute
   '/inventory/': typeof InventoryIndexRoute
   '/products/': typeof ProductsIndexRoute
   '/sales/': typeof SalesIndexRoute
+  '/expenses/edit/$id': typeof ExpensesEditIdRoute
+  '/expenses/view/$id': typeof ExpensesViewIdRoute
+  '/products/edit/$id': typeof ProductsEditIdRoute
+  '/products/view/$id': typeof ProductsViewIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/expenses/add'
     | '/products/add'
     | '/expenses/'
     | '/inventory/'
     | '/products/'
     | '/sales/'
+    | '/expenses/edit/$id'
+    | '/expenses/view/$id'
+    | '/products/edit/$id'
+    | '/products/view/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/' | '/products/add' | '/expenses' | '/inventory' | '/products' | '/sales'
+    | '/'
+    | '/expenses/add'
+    | '/products/add'
+    | '/expenses'
+    | '/inventory'
+    | '/products'
+    | '/sales'
+    | '/expenses/edit/$id'
+    | '/expenses/view/$id'
+    | '/products/edit/$id'
+    | '/products/view/$id'
   id:
     | '__root__'
     | '/'
+    | '/expenses/add'
     | '/products/add'
     | '/expenses/'
     | '/inventory/'
     | '/products/'
     | '/sales/'
+    | '/expenses/edit/$id'
+    | '/expenses/view/$id'
+    | '/products/edit/$id'
+    | '/products/view/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ExpensesAddRoute: typeof ExpensesAddRoute
   ProductsAddRoute: typeof ProductsAddRoute
   ExpensesIndexRoute: typeof ExpensesIndexRoute
   InventoryIndexRoute: typeof InventoryIndexRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
   SalesIndexRoute: typeof SalesIndexRoute
+  ExpensesEditIdRoute: typeof ExpensesEditIdRoute
+  ExpensesViewIdRoute: typeof ExpensesViewIdRoute
+  ProductsEditIdRoute: typeof ProductsEditIdRoute
+  ProductsViewIdRoute: typeof ProductsViewIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -147,16 +217,56 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsAddRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/expenses/add': {
+      id: '/expenses/add'
+      path: '/expenses/add'
+      fullPath: '/expenses/add'
+      preLoaderRoute: typeof ExpensesAddRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/products/view/$id': {
+      id: '/products/view/$id'
+      path: '/products/view/$id'
+      fullPath: '/products/view/$id'
+      preLoaderRoute: typeof ProductsViewIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/products/edit/$id': {
+      id: '/products/edit/$id'
+      path: '/products/edit/$id'
+      fullPath: '/products/edit/$id'
+      preLoaderRoute: typeof ProductsEditIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/expenses/view/$id': {
+      id: '/expenses/view/$id'
+      path: '/expenses/view/$id'
+      fullPath: '/expenses/view/$id'
+      preLoaderRoute: typeof ExpensesViewIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/expenses/edit/$id': {
+      id: '/expenses/edit/$id'
+      path: '/expenses/edit/$id'
+      fullPath: '/expenses/edit/$id'
+      preLoaderRoute: typeof ExpensesEditIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ExpensesAddRoute: ExpensesAddRoute,
   ProductsAddRoute: ProductsAddRoute,
   ExpensesIndexRoute: ExpensesIndexRoute,
   InventoryIndexRoute: InventoryIndexRoute,
   ProductsIndexRoute: ProductsIndexRoute,
   SalesIndexRoute: SalesIndexRoute,
+  ExpensesEditIdRoute: ExpensesEditIdRoute,
+  ExpensesViewIdRoute: ExpensesViewIdRoute,
+  ProductsEditIdRoute: ProductsEditIdRoute,
+  ProductsViewIdRoute: ProductsViewIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,13 +1,19 @@
-import { z } from "zod";
-import {paginationSchema} from "../base.validator.js"
+import { z } from 'zod'
+import { paginationSchema } from '../base.validator.js'
 
-export  class ProductValidator {
+export class ProductValidator {
     // Base schema (reusable)
     static baseSchema = z.object({
-        name: z.string().min(1, 'Name is required'),
+        name: z.string().min(1, 'Name is required').toLowerCase(),
 
-        category: z.string().min(1, 'Category is required'),
-
+        category: z
+            .string({ error: 'Category is required' })
+            .min(1, 'Category is required')
+            .toLowerCase(),
+        brand: z
+            .string({ error: 'Brand is required' })
+            .min(1, 'Brand is required')
+            .toLowerCase(),
         cost_price: z
             .number({
                 error: 'Cost price is required',

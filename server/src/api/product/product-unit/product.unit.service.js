@@ -110,12 +110,12 @@ export class ProductUnitService {
         }
         return response?.data?.toJSON()
     }
-    static async add(body, transaction = null) {
+    static async add(body) {
         const data = await ProductUnitValidator.createSchema.parseAsync(body)
         await ProductService.findByIdOrThrow(data.product_id)
         await UnitService.findById(data?.unit_id)
         
-        const unit = await ProductUnitRepository.findOrCreate(data, transaction)
+        const unit = await ProductUnitRepository.findOrCreate(data)
 
         return {
             status: StatusCodes.CREATED,

@@ -1,29 +1,37 @@
-import { QueryTypes } from 'sequelize'
-import { sequelize } from '../../config/database.js'
-import { Product } from './product.model.js'
+import { db } from '../../config/database.js'
+import { Product } from '../../entities/product/product.model.js'
 import { ProductCategoryRepository } from './category/product.category.repository.js'
+import { ProductBrandRepository } from './brand/product.brand.repository.js'
 import { AppError, ERROR_CODES } from '../../errors/app.error.js'
-import { Unit } from './unit/unit.model.js'
-import { ProductUnit } from './product-unit/product.unit.model.js'
+import { InventoryRepository } from '../inventory/inventory.repository.js'
 
 export class ProductRepository {
-    // Get all products
+    static repo = db.getRepository(Product)
+
     static async getAll() {
-        return Product.findAll({
-            include: [
-                {
-                    model: Unit,
-                    through: {
-                        attributes: ['conversion_factor', 'is_base_unit'],
-                    },
+        return this.repo.find({
+            relations: {
+                category: true,
+                brand: true,
+                productUnits: {
+                    unit: true,
                 },
-            ],
+            },
         })
     }
 
-    // Get product by ID
     static async getById(id) {
-        const product = await Product.findByPk(id)
+        const product = await this.repo.findOne({
+            where: { id },
+            relations: {
+                category: true,
+                brand: true,
+                productUnits: {
+                    unit: true,
+                },
+            },
+        })
+
         if (!product) {
             throw new AppError({
                 message: 'Product not found',
@@ -32,32 +40,51 @@ export class ProductRepository {
                 meta: { resource: 'product', id },
             })
         }
+
         return product
     }
 
-    // Create new product
-    static async create(data, transaction = null) {
+    static async create(data, manager = this.repo.manager) {
         const category = await ProductCategoryRepository.findOrCreate(
-            { name: data?.category },
-            transaction
+            { name: data.category },
+            manager
         )
-        return await Product.create(
-            {
-                ...data,
-                category_id: category.id,
-            },
-            { transaction }
+
+        const brand = await ProductBrandRepository.findOrCreate(
+            { name: data.brand },
+            manager
         )
+       // console.log(brand, category)
+       const {stock_quantity, ...rest} = data
+        const product = manager.create(Product, {
+            ...rest,
+            category,
+            stock_quantity:0,
+            brand,
+        })
+
+        return manager.save(Product, product)
     }
 
-    // Update product
     static async update(id, data) {
-        const product = await Product.update(data, { where: { id } })
-        return product
+        const result = await this.repo.update(id, data)
+
+        if (!result.affected) {
+            throw new AppError({
+                message: 'Product not found',
+                code: ERROR_CODES.PRODUCT.NOT_FOUND,
+                status: 404,
+                meta: { resource: 'product', id },
+            })
+        }
+
+        return this.getById(id)
     }
+
     static async delete(id) {
-        const deleted = await Product.destroy({ where: { id } })
-        if (!deleted) {
+        const result = await this.repo.delete(id)
+
+        if (!result.affected) {
             throw new AppError({
                 message: 'Failed to delete product',
                 code: ERROR_CODES.PRODUCT.DELETE_FAILED,
@@ -65,14 +92,17 @@ export class ProductRepository {
                 meta: { resource: 'product', id },
             })
         }
-        return deleted
+
+        return true
     }
 
-    // stock
-    static async applyStockChange({ id, quantity, transaction = null }) {
-        return Product.increment(
-            { stock_quantity: quantity },
-            { where: { id }, transaction }
-        )
+    static async applyStockChange({
+        id,
+        quantity,
+        manager = this.repo.manager,
+    }) {
+        await manager.increment(Product, { id }, 'stock_quantity', quantity)
+
+        return this.getById(id)
     }
 }

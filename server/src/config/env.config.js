@@ -40,7 +40,7 @@ export const env = {
  * Database config
  */
 export const dbConfig = {
-    path: getEnv('DB_PATH', path.join(__dirname, '../database/shop.sqlite')),
+    path: requiredEnv('DB_PATH', path.join(__dirname, '../database/shop.sqlite')),
 }
 
 /**

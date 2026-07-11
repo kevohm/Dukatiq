@@ -1,5 +1,5 @@
 import { fa } from 'zod/v4/locales'
-import { sequelize } from './config/database.js'
+import { db } from './config/database.js'
 import { config } from './config/env.config.js'
 import { logger } from './config/logger.config.js'
 import { createApp } from './index.js'
@@ -10,8 +10,7 @@ const APP_NAME = config.server.name
 
 app.listen(PORT, async () => {
     try {
-        await sequelize.authenticate()
-        await sequelize.sync()
+        await db.initialize()
         logger.info('connected to db')
         logger.info(
             {

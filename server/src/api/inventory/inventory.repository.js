@@ -1,169 +1,188 @@
-import { Inventory } from './inventory.model.js'
-import { Product } from '../product/product.model.js'
-import { Unit } from '../product/unit/unit.model.js'
+import { db } from '../../config/database.js'
 import { AppError, ERROR_CODES } from '../../errors/app.error.js'
-import { sequelize } from '../../config/database.js'
 import { ProductRepository } from '../product/product.repository.js'
 import {
     buildInventoryEntry,
     calculateStockChange,
 } from '../../utils/inventory/inventory.utils.js'
+import { Inventory } from '../../entities/inventory/inventory.model.js'
+import { Product } from '../../entities/product/product.model.js'
 
 export class InventoryRepository {
+    static repo = db.getRepository(Inventory)
+
     // 🔹 Get all inventory events
     static async getAll() {
-        return await Inventory.findAll({
-            include: [Product, Unit],
-            order: [['createdAt', 'DESC']],
+        return this.repo.find({
+            relations: {
+                product: true,
+                unit: true,
+            },
+            order: {
+                created_at: 'DESC',
+            },
         })
     }
 
     // 🔹 Get events for a specific product
     static async getByProduct(productId) {
-        return await Inventory.findAll({
-            where: { product_id: productId },
-            include: [Unit],
-            order: [['createdAt', 'DESC']],
+        return this.repo.find({
+            where: {
+                product: {
+                    id: productId,
+                },
+            },
+            relations: {
+                unit: true,
+            },
+            order: {
+                created_at: 'DESC',
+            },
         })
     }
 
-    // 🔹 Create inventory event (core method)
-    static async create(data, transaction = null) {
-        // nomarlized_quantity and quantity are always positive
-        // change is used to alter stock only
-        const t = transaction || (await sequelize.transaction())
+    // 🔹 Create inventory event
+    static async create(data, manager = this.repo.manager) {
+        if (manager) {
+            return this.#createInternal(data, manager)
+        }
 
-        try {
-            const entry = buildInventoryEntry(data)
-            // 1. Create inventory log (ledger)
-            const inventory = await Inventory.create(entry, { transaction: t })
+        return db.transaction(async (manager) => {
+            return this.#createInternal(data, manager)
+        })
+    }
 
-            // 2. Determine stock change
-            const change = calculateStockChange(data)
+    static async #createInternal(data, manager) {
 
-            // 3. Update product stock
+        const entry = buildInventoryEntry(data)
+
+        const inventory = manager.create(Inventory, {
+            ...entry,
+            product: {
+                id: data.product_id,
+            },
+            unit: {
+                id: data.unit_id,
+            },
+        })
+
+        const saved = await manager.save(Inventory, inventory)
+
+        const change = calculateStockChange(data)
+
+        await ProductRepository.applyStockChange({
+            id: data.product_id,
+            quantity: change,
+            manager,
+        })
+
+        return saved
+    }
+
+    // 🔹 Bulk create
+    static async bulkCreate(dataArray, manager = null) {
+        if (manager) {
+            return this.#bulkCreateInternal(dataArray, manager)
+        }
+
+        return db.transaction(async (manager) => {
+            return this.#bulkCreateInternal(dataArray, manager)
+        })
+    }
+
+    static async #bulkCreateInternal(dataArray, manager) {
+        const repo = manager.getRepository(Inventory)
+
+        const entities = dataArray.map((item) =>
+            repo.create({
+                ...buildInventoryEntry(item),
+                product: {
+                    id: item.product_id,
+                },
+                unit: {
+                    id: item.unit_id,
+                },
+            })
+        )
+
+        const records = await manager.save(Inventory, entities)
+
+        const stockMap = {}
+
+        for (const item of dataArray) {
+            const change = calculateStockChange(item)
+
+            stockMap[item.product_id] =
+                (stockMap[item.product_id] || 0) + change
+        }
+
+        for (const [productId, change] of Object.entries(stockMap)) {
             await ProductRepository.applyStockChange({
-                id: data?.product_id,
+                id: productId,
                 quantity: change,
-                transaction: t,
+                manager,
             })
-
-            if (!transaction) await t.commit()
-
-            return inventory
-        } catch (error) {
-            if (!transaction) await t.rollback()
-            throw error
         }
+
+        return records
     }
 
-    // 🔹 Bulk create (useful for sync / imports)
-    static async bulkCreate(dataArray, transaction = null) {
-        // nomarlized_quantity and quantity are always positive
-        // change is used to alter stock only
-        const t = transaction || (await sequelize.transaction())
-        try {
-            // 1. Insert inventory logs
-            const records = await Inventory.bulkCreate(dataArray, {
-                transaction: t,
-                validate: true,
-            })
-
-            // 2. Aggregate stock changes per product
-            const stockMap = {}
-
-            for (const item of dataArray) {
-                const change = calculateStockChange(item)
-
-                if (!stockMap[item.product_id]) {
-                    stockMap[item.product_id] = 0
-                }
-
-                stockMap[item.product_id] += change
-            }
-
-            // 3. Apply updates per product
-            for (const [productId, change] of Object.entries(stockMap)) {
-                await ProductRepository.applyStockChange({
-                    id: productId,
-                    quantity: change,
-                    transaction: t,
-                })
-            }
-
-            if (!transaction) await t.commit()
-
-            return records
-        } catch (error) {
-            if (!transaction) await t.rollback()
-            throw error
-        }
-    }
-
-    // 🔹 Delete event (rare, usually avoid in audit systems)
+    // 🔹 Delete event
     static async delete(id) {
-        const deleted = await Inventory.destroy({ where: { id } })
-        if (!deleted) {
+        const result = await this.repo.delete(id)
+
+        if (!result.affected) {
             throw new AppError({
                 message: 'Failed to delete inventory record',
                 code: ERROR_CODES.INVENTORY.DELETE_FAILED,
                 status: 500,
-                meta: { resource: 'inventory', id },
+                meta: {
+                    resource: 'inventory',
+                    id,
+                },
             })
         }
-        return deleted
+
+        return result
     }
 
-    // 🔹 Get computed stock (IMPORTANT)
+    // 🔹 Get computed stock
     static async getStock(productId) {
-        const result = await Inventory.findAll({
-            where: { product_id: productId },
-            attributes: [
-                [
-                    Inventory.sequelize.fn(
-                        'SUM',
-                        Inventory.sequelize.col('normalized_quantity')
-                    ),
-                    'total_stock',
-                ],
-            ],
-            raw: true,
-        })
+        const result = await this.repo
+            .createQueryBuilder('inventory')
+            .select(
+                'COALESCE(SUM(inventory.normalized_quantity),0)',
+                'total_stock'
+            )
+            .where('inventory.product_id = :productId', {
+                productId,
+            })
+            .getRawOne()
 
-        return Number(result[0]?.total_stock || 0)
+        return Number(result.total_stock)
     }
 
-    // 🔹 Get low stock products (based on Product threshold)
+    // 🔹 Get low stock products
     static async getLowStockProducts() {
-        const products = await Product.findAll({
-            include: [
-                {
-                    model: Inventory,
-                    attributes: [],
-                },
-            ],
-            attributes: [
-                'id',
-                'name',
-                'low_stock_threshold',
-                [
-                    Inventory.sequelize.fn(
-                        'SUM',
-                        Inventory.sequelize.col(
-                            'Inventories.normalized_quantity'
-                        )
-                    ),
-                    'stock',
-                ],
-            ],
-            group: ['Product.id'],
-            having: Inventory.sequelize.literal('stock <= low_stock_threshold'),
-        })
-
-        return products
+        return db
+            .getRepository(Product)
+            .createQueryBuilder('product')
+            .leftJoin('product.inventory', 'inventory')
+            .select([
+                'product.id',
+                'product.name',
+                'product.low_stock_threshold',
+            ])
+            .addSelect(
+                'COALESCE(SUM(inventory.normalized_quantity),0)',
+                'stock'
+            )
+            .groupBy('product.id')
+            .having('stock <= product.low_stock_threshold')
+            .getRawMany()
     }
 
-    // 🔹 Adjust stock (wrapper for manual corrections)
+    // 🔹 Adjust stock
     static async adjustStock(
         {
             product_id,
@@ -172,9 +191,9 @@ export class InventoryRepository {
             normalized_quantity,
             reason = 'manual_adjustment',
         },
-        transaction = null
+        manager = null
     ) {
-        return await this.create(
+        return this.create(
             {
                 product_id,
                 unit_id,
@@ -183,7 +202,7 @@ export class InventoryRepository {
                 normalized_quantity,
                 reference_type: reason,
             },
-            transaction
+            manager
         )
     }
 }

@@ -1,93 +1,165 @@
-import { Op } from 'sequelize'
-import { RefreshToken, User } from './auth.model.js'
-import { hash } from 'argon2'
+
+import { db } from '../../config/database.js'
+import { User } from '../../entities/user/user.model.js'
+import {RefreshToken} from "../../entities/user/refresh.model.js"
 import { hashPassword } from '../../utils/auth/password.js'
 import { AppError, ERROR_CODES } from '../../errors/app.error.js'
 
 export class AuthRepository {
-    // Get account by ID
-    static async findById(id) {
-        return await User.findByPk(id)
+    static userRepo = db.getRepository(User)
+    static refreshTokenRepo = db.getRepository(RefreshToken)
+
+    // -----------------------------
+    // GET USER BY ID
+    // -----------------------------
+    static async findById(
+        id,
+        manager = this.userRepo.manager
+    ) {
+        return manager.findOne(User, {
+            where: { id },
+        })
     }
 
-    static async findByEmail(email, transaction = null) {
-        return await User.findOne({ where: { email }, transaction })
+    // -----------------------------
+    // GET USER BY EMAIL
+    // -----------------------------
+    static async findByEmail(
+        email,
+        manager = this.userRepo.manager
+    ) {
+        return manager.findOne(User, {
+            where: { email },
+        })
     }
 
-    // sign up
-    static async create(data, transaction = null) {
+    // -----------------------------
+    // CREATE USER
+    // -----------------------------
+    static async create(
+        data,
+        manager = this.userRepo.manager
+    ) {
         const password = await hashPassword(data.password)
-        return await User.create({ ...data, password }, { transaction })
+
+        const user = manager.create(User, {
+            ...data,
+            password,
+        })
+
+        return manager.save(user)
     }
 
-    static async findOrCreate(data, transaction = null) {
-        const category = await this.getByName(data?.name, transaction)
-        if (!category) {
-            return await this.create(data, transaction)
+    // -----------------------------
+    // FIND OR CREATE USER
+    // -----------------------------
+    static async findOrCreate(
+        data,
+        manager = this.userRepo.manager
+    ) {
+        const user = await this.findByEmail(data.email, manager)
+
+        if (!user) {
+            return this.create(data, manager)
         }
-        return category
+
+        return user
     }
 
-    // Update account
-    static async update(id, data) {
-        const account = await User.update(data, { where: { id } })
-        return account
+    // -----------------------------
+    // UPDATE USER
+    // -----------------------------
+    static async update(
+        id,
+        data,
+        manager = this.userRepo.manager
+    ) {
+        await manager.update(User, id, data)
+        return this.findById(id, manager)
     }
 
-    static async delete(id) {
-        const deleted = await User.destroy({ where: { id } })
-        if (!deleted) {
+    // -----------------------------
+    // DELETE USER
+    // -----------------------------
+    static async delete(
+        id,
+        manager = this.userRepo.manager
+    ) {
+        const result = await manager.delete(User, id)
+
+        if (!result.affected) {
             throw new AppError({
                 message: 'Failed to delete user',
                 code: ERROR_CODES.AUTH.INVALID_REFRESH_TOKEN,
                 status: 500,
-                meta: { resource: 'auth', id },
+                meta: {
+                    resource: 'auth',
+                    id,
+                },
             })
         }
-        return deleted
+
+        return result
     }
 
-    static async saveRefreshToken(data, transaction = null) {
-        // console.log(data)
-        return await RefreshToken.create(
-            {
-                ...data,
-                revoked_at: null,
-            },
-            {
-                transaction,
-            }
-        )
+    // -----------------------------
+    // SAVE REFRESH TOKEN
+    // -----------------------------
+    static async saveRefreshToken(
+        data,
+        manager = this.refreshTokenRepo.manager
+    ) {
+        const token = manager.create(RefreshToken, {
+            ...data,
+            revoked_at: null,
+        })
+
+        return manager.save(token)
     }
 
-    static async findValidTokens(transaction = null) {
-        return await RefreshToken.findAll({
+    // -----------------------------
+    // FIND ALL VALID TOKENS
+    // -----------------------------
+    static async findValidTokens(
+        manager = this.refreshTokenRepo.manager
+    ) {
+        return manager.find(RefreshToken, {
             where: {
                 revoked_at: null,
-                expires_at: {
-                    [Op.gt]: new Date(),
-                },
+                expires_at: MoreThan(new Date()),
             },
-            transaction,
         })
     }
-    static async findActiveTokenById(id, transaction = null) {
-        return await RefreshToken.findOne({
+
+    // -----------------------------
+    // FIND ACTIVE TOKEN
+    // -----------------------------
+    static async findActiveTokenById(
+        id,
+        manager = this.refreshTokenRepo.manager
+    ) {
+        return manager.findOne(RefreshToken, {
             where: {
                 id,
                 revoked_at: null,
-                expires_at: {
-                    [Op.gt]: new Date(),
-                },
+                expires_at: MoreThan(new Date()),
             },
-            transaction,
         })
     }
 
-    static async revokeToken(id, transaction = null) {
-        return await RefreshToken.update(
-            { revoked_at: new Date() },
-            { where: { id }, transaction }
+    // -----------------------------
+    // REVOKE TOKEN
+    // -----------------------------
+    static async revokeToken(
+        id,
+        manager = this.refreshTokenRepo.manager
+    ) {
+        return manager.update(
+            RefreshToken,
+            { id },
+            {
+                revoked_at: new Date(),
+            }
         )
     }
 }

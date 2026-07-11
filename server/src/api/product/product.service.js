@@ -2,6 +2,7 @@ import { StatusCodes } from 'http-status-codes'
 import { ProductRepository } from './product.repository.js'
 import { ProductValidator } from './product.validator.js'
 import { AppError, ERROR_CODES } from '../../errors/app.error.js'
+import { db } from '../../config/database.js'
 
 export class ProductService {
     static async findMany() {
@@ -41,10 +42,11 @@ export class ProductService {
             throw error
         }
     }
-    static async add(body, transaction = null) {
+    static async add(body) {
         const data = await ProductValidator.createSchema.parseAsync(body)
-
-        const product = await ProductRepository.create(data, transaction)
+        const product = await db.transaction(async (manager) => {
+            return ProductRepository.create(data, manager)
+        })
 
         return {
             status: StatusCodes.CREATED,

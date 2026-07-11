@@ -1,57 +1,82 @@
-import { ExpenseCategory } from './expense.category.model.js'
+import { db } from '../../../config/database.js'
+import {ExpenseCategory} from '../../../entities/expense/expense.category.js'
 import { AppError, ERROR_CODES } from '../../../errors/app.error.js'
 
 export class ExpenseCategoryRepository {
-    // Get all products
+    static repo = db.getRepository(ExpenseCategory)
+
+    // Get all categories
     static async getAll() {
-        return ExpenseCategory.findAll()
+        return this.repo.find()
     }
 
-    // Get product by ID
+    // Get category by ID
     static async getById(id) {
-        const category = await ExpenseCategory.findByPk(id)
+        const category = await this.repo.findOne({
+            where: { id },
+        })
+
         if (!category) {
             throw new AppError({
                 message: 'Category not found',
                 code: ERROR_CODES.EXPENSE_CATEGORY.NOT_FOUND,
                 status: 404,
-                meta: { resource: 'expense_category', id },
+                meta: {
+                    resource: 'expense_category',
+                    id,
+                },
             })
         }
+
         return category
     }
 
-    static async getByName(name, transaction = null) {
-        return await ExpenseCategory.findOne({ where: { name }, transaction })
-    }
-    // Create new product
-    static async create(data, transaction = null) {
-        return await ExpenseCategory.create(data, { transaction })
+    // Get category by name
+    static async getByName(name, manager = this.repo.manager) {
+        return manager.findOne(ExpenseCategory, {
+            where: { name },
+        })
     }
 
-    static async findOrCreate(data, transaction = null) {
-        const category = await this.getByName(data?.name, transaction)
+    // Create category
+    static async create(data, manager = this.repo.manager) {
+        const category = manager.create(ExpenseCategory, data)
+        return manager.save(ExpenseCategory, category)
+    }
+
+    // Find or create category
+    static async findOrCreate(data, manager = this.repo.manager) {
+        const category = await this.getByName(data.name, manager)
+
         if (!category) {
-            return await this.create(data, transaction)
+            return this.create(data, manager)
         }
+
         return category
     }
 
-    // Update product
+    // Update category
     static async update(id, data) {
-        const product = await ExpenseCategory.update(data, { where: { id } })
-        return product
+        await this.repo.update(id, data)
+        return this.getById(id)
     }
+
+    // Delete category
     static async delete(id) {
-        const deleted = await ExpenseCategory.destroy({ where: { id } })
-        if (!deleted) {
+        const result = await this.repo.delete(id)
+
+        if (!result.affected) {
             throw new AppError({
                 message: 'Failed to delete category',
                 code: ERROR_CODES.EXPENSE_CATEGORY.DELETE_FAILED,
                 status: 500,
-                meta: { resource: 'expense_category', id },
+                meta: {
+                    resource: 'expense_category',
+                    id,
+                },
             })
         }
-        return deleted
+
+        return result
     }
 }

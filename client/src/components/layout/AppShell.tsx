@@ -9,7 +9,7 @@ function Shell({ children }: { children: ReactNode }) {
         <NetworkStatusToast/>
             <div className="flex h-screen w-full bg-gray-200">
                 <Sidebar />
-                <main className="m-2 flex min-w-0 flex-1 flex-col overflow-hidden rounded-xl bg-white">
+                <main className="m-2 flex min-w-0 flex-1 flex-col overflow-y-scroll rounded-xl bg-white">
                     {children}
                 </main>
             </div>

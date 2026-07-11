@@ -1,10 +1,12 @@
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
-import "./index.css"
+import './index.css'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
+import type { ApiError, ErrorResponse } from './errors/error'
+import type { AxiosError } from 'axios'
 
 // Create a new router instance
 const router = createRouter({ routeTree })
@@ -13,6 +15,7 @@ const router = createRouter({ routeTree })
 declare module '@tanstack/react-router' {
     interface Register {
         router: typeof router
+        defaultError: AxiosError<ApiError>
     }
 }
 

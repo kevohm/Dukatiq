@@ -1,4 +1,4 @@
-import { sequelize } from '../../config/database.js'
+import { db } from '../../config/database.js'
 import { ProductService } from './product.service.js'
 import { StatusCodes } from 'http-status-codes'
 
@@ -20,19 +20,14 @@ export const getProduct = async (req, res) => {
 }
 
 export const createProduct = async (req, res) => {
-    const t = await sequelize.transaction()
-    try {
-        const response = await ProductService.add(req.body, t)
-        await t.commit()
-        res.status(response.status).json({
-            success: response.success,
-            data: response?.data,
-            message: response?.message,
-        })
-    } catch (error) {
-        await t.rollback()
-        throw error
-    }
+
+    const response = await ProductService.add(req.body)
+    
+    res.status(response.status).json({
+        success: response.success,
+        data: response?.data,
+        message: response?.message,
+    })
 }
 
 export const updateProduct = async (req, res) => {

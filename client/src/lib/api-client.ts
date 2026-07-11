@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { networkEvents } from './network-events'
+import { parseError } from '../errors/error'
 
 const BASE_URL = import.meta.env.VITE_API_URL
 
@@ -35,7 +36,7 @@ apiClient.interceptors.response.use(
             localStorage.removeItem('token')
             window.location.href = '/login'
         }
-
-        return Promise.reject(error)
+        const err = parseError(error)
+        return Promise.reject(err)
     }
 )

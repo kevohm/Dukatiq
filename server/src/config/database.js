@@ -1,5 +1,8 @@
 // @ts-check
-import { Sequelize, QueryTypes, DataTypes } from 'sequelize'
+
+import 'reflect-metadata'
+import path from 'node:path'
+import { DataSource } from 'typeorm'
 import { config } from './env.config.js'
 import { logger } from './logger.config.js'
 
@@ -8,19 +11,19 @@ if (!config.env.isProd) {
         `Running DB: ${config.env.isTest ? 'TEST (memory)' : 'DEV (file)'}`
     )
 }
-/** @type {Sequelize} */
-const sequelize = new Sequelize({
-    dialect: 'sqlite',
 
-    // 🔑 Switch DB based on environment
-    storage: config.env.isTest ? ':memory:' : config.db.path,
+export const db = new DataSource({
+    type: 'better-sqlite3',
 
-    logging: config.env.isTest ? false : (msg) => logger.debug(msg),
+    database: config.env.isTest ? ':memory:' : config.db.path,
 
-    define: {
-        freezeTableName: true,
-        timestamps: true,
-    },
+    synchronize: true,
+
+    logging: !config.env.isTest,
+
+    entitySkipConstructor: true,
+
+    entities: [path.resolve('src/entities/**/*.js')],
+
+    migrations: [path.resolve('src/migrations/**/*.js')],
 })
-
-export { sequelize, DataTypes, QueryTypes }

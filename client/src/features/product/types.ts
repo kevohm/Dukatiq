@@ -1,16 +1,25 @@
+import type { ProductCategory } from './category/types'
+
 export type ProductUnit = {
     id: string
-    product_id: string
-    unit_id: string
     conversion_factor: number
     is_base_unit: boolean
+    created_at: string
+    updated_at: string
+    unit: Unit
 }
 export type Unit = {
     id: string
     name: string
-    createdAt: string
-    updatedAt: string
-    product_unit: Pick<ProductUnit, 'conversion_factor' | 'is_base_unit'>
+    created_at: string
+    updated_at: string
+}
+
+export type ProductBrand = {
+    id: string
+    name: string
+    created_at: string
+    updated_at: string
 }
 
 export type Product = {
@@ -21,16 +30,34 @@ export type Product = {
     selling_price: number
     stock_quantity: number
 
-    
     low_stock_threshold: number
 
     image_url: string | null
     image_key: string | null
 
     category_id: string
+    brand_id: string
+    category: ProductCategory
+    brand: ProductBrand
 
-    units: Unit[]
+    productUnits: ProductUnit[]
 
-    createdAt: string
-    updatedAt: string
+    created_at: string
+    updated_at: string
+}
+
+export interface IProductCreatePayload {
+    name: string
+    category: string
+    brand: string
+    cost_price: number
+    selling_price: number
+}
+
+export interface IProductUpdatePayload {
+    name?: string
+    category_id?: string
+    brand_id?: string
+    cost_price?: number
+    selling_price?: number
 }

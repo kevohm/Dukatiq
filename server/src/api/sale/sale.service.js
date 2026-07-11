@@ -1,11 +1,11 @@
-import { sequelize } from '../../config/database.js'
 import { SaleRepository } from './sale.repository.js'
-import { SaleItem } from './saleItem/sale.item.model.js'
-import { Product } from '../product/product.model.js'
+import { SaleItem } from '../../entities/sale/saleItem/sale.item.model.js'
+import { Product } from '../../entities/product/product.model.js'
 import { AppError, ERROR_CODES } from '../../errors/app.error.js'
 import { SaleValidator } from './sale.validator.js'
 import { ProductUnitService } from '../product/product-unit/product.unit.service.js'
 import { ProductUnitRepository } from '../product/product-unit/product.unit.repository.js'
+import { ProductRepository } from '../product/product.repository.js'
 
 export class SaleService {
     static async createSale(body) {
@@ -17,7 +17,7 @@ export class SaleService {
         const enrichedItems = []
 
         for (const item of items) {
-            const product = await Product.findByPk(item.product_id)
+            const product = await ProductRepository.getById(item.product_id)
 
             if (!product) {
                 throw new AppError({

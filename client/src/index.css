@@ -16,6 +16,26 @@
   --color-danger: #fb2c36;
   --color-success: oklch(69.6% 0.17 162.48);
 
+    /* Generic badge colors */
+/* Generic badge colors */
+--color-green-bg: #dcfce7;
+--color-green-text: #166534;
+
+--color-blue-bg: #dbeafe;
+--color-blue-text: #1d4ed8;
+
+--color-orange-bg: #ffedd5;
+--color-orange-text: #c2410c;
+
+--color-purple-bg: #ede9fe;
+--color-purple-text: #6d28d9;
+
+--color-red-bg: #fee2e2;
+--color-red-text: #b91c1c;
+
+--color-gray-bg: #f3f4f6;
+--color-gray-text: #4b5563;
+
   /* Priority badges — sampled from the reference screenshot */
   --color-priority-low-bg: #c6f3db;
   --color-priority-low-text: #0e4f30;

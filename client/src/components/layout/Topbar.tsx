@@ -11,9 +11,9 @@ type TopbarProps = {
 
 export function Topbar({ title, subTitle, actions, toggles }: TopbarProps) {
     return (
-        <header className="flex items-center justify-between px-6 py-4 border-b border-border mb-5">
+        <header className="sticky top-0 bg-white flex items-center justify-between px-6 py-4 border-b border-border mb-5">
             <div className="">
-                <h1 className="text-2xl font-bold text-gray-900">
+                <h1 className="text-2xl capitalize font-bold text-gray-900">
                     {title}
                 </h1>
                 {subTitle && (

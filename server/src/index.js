@@ -8,7 +8,6 @@ import { config, serverConfig } from './config/env.config.js'
 import { appRouter } from './routes/index.js'
 import { httpLogger } from './middleware/logger.middleware.js'
 import { logger } from './config/logger.config.js'
-import { sequelize } from './config/database.js'
 import cookieParser from 'cookie-parser'
 
 

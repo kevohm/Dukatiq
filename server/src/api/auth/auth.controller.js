@@ -1,4 +1,4 @@
-import { sequelize } from '../../config/database.js'
+
 import { clearTokenCookies, setTokenCookies } from '../../utils/auth/token.cookie.js'
 import { cookieConfigs, setCookie } from '../../utils/cookie/cookie.js'
 import { COOKIE_KEYS } from '../../utils/cookie/cookie.keys.js'

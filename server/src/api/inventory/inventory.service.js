@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes'
 import { InventoryRepository } from './inventory.repository.js'
 import { InventoryValidator } from './inventory.validator.js'
-import { Unit } from '../product/unit/unit.model.js'
+import { Unit } from '../../entities/product/unit.model.js'
 import { AppError, ERROR_CODES } from '../../errors/app.error.js'
 import { UnitService } from '../product/unit/unit.service.js'
 import { ProductService } from '../product/product.service.js'
@@ -46,7 +46,7 @@ export class InventoryService {
             data?.product_id,
             data?.unit_id
         )
-
+        
         const normalized_quantity =
             data.quantity * productUnit.conversion_factor
 

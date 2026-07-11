@@ -31,10 +31,10 @@ export class UnitService {
             message: 'Unit found',
         }
     }
-    static async add(body, transaction = null) {
+    static async add(body) {
         const data = await UnitValidator.createSchema.parseAsync(body)
 
-        const unit = await UnitRepository.findOrCreate(data, transaction)
+        const unit = await UnitRepository.findOrCreate(data)
 
         return {
             status: StatusCodes.CREATED,

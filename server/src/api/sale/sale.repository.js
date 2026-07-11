@@ -1,11 +1,22 @@
-import { sequelize } from '../../config/database.js'
+import { db } from '../../config/database.js'
+import { Sale } from '../../entities/sale/sale.model.js'
+import { SaleItem } from '../../entities/sale/saleItem/sale.item.model.js'
 import { InventoryRepository } from '../inventory/inventory.repository.js'
-import { Sale } from './sale.model.js'
-import { SaleItem } from './saleItem/sale.item.model.js'
+
 
 export class SaleRepository {
-    static async create(data, transaction = null) {
-        const t = transaction ?? (await sequelize.transaction())
+    static repo = db.getRepository(Sale)
+    static saleItemRepo = db.getRepository(SaleItem)
+
+    static async create(data, transactionManager = null) {
+        const queryRunner = transactionManager ? null : db.createQueryRunner()
+
+        if (queryRunner) {
+            await queryRunner.connect()
+            await queryRunner.startTransaction()
+        }
+
+        const manager = transactionManager ?? queryRunner.manager
 
         try {
             const { payment_method, totals, items } = data
@@ -13,25 +24,26 @@ export class SaleRepository {
             // -----------------------------
             // 1. CREATE SALE
             // -----------------------------
-            const sale = await Sale.create(
-                {
+            const sale = await manager.save(
+                Sale,
+                manager.create(Sale, {
                     payment_method,
                     total_amount: totals.total_amount,
                     total_profit: totals.total_profit,
-                },
-                { transaction: t }
+                })
             )
 
             // -----------------------------
             // 2. CREATE ITEMS
             // -----------------------------
-            await SaleItem.bulkCreate(
-                items.map((item) => ({
+            const saleItems = items.map((item) =>
+                manager.create(SaleItem, {
                     ...item,
                     sale_id: sale.id,
-                })),
-                { transaction: t }
+                })
             )
+
+            await manager.save(SaleItem, saleItems)
 
             // -----------------------------
             // 3. BUILD INVENTORY BATCH
@@ -49,44 +61,52 @@ export class SaleRepository {
             // -----------------------------
             // 4. APPLY BULK INVENTORY LOGIC
             // -----------------------------
-            await InventoryRepository.bulkCreate(inventoryBatch, t)
+            await InventoryRepository.bulkCreate(inventoryBatch, manager)
 
-            await t.commit()
+            if (queryRunner) {
+                await queryRunner.commitTransaction()
+            }
 
             return sale
         } catch (error) {
-            await t.rollback()
+            if (queryRunner) {
+                await queryRunner.rollbackTransaction()
+            }
+
             throw error
+        } finally {
+            if (queryRunner) {
+                await queryRunner.release()
+            }
         }
     }
 
-    static async update(id, data, transaction) {
-        return Sale.update(data, { where: { id }, transaction })
+    static async update(id, data, manager = this.repo.manager) {
+
+        await manager.update(id, data)
+
+        return manager.findOne({
+            where: { id },
+        })
     }
 
     static async findById(id) {
-        return Sale.findByPk(id, {
-            include: [
-                {
-                    model: SaleItem,
-                    as: 'items',
-                },
-            ],
+        return this.repo.findOne({
+            where: { id },
+            relations: {
+                items: true,
+            },
         })
     }
 
     static async getAll() {
-        return Sale.findAll({
-            include: [
-                {
-                    model: SaleItem,
-                    as: 'items',
-                },
-            ],
-            // limit
-            // offset
-            // order
-            order: [['createdAt', 'DESC']],
+        return this.repo.find({
+            relations: {
+                items: true,
+            },
+            order: {
+                created_at: 'DESC',
+            },
         })
     }
 }
