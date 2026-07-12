@@ -1,5 +1,5 @@
 import { ArrowDown, ArrowUp, CircleCheck } from 'lucide-react'
-import React from 'react'
+
 
 export interface IChange {
     percentage: number

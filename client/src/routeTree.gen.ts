@@ -16,10 +16,18 @@ import { Route as InventoryIndexRouteImport } from './routes/inventory/index'
 import { Route as ExpensesIndexRouteImport } from './routes/expenses/index'
 import { Route as ProductsAddRouteImport } from './routes/products/add'
 import { Route as ExpensesAddRouteImport } from './routes/expenses/add'
+import { Route as ProductsCategoryIndexRouteImport } from './routes/products/category/index'
+import { Route as ProductsBrandIndexRouteImport } from './routes/products/brand/index'
 import { Route as ProductsViewIdRouteImport } from './routes/products/view/$id'
 import { Route as ProductsEditIdRouteImport } from './routes/products/edit/$id'
+import { Route as ProductsCategoryAddRouteImport } from './routes/products/category/add'
+import { Route as ProductsBrandAddRouteImport } from './routes/products/brand/add'
 import { Route as ExpensesViewIdRouteImport } from './routes/expenses/view/$id'
 import { Route as ExpensesEditIdRouteImport } from './routes/expenses/edit/$id'
+import { Route as ProductsCategoryViewIdRouteImport } from './routes/products/category/view/$id'
+import { Route as ProductsCategoryEditIdRouteImport } from './routes/products/category/edit/$id'
+import { Route as ProductsBrandViewIdRouteImport } from './routes/products/brand/view/$id'
+import { Route as ProductsBrandEditIdRouteImport } from './routes/products/brand/edit/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -56,6 +64,16 @@ const ExpensesAddRoute = ExpensesAddRouteImport.update({
   path: '/expenses/add',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProductsCategoryIndexRoute = ProductsCategoryIndexRouteImport.update({
+  id: '/products/category/',
+  path: '/products/category/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductsBrandIndexRoute = ProductsBrandIndexRouteImport.update({
+  id: '/products/brand/',
+  path: '/products/brand/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductsViewIdRoute = ProductsViewIdRouteImport.update({
   id: '/products/view/$id',
   path: '/products/view/$id',
@@ -66,6 +84,16 @@ const ProductsEditIdRoute = ProductsEditIdRouteImport.update({
   path: '/products/edit/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProductsCategoryAddRoute = ProductsCategoryAddRouteImport.update({
+  id: '/products/category/add',
+  path: '/products/category/add',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductsBrandAddRoute = ProductsBrandAddRouteImport.update({
+  id: '/products/brand/add',
+  path: '/products/brand/add',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExpensesViewIdRoute = ExpensesViewIdRouteImport.update({
   id: '/expenses/view/$id',
   path: '/expenses/view/$id',
@@ -74,6 +102,26 @@ const ExpensesViewIdRoute = ExpensesViewIdRouteImport.update({
 const ExpensesEditIdRoute = ExpensesEditIdRouteImport.update({
   id: '/expenses/edit/$id',
   path: '/expenses/edit/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductsCategoryViewIdRoute = ProductsCategoryViewIdRouteImport.update({
+  id: '/products/category/view/$id',
+  path: '/products/category/view/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductsCategoryEditIdRoute = ProductsCategoryEditIdRouteImport.update({
+  id: '/products/category/edit/$id',
+  path: '/products/category/edit/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductsBrandViewIdRoute = ProductsBrandViewIdRouteImport.update({
+  id: '/products/brand/view/$id',
+  path: '/products/brand/view/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductsBrandEditIdRoute = ProductsBrandEditIdRouteImport.update({
+  id: '/products/brand/edit/$id',
+  path: '/products/brand/edit/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -87,8 +135,16 @@ export interface FileRoutesByFullPath {
   '/sales/': typeof SalesIndexRoute
   '/expenses/edit/$id': typeof ExpensesEditIdRoute
   '/expenses/view/$id': typeof ExpensesViewIdRoute
+  '/products/brand/add': typeof ProductsBrandAddRoute
+  '/products/category/add': typeof ProductsCategoryAddRoute
   '/products/edit/$id': typeof ProductsEditIdRoute
   '/products/view/$id': typeof ProductsViewIdRoute
+  '/products/brand/': typeof ProductsBrandIndexRoute
+  '/products/category/': typeof ProductsCategoryIndexRoute
+  '/products/brand/edit/$id': typeof ProductsBrandEditIdRoute
+  '/products/brand/view/$id': typeof ProductsBrandViewIdRoute
+  '/products/category/edit/$id': typeof ProductsCategoryEditIdRoute
+  '/products/category/view/$id': typeof ProductsCategoryViewIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -100,8 +156,16 @@ export interface FileRoutesByTo {
   '/sales': typeof SalesIndexRoute
   '/expenses/edit/$id': typeof ExpensesEditIdRoute
   '/expenses/view/$id': typeof ExpensesViewIdRoute
+  '/products/brand/add': typeof ProductsBrandAddRoute
+  '/products/category/add': typeof ProductsCategoryAddRoute
   '/products/edit/$id': typeof ProductsEditIdRoute
   '/products/view/$id': typeof ProductsViewIdRoute
+  '/products/brand': typeof ProductsBrandIndexRoute
+  '/products/category': typeof ProductsCategoryIndexRoute
+  '/products/brand/edit/$id': typeof ProductsBrandEditIdRoute
+  '/products/brand/view/$id': typeof ProductsBrandViewIdRoute
+  '/products/category/edit/$id': typeof ProductsCategoryEditIdRoute
+  '/products/category/view/$id': typeof ProductsCategoryViewIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -114,8 +178,16 @@ export interface FileRoutesById {
   '/sales/': typeof SalesIndexRoute
   '/expenses/edit/$id': typeof ExpensesEditIdRoute
   '/expenses/view/$id': typeof ExpensesViewIdRoute
+  '/products/brand/add': typeof ProductsBrandAddRoute
+  '/products/category/add': typeof ProductsCategoryAddRoute
   '/products/edit/$id': typeof ProductsEditIdRoute
   '/products/view/$id': typeof ProductsViewIdRoute
+  '/products/brand/': typeof ProductsBrandIndexRoute
+  '/products/category/': typeof ProductsCategoryIndexRoute
+  '/products/brand/edit/$id': typeof ProductsBrandEditIdRoute
+  '/products/brand/view/$id': typeof ProductsBrandViewIdRoute
+  '/products/category/edit/$id': typeof ProductsCategoryEditIdRoute
+  '/products/category/view/$id': typeof ProductsCategoryViewIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -129,8 +201,16 @@ export interface FileRouteTypes {
     | '/sales/'
     | '/expenses/edit/$id'
     | '/expenses/view/$id'
+    | '/products/brand/add'
+    | '/products/category/add'
     | '/products/edit/$id'
     | '/products/view/$id'
+    | '/products/brand/'
+    | '/products/category/'
+    | '/products/brand/edit/$id'
+    | '/products/brand/view/$id'
+    | '/products/category/edit/$id'
+    | '/products/category/view/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -142,8 +222,16 @@ export interface FileRouteTypes {
     | '/sales'
     | '/expenses/edit/$id'
     | '/expenses/view/$id'
+    | '/products/brand/add'
+    | '/products/category/add'
     | '/products/edit/$id'
     | '/products/view/$id'
+    | '/products/brand'
+    | '/products/category'
+    | '/products/brand/edit/$id'
+    | '/products/brand/view/$id'
+    | '/products/category/edit/$id'
+    | '/products/category/view/$id'
   id:
     | '__root__'
     | '/'
@@ -155,8 +243,16 @@ export interface FileRouteTypes {
     | '/sales/'
     | '/expenses/edit/$id'
     | '/expenses/view/$id'
+    | '/products/brand/add'
+    | '/products/category/add'
     | '/products/edit/$id'
     | '/products/view/$id'
+    | '/products/brand/'
+    | '/products/category/'
+    | '/products/brand/edit/$id'
+    | '/products/brand/view/$id'
+    | '/products/category/edit/$id'
+    | '/products/category/view/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -169,8 +265,16 @@ export interface RootRouteChildren {
   SalesIndexRoute: typeof SalesIndexRoute
   ExpensesEditIdRoute: typeof ExpensesEditIdRoute
   ExpensesViewIdRoute: typeof ExpensesViewIdRoute
+  ProductsBrandAddRoute: typeof ProductsBrandAddRoute
+  ProductsCategoryAddRoute: typeof ProductsCategoryAddRoute
   ProductsEditIdRoute: typeof ProductsEditIdRoute
   ProductsViewIdRoute: typeof ProductsViewIdRoute
+  ProductsBrandIndexRoute: typeof ProductsBrandIndexRoute
+  ProductsCategoryIndexRoute: typeof ProductsCategoryIndexRoute
+  ProductsBrandEditIdRoute: typeof ProductsBrandEditIdRoute
+  ProductsBrandViewIdRoute: typeof ProductsBrandViewIdRoute
+  ProductsCategoryEditIdRoute: typeof ProductsCategoryEditIdRoute
+  ProductsCategoryViewIdRoute: typeof ProductsCategoryViewIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -224,6 +328,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExpensesAddRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/products/category/': {
+      id: '/products/category/'
+      path: '/products/category'
+      fullPath: '/products/category/'
+      preLoaderRoute: typeof ProductsCategoryIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/products/brand/': {
+      id: '/products/brand/'
+      path: '/products/brand'
+      fullPath: '/products/brand/'
+      preLoaderRoute: typeof ProductsBrandIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/products/view/$id': {
       id: '/products/view/$id'
       path: '/products/view/$id'
@@ -236,6 +354,20 @@ declare module '@tanstack/react-router' {
       path: '/products/edit/$id'
       fullPath: '/products/edit/$id'
       preLoaderRoute: typeof ProductsEditIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/products/category/add': {
+      id: '/products/category/add'
+      path: '/products/category/add'
+      fullPath: '/products/category/add'
+      preLoaderRoute: typeof ProductsCategoryAddRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/products/brand/add': {
+      id: '/products/brand/add'
+      path: '/products/brand/add'
+      fullPath: '/products/brand/add'
+      preLoaderRoute: typeof ProductsBrandAddRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/expenses/view/$id': {
@@ -252,6 +384,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExpensesEditIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/products/category/view/$id': {
+      id: '/products/category/view/$id'
+      path: '/products/category/view/$id'
+      fullPath: '/products/category/view/$id'
+      preLoaderRoute: typeof ProductsCategoryViewIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/products/category/edit/$id': {
+      id: '/products/category/edit/$id'
+      path: '/products/category/edit/$id'
+      fullPath: '/products/category/edit/$id'
+      preLoaderRoute: typeof ProductsCategoryEditIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/products/brand/view/$id': {
+      id: '/products/brand/view/$id'
+      path: '/products/brand/view/$id'
+      fullPath: '/products/brand/view/$id'
+      preLoaderRoute: typeof ProductsBrandViewIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/products/brand/edit/$id': {
+      id: '/products/brand/edit/$id'
+      path: '/products/brand/edit/$id'
+      fullPath: '/products/brand/edit/$id'
+      preLoaderRoute: typeof ProductsBrandEditIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -265,8 +425,16 @@ const rootRouteChildren: RootRouteChildren = {
   SalesIndexRoute: SalesIndexRoute,
   ExpensesEditIdRoute: ExpensesEditIdRoute,
   ExpensesViewIdRoute: ExpensesViewIdRoute,
+  ProductsBrandAddRoute: ProductsBrandAddRoute,
+  ProductsCategoryAddRoute: ProductsCategoryAddRoute,
   ProductsEditIdRoute: ProductsEditIdRoute,
   ProductsViewIdRoute: ProductsViewIdRoute,
+  ProductsBrandIndexRoute: ProductsBrandIndexRoute,
+  ProductsCategoryIndexRoute: ProductsCategoryIndexRoute,
+  ProductsBrandEditIdRoute: ProductsBrandEditIdRoute,
+  ProductsBrandViewIdRoute: ProductsBrandViewIdRoute,
+  ProductsCategoryEditIdRoute: ProductsCategoryEditIdRoute,
+  ProductsCategoryViewIdRoute: ProductsCategoryViewIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

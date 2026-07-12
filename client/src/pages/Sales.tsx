@@ -4,27 +4,34 @@ import AppBodyWrapper from '../components/layout/AppBodyWrapper'
 import { Topbar } from '../components/layout/Topbar'
 import { Button } from '../components/ui/Button'
 import { useProducts } from '../features/product/hooks'
-import type { Product } from '../features/product/types'
 import { useCreateSale } from '../features/sales/hooks'
-import type { SalePaymentMethod } from '../features/sales/types'
 import { ProductSearch } from '../features/sales/components/ProductSearch'
-import { SalesCart, SalesCartDrawer } from '../features/sales/components/SalesCart'
-import type { CartItem } from '../features/sales/types'
-
-const formatCurrency = (value: number) =>
-    new Intl.NumberFormat('en-KE', {
-        style: 'currency',
-        currency: 'KES',
-        maximumFractionDigits: 0,
-    }).format(value)
+import {
+    SalesCart,
+    SalesCartDrawer,
+} from '../features/sales/components/SalesCart'
+import { useCart } from '../app/providers/CartProvider'
+import { formatCurrency } from '../utils/currency'
+import type { soldProduct } from '../features/sales/types'
+import toast from 'react-hot-toast'
 
 const Sales = () => {
     const { data: products = [], isLoading, isError } = useProducts()
     const { mutate: createSale, isPending } = useCreateSale()
+    const {
+        items: cartItems,
+        paymentMethod,
+        total,
+        setPaymentMethod,
+        addItem,
+        removeItem,
+        updateQuantity,
+        changeUnit,
+        clearCart,
+        canAddUnitToCart,
+    } = useCart()
+
     const [search, setSearch] = useState('')
-    const [paymentMethod, setPaymentMethod] =
-        useState<SalePaymentMethod>('cash')
-    const [cartItems, setCartItems] = useState<CartItem[]>([])
     const [isCartOpen, setIsCartOpen] = useState(false)
 
     const filteredProducts = useMemo(() => {
@@ -36,40 +43,43 @@ const Sales = () => {
         )
     }, [products, search])
 
-    const addToCart = (product: Product) => {
-        const units = product.productUnits ?? []
-        const defaultUnit = units.find((unit) => unit.is_base_unit) ?? units[0]
-        const unitId = defaultUnit?.id
-        if (!unitId) return
+    const checkIfCanAddToCart = (
+        productId: string,
+        quantity: number,
+        conversionFactor: number
+    ) => {
+        const canUnitBeSold = canAddUnitToCart(productId, quantity, conversionFactor)
 
-        setCartItems((previous) => {
-            const existing = previous.find(
-                (item) =>
-                    item.product.id === product.id && item.unitId === unitId
-            )
-            if (existing) {
-                return previous.map((item) =>
-                    item.product.id === product.id && item.unitId === unitId
-                        ? { ...item, quantity: item.quantity + 1 }
-                        : item
-                )
-            }
-            return [...previous, { product, unitId, quantity: 1 }]
-        })
+        if (!canUnitBeSold) {
+            toast.error('Not enough stock')
+            return false
+        }
+
+        return true
+
     }
 
-    const updateQuantity = (
+    const addToCart = (product: soldProduct) => {
+        const canBeAddedCart = checkIfCanAddToCart(product?.id,  1, product?.conversion_factor)
+        if(!canBeAddedCart) return
+        addItem(product)
+    }
+
+    const updateCart = (
         productId: string,
         unitId: string,
-        delta: number
+        delta: number,
+        conversionFactor: number
     ) => {
-        setCartItems((previous) =>
-            previous.map((item) =>
-                item.product.id === productId && item.unitId === unitId
-                    ? { ...item, quantity: Math.max(1, item.quantity + delta) }
-                    : item
-            )
-        )
+        if (delta > 0) {
+             const canBeAddedCart = checkIfCanAddToCart(
+                 productId,
+                 delta,
+                 conversionFactor
+             )
+            if (!canBeAddedCart) return
+        }
+        updateQuantity(productId, unitId, delta)
     }
 
     const updateUnit = (
@@ -77,28 +87,8 @@ const Sales = () => {
         unitId: string,
         nextUnitId: string
     ) => {
-        setCartItems((previous) =>
-            previous.map((item) =>
-                item.product.id === productId && item.unitId === unitId
-                    ? { ...item, unitId: nextUnitId }
-                    : item
-            )
-        )
+        changeUnit(productId, unitId, nextUnitId)
     }
-
-    const removeItem = (productId: string, unitId: string) => {
-        setCartItems((previous) =>
-            previous.filter(
-                (item) =>
-                    !(item.product.id === productId && item.unitId === unitId)
-            )
-        )
-    }
-
-    const total = cartItems.reduce(
-        (sum, item) => sum + item.product.selling_price * item.quantity,
-        0
-    )
 
     const handleCompleteSale = () => {
         if (!cartItems.length) return
@@ -106,14 +96,14 @@ const Sales = () => {
             {
                 items: cartItems.map((item) => ({
                     product_id: item.product.id,
-                    unit_id: item.unitId,
+                    unit_id: item.unit_id,
                     quantity: item.quantity,
                 })),
                 payment_method: paymentMethod,
             },
             {
                 onSuccess: () => {
-                    setCartItems([])
+                    clearCart()
                     setIsCartOpen(false)
                 },
             }
@@ -126,13 +116,14 @@ const Sales = () => {
         total,
         isPending,
         onPaymentMethodChange: setPaymentMethod,
-        onUpdateQuantity: updateQuantity,
+        onUpdateQuantity: updateCart,
         onUpdateUnit: updateUnit,
         onRemoveItem: removeItem,
         onCompleteSale: handleCompleteSale,
         formatCurrency,
     }
 
+    // console.log(products)
     return (
         <AppBodyWrapper>
             <Topbar

@@ -2,10 +2,15 @@ import { Minus, Plus, Trash2, X } from 'lucide-react'
 import { Dialog } from 'radix-ui'
 import type { CartItem, SalePaymentMethod } from '../types'
 import { Select, type SelectOption } from '../../../components/ui/Select'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/Card'
-import type { ProductUnit } from '../../product/types'
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '../../../components/ui/Card'
 import { Button } from '../../../components/ui/Button'
-
+import { Badge } from '../../../components/ui/Badge'
 
 type SalesCartProps = {
     cartItems: CartItem[]
@@ -13,7 +18,12 @@ type SalesCartProps = {
     total: number
     isPending: boolean
     onPaymentMethodChange: (method: SalePaymentMethod) => void
-    onUpdateQuantity: (productId: string, unitId: string, delta: number) => void
+    onUpdateQuantity: (
+        productId: string,
+        unitId:string,
+        delta: number,
+        conversionFactor: number
+    ) => void
     onUpdateUnit: (
         productId: string,
         unitId: string,
@@ -111,7 +121,6 @@ function CartContent({
     isPending,
     onPaymentMethodChange,
     onUpdateQuantity,
-    onUpdateUnit,
     onRemoveItem,
     onCompleteSale,
     formatCurrency,
@@ -119,80 +128,89 @@ function CartContent({
     return (
         <div className="space-y-4">
             {cartItems.length === 0 ? (
-                <div className="rounded-xl border border-dashed border-border p-3 text-sm text-muted">
+                <div className="rounded-xl border border-dashed border-border p-3 text-sm text-muted text-center">
                     Select a product to start a sale.
                 </div>
             ) : (
                 <div className="space-y-3">
                     {cartItems.map((item) => {
-                        const unitOptions = (
-                            item.product.productUnits ?? []
-                        ).map((unit: ProductUnit) => ({
-                            value: unit.id,
-                            label: unit.unit?.name ?? 'Unit',
-                        }))
+                        const unitPrice =
+                            item.product.selling_price *
+                            item.product.conversion_factor
+                        const itemSubtotal = unitPrice * item.quantity
+                        const isLowStock =
+                            item.product.stock_quantity <= item.quantity
+                        const availableStock = Math.floor(
+                            item.product.stock_quantity /
+                                item?.product?.conversion_factor
+                        )
 
                         return (
                             <div
-                                key={`${item.product.id}-${item.unitId}`}
-                                className="rounded-xl border border-border p-2.5"
+                                key={`${item.product.id}-${item.unit_id}`}
+                                className="rounded-xl border border-border p-3 bg-card space-y-2.5"
                             >
+                                {/* Header: Name, Unit Badge, and Remove Action */}
                                 <div className="flex items-start justify-between gap-3">
-                                    <div>
-                                        <p className="font-medium text-heading">
-                                            {item.product.name}
-                                        </p>
-                                        <p className="text-sm text-muted">
-                                            {formatCurrency(
-                                                item.product.selling_price
-                                            )}{' '}
-                                            each
+                                    <div className="space-y-0.5">
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                            <p className="font-medium text-heading">
+                                                {item.product.name}
+                                            </p>
+                                            <Badge
+                                                className={`inline-flex items-center rounded-md px-1.5 py-0.5 text-xs font-medium`}
+                                                color={
+                                                    item.product.is_base_unit
+                                                        ? 'green'
+                                                        : 'gray'
+                                                }
+                                            >
+                                                {item.product.unit_name}
+                                            </Badge>
+                                        </div>
+                                        <p className="text-xs text-muted">
+                                            {formatCurrency(unitPrice)} per{' '}
+                                            {item.product.unit_name}
                                         </p>
                                     </div>
+
                                     <button
                                         type="button"
                                         onClick={() =>
                                             onRemoveItem(
                                                 item.product.id,
-                                                item.unitId
+                                                item.unit_id
                                             )
                                         }
-                                        className="text-muted hover:text-danger"
+                                        className="text-muted hover:text-danger p-1 transition-colors"
                                         aria-label="Remove item"
                                     >
                                         <Trash2 size={16} />
                                     </button>
                                 </div>
-                                <div className="mt-2 space-y-2">
-                                    <Select
-                                        label="Unit"
-                                        value={item.unitId}
-                                        onChange={(event) =>
-                                            onUpdateUnit(
-                                                item.product.id,
-                                                item.unitId,
-                                                event.target.value
-                                            )
-                                        }
-                                        options={unitOptions}
-                                    />
-                                    <div className="flex items-center justify-between gap-3">
-                                        <div className="flex items-center rounded-lg border border-border">
+
+                                {/* Footer/Controls: Quantity Toggles, Stock Status, and Subtotal */}
+                                <div className="flex items-center justify-between gap-3 pt-1 border-t border-border/40">
+                                    <div className="space-y-1">
+                                        <div className="flex w-min  items-center rounded-lg border border-border bg-background">
                                             <button
                                                 type="button"
                                                 onClick={() =>
                                                     onUpdateQuantity(
                                                         item.product.id,
-                                                        item.unitId,
-                                                        -1
+                                                        item.unit_id,
+                                                        -1,
+                                                        item?.product
+                                                            ?.conversion_factor
                                                     )
                                                 }
-                                                className="p-2 text-muted hover:text-heading"
+                                                className="p-1.5 text-muted hover:text-heading transition-colors"
                                                 aria-label="Decrease quantity"
+                                                disabled={item.quantity <= 1}
                                             >
-                                                <Minus size={16} />
+                                                <Minus size={14} />
                                             </button>
-                                            <span className="min-w-10 text-center text-sm font-medium">
+                                            <span className="min-w-8 text-center text-sm font-medium">
                                                 {item.quantity}
                                             </span>
                                             <button
@@ -200,21 +218,35 @@ function CartContent({
                                                 onClick={() =>
                                                     onUpdateQuantity(
                                                         item.product.id,
-                                                        item.unitId,
-                                                        1
+                                                        item.unit_id,
+                                                        1,
+                                                        item?.product
+                                                            ?.conversion_factor
                                                     )
                                                 }
-                                                className="p-2 text-muted hover:text-heading"
+                                                className="p-1.5  text-muted hover:text-heading transition-colors"
                                                 aria-label="Increase quantity"
+                                                disabled={
+                                                    item.quantity >=
+                                                    item.product.stock_quantity
+                                                }
                                             >
-                                                <Plus size={16} />
+                                                <Plus size={14} />
                                             </button>
                                         </div>
+
+                                        {/* Stock Availability Indicator */}
+                                        <p
+                                            className={`text-xs ${isLowStock ? 'text-warning font-medium' : 'text-muted'}`}
+                                        >
+                                            Stock: {availableStock}{' '}
+                                            {item.product.unit_name} available
+                                        </p>
+                                    </div>
+
+                                    <div className="text-right">
                                         <p className="font-semibold text-heading">
-                                            {formatCurrency(
-                                                item.product.selling_price *
-                                                    item.quantity
-                                            )}
+                                            {formatCurrency(itemSubtotal)}
                                         </p>
                                     </div>
                                 </div>
@@ -224,31 +256,38 @@ function CartContent({
                 </div>
             )}
 
-            <Select
-                label="Payment method"
-                value={paymentMethod}
-                onChange={(event) =>
-                    onPaymentMethodChange(
-                        event.target.value as SalePaymentMethod
-                    )
-                }
-                options={paymentOptions}
-            />
-            <div className="flex items-center justify-between gap-3">
-                <div>
-                    <p className="text-sm text-muted">Total</p>
-                    <p className="text-2xl font-semibold text-heading">
-                        {formatCurrency(total)}
-                    </p>
+            {/* Payment & Submission Controls */}
+            <div className="space-y-3 pt-2">
+                <Select
+                    label="Payment method"
+                    value={paymentMethod}
+                    onChange={(event) =>
+                        onPaymentMethodChange(
+                            event.target.value as SalePaymentMethod
+                        )
+                    }
+                    options={paymentOptions}
+                />
+
+                <div className="flex items-center justify-between gap-3 bg-surface p-3 rounded-xl border border-border">
+                    <div>
+                        <p className="text-xs uppercase tracking-wider font-medium text-muted">
+                            Total Amount
+                        </p>
+                        <p className="text-2xl font-bold text-heading">
+                            {formatCurrency(total)}
+                        </p>
+                    </div>
+                    <Button
+                        variant="primary"
+                        type="button"
+                        onClick={onCompleteSale}
+                        disabled={!cartItems.length || isPending}
+                        className="px-5 py-2.5 h-auto"
+                    >
+                        {isPending ? 'Processing...' : 'Complete sale'}
+                    </Button>
                 </div>
-                <Button
-                    variant="primary"
-                    type="button"
-                    onClick={onCompleteSale}
-                    disabled={!cartItems.length || isPending}
-                >
-                    {isPending ? 'Processing...' : 'Complete sale'}
-                </Button>
             </div>
         </div>
     )

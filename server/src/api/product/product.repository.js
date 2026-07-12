@@ -4,6 +4,8 @@ import { ProductCategoryRepository } from './category/product.category.repositor
 import { ProductBrandRepository } from './brand/product.brand.repository.js'
 import { AppError, ERROR_CODES } from '../../errors/app.error.js'
 import { InventoryRepository } from '../inventory/inventory.repository.js'
+import { UnitRepository } from './unit/unit.repository.js'
+import { ProductUnit } from '../../entities/product/product.unit.model.js'
 
 export class ProductRepository {
     static repo = db.getRepository(Product)
@@ -54,16 +56,52 @@ export class ProductRepository {
             { name: data.brand },
             manager
         )
-       // console.log(brand, category)
-       const {stock_quantity, ...rest} = data
+
+        const { stock_quantity, units, ...productData } = data
+
         const product = manager.create(Product, {
-            ...rest,
+            ...productData,
+            stock_quantity: 0,
             category,
-            stock_quantity:0,
             brand,
         })
 
-        return manager.save(Product, product)
+        await manager.save(Product, product)
+
+        const productUnits = []
+
+        for (const item of units) {
+            const unit = await UnitRepository.findOrCreate(
+                {
+                    name: item.unit_name,
+                },
+                manager
+            )
+
+            productUnits.push(
+                manager.create(ProductUnit, {
+                    product,
+                    unit,
+                    conversion_factor: item.conversion_factor,
+                    is_base_unit: item?.is_base_unit ?? false,
+                })
+            )
+        }
+
+        await manager.save(ProductUnit, productUnits)
+
+        return manager.findOne(Product, {
+            where: {
+                id: product.id,
+            },
+            relations: {
+                brand: true,
+                category: true,
+                productUnits: {
+                    unit: true,
+                },
+            },
+        })
     }
 
     static async update(id, data) {

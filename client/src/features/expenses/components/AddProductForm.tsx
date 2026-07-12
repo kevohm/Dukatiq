@@ -4,14 +4,12 @@ import { useNavigate } from '@tanstack/react-router'
 
 import { TextInput } from '../../../components/ui/TextInput'
 import { Button } from '../../../components/ui/Button'
-import { Select } from '../../../components/ui/Select'
 import BackButton from '../../../components/shared/BackButton'
 
 import type { ApiError } from '../../../errors/error'
 import type { IExpenseCreatePayload } from '../types'
 
 import { useCreateExpense } from '../hooks'
-import { useExpenseCategories } from '../category/hooks'
 
 const AddExpenseForm = () => {
     const { mutateAsync, isPending } = useCreateExpense()

@@ -3,7 +3,7 @@ import { Link } from '@tanstack/react-router'
 import { Badge } from '../../../components/ui/Badge'
 import { Button } from '../../../components/ui/Button'
 import type { ColumnDef } from '../../../components/data-table/types'
-import type { ProductCategory } from './types'
+import type { ProductCategory } from '../../product/category/types'
 
 export const productCategoryColumns: ColumnDef<ProductCategory>[] = [
     {
@@ -26,7 +26,7 @@ export const productCategoryColumns: ColumnDef<ProductCategory>[] = [
         id: 'actions',
         header: 'Actions',
         cell: (row) => (
-            <Link to="/product-categories/edit/$id" params={{ id: row.id }}>
+            <Link to="/products/category/edit/$id" params={{ id: row.id }}>
                 <Button variant="primary">
                     <Edit className="h-4 w-4" />
                 </Button>

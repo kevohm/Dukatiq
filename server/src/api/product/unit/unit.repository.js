@@ -27,19 +27,19 @@ export class UnitRepository {
         return unit
     }
 
-    static async getByName(name) {
-        return this.repo.findOne({
+    static async getByName(name, manager = this.repo.manager) {
+        return manager.findOne(Unit,{
             where: { name },
         })
     }
 
     static async create(data, manager = this.repo.manager) {
         const unit = manager.create(Unit, data)
-        return manager.save(Unit,unit)
+        return manager.save(Unit, unit)
     }
 
     static async findOrCreate(data, manager = this.repo.manager) {
-        const unit = await this.getByName(data.name)
+        const unit = await this.getByName(data.name, manager)
 
         if (!unit) {
             return this.create(data, manager)

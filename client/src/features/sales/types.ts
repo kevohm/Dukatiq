@@ -1,4 +1,3 @@
-import type { Product } from "../product/types"
 
 export type SalePaymentMethod = 'cash' | 'mpesa' | 'card' | 'credit'
 
@@ -33,8 +32,21 @@ export type Sale = {
     }>
 }
 
+export type soldProduct = {
+    id: string
+    unit_id: string
+    name: string
+    cost_price: number
+    selling_price: number
+    stock_quantity: number
+    conversion_factor: number
+    is_base_unit: boolean
+    unit_name: string
+}
+
 export type CartItem = {
-    product: Product
-    unitId: string
+    product: soldProduct
+    product_id: string
+    unit_id: string
     quantity: number
 }

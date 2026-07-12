@@ -1,0 +1,25 @@
+import ThemeTrigger from '../theme/ThemeTrigger'
+import SidebarNav from './SidebarNav'
+import { mainNav, secondaryNav } from './navigation'
+
+export default function TabletSidebar() {
+    return (
+        <aside className="hidden md:flex lg:hidden h-screen w-20 flex-col justify-between border-r bg-background p-3">
+            <div className="space-y-6">
+                <div className="flex justify-center">
+                    <h1 className="text-lg font-bold">DQ</h1>
+                </div>
+
+                <SidebarNav items={mainNav} compact />
+
+                <div className="border-t pt-3">
+                    <SidebarNav items={secondaryNav} compact />
+                </div>
+            </div>
+
+            <div className="flex justify-center">
+                <ThemeTrigger />
+            </div>
+        </aside>
+    )
+}

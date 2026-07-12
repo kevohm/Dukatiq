@@ -1,12 +1,12 @@
-import { useId, type TextareaHTMLAttributes } from "react"
-import { controlBase, controlBorder, Field, type BaseFieldProps } from "./Field"
+import { useId, type TextareaHTMLAttributes } from 'react'
+import { controlBase, controlBorder, Field, type BaseFieldProps } from './Field'
 
 export interface TextareaProps
     extends
         BaseFieldProps,
         Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'id' | 'className'> {}
 
-export function Textarea({
+export function TextArea({
     label,
     hint,
     error,
@@ -36,3 +36,4 @@ export function Textarea({
         </Field>
     )
 }
+ 

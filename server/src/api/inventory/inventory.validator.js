@@ -10,8 +10,6 @@ export class InventoryValidator {
         // always POSITIVE input
         quantity: z.number().positive(),
 
-        reference_type: z.string().optional(),
-        reference_id: z.string().uuid().optional(),
     })
 
     // 🔹 Stock in / out share same shape

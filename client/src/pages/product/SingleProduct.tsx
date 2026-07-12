@@ -1,5 +1,5 @@
 import { Link, useParams } from '@tanstack/react-router'
-import React from 'react'
+
 import AppBodyWrapper from '../../components/layout/AppBodyWrapper'
 import { Topbar } from '../../components/layout/Topbar'
 import { useProduct } from '../../features/product/hooks'

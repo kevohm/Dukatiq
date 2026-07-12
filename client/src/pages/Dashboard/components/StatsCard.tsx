@@ -1,5 +1,5 @@
-import { ArrowDown, ArrowUp, type LucideIcon } from 'lucide-react'
-import React from 'react'
+import {  type LucideIcon } from 'lucide-react'
+
 import type { IChange } from './PercentageChange'
 import PercentageChange from './PercentageChange'
 

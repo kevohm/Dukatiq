@@ -10,14 +10,13 @@ import { ProductUnitService } from '../product/product-unit/product.unit.service
 import { ProductUnitRepository } from '../product/product-unit/product.unit.repository.js'
 import { calculateStockChange } from '../../utils/inventory/inventory.utils.js'
 
-
 export function assertSufficientStock({ currentStock, change, product_id }) {
     if (currentStock + change < 0) {
         throw new AppError({
             message: 'Insufficient stock',
             code: ERROR_CODES.INVENTORY.INSUFFICIENT_STOCK,
             status: StatusCodes.BAD_REQUEST,
-            meta: {resource:"inventory", product_id },
+            meta: { resource: 'inventory', product_id },
         })
     }
 }
@@ -42,13 +41,12 @@ export class InventoryService {
     // 🔹 STOCK IN
     static async stockIn(body) {
         const data = await InventoryValidator.createSchema.parseAsync(body)
+
         const productUnit = await ProductUnitRepository.getByUnit(
             data?.product_id,
             data?.unit_id
         )
-        
-        const normalized_quantity =
-            data.quantity * productUnit.conversion_factor
+        const normalized_quantity = data.quantity * productUnit.conversion_factor
 
         const event = await InventoryRepository.create({
             ...data,
@@ -141,5 +139,4 @@ export class InventoryService {
             message: 'Stock adjusted successfully',
         }
     }
-
 }

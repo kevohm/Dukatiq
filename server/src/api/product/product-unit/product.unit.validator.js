@@ -10,12 +10,17 @@ export class ProductUnitValidator {
         is_base_unit: z.boolean().optional(),
     })
     static productSchema = this.baseSchema.pick({ product_id: true })
-    static productAndUnitSchema = this.baseSchema.pick({ product_id: true, unit_id:true })
+    static productAndUnitSchema = this.baseSchema.pick({
+        product_id: true,
+        unit_id: true,
+    })
     // CREATE (all required except defaults)
     static createSchema = this.baseSchema
 
     // UPDATE (all optional but validated)
-    static updateSchema = this.baseSchema.omit({product_id:true,unit_id:true}).partial()
+    static updateSchema = this.baseSchema
+        .omit({ product_id: true, unit_id: true })
+        .partial()
 
     // FILTERS (for fetch all with query params)
     static filterSchema = paginationSchema.extend({

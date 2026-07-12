@@ -14,6 +14,7 @@ const variants = {
 
 export function Button({
     variant = 'secondary',
+    type="button",
     icon,
     className,
     children,
@@ -21,6 +22,7 @@ export function Button({
 }: ButtonProps) {
     return (
         <button
+            type={type}
             className={cn(
                 'inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50',
                 variants[variant],

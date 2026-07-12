@@ -26,7 +26,7 @@ export const productCategoryColumns: ColumnDef<ProductCategory>[] = [
         id: 'actions',
         header: 'Actions',
         cell: (row) => (
-            <Link to="/product-categories/edit/$id" params={{ id: row.id }}>
+            <Link to="/products/category/edit/$id" params={{ id: row.id }}>
                 <Button variant="primary">
                     <Edit className="h-4 w-4" />
                 </Button>

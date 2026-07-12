@@ -6,13 +6,11 @@ import {
     DollarSign,
     Warehouse,
     Layers,
-    Pencil,
+    
     ImageIcon,
 } from 'lucide-react'
 import { Badge } from '../../../components/ui/Badge'
-import { Button } from '../../../components/ui/Button'
 import { Card } from '../../../components/ui/Card'
-import { Link } from '@tanstack/react-router'
 import type { Product } from '../types'
 
 

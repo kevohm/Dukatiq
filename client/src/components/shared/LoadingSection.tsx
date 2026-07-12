@@ -1,5 +1,4 @@
-import { Loader, Loader2 } from 'lucide-react'
-import React from 'react'
+import { Loader} from 'lucide-react'
 
 const LoadingSection = ({ title }: { title?: string }) => {
     return (

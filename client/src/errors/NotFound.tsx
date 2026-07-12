@@ -1,5 +1,4 @@
 import { Link } from '@tanstack/react-router'
-import React from 'react'
 import { Button } from '../components/ui/Button'
 
 const NotFound = () => {

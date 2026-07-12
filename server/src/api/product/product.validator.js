@@ -1,5 +1,7 @@
 import { z } from 'zod'
 import { paginationSchema } from '../base.validator.js'
+import { ProductUnitValidator } from './product-unit/product.unit.validator.js'
+import { UnitValidator } from './unit/unit.validator.js'
 
 export class ProductValidator {
     // Base schema (reusable)
@@ -41,6 +43,33 @@ export class ProductValidator {
             .int('Low stock threshold must be a whole number')
             .min(0, 'Low stock threshold cannot be negative')
             .default(10),
+        units: z
+            .array(
+                z.object({
+                    conversion_factor: z.number({
+                        error: 'Conversion factor is required',
+                    }),
+                    is_base_unit: z.boolean().default(false),
+                    unit_name: z
+                        .string()
+                        .min(1, 'Unit name is required')
+                        .toLowerCase(),
+                }),
+                {
+                    error: 'Please provide at least one unit',
+                }
+            )
+            .min(1, 'Please provide at least one unit')
+            .refine((units) => units.some((unit) => unit.is_base_unit), {
+                message: 'One unit must be marked as the base unit',
+            })
+            .refine(
+                (units) =>
+                    units.filter((unit) => unit.is_base_unit).length === 1,
+                {
+                    message: 'Only one base unit is allowed',
+                }
+            ),
     })
 
     // CREATE (all required except defaults)

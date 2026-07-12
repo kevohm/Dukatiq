@@ -1,7 +1,6 @@
 import { useParams } from '@tanstack/react-router'
 import AppBodyWrapper from '../../components/layout/AppBodyWrapper'
 import { Topbar } from '../../components/layout/Topbar'
-import EditProductForm from '../../features/product/components/EditProductForm'
 import EditExpenseForm from '../../features/expenses/components/EditProductForm'
 
 const EditExpense = () => {

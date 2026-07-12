@@ -1,9 +1,5 @@
-import {
-    QueryClient,
-    QueryClientProvider,
-    useQueryClient,
-} from '@tanstack/react-query'
-import React, { type ReactNode } from 'react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { type ReactNode } from 'react'
 import { OnlineProvider } from './OnlineProvider'
 import { Toaster } from 'react-hot-toast'
 

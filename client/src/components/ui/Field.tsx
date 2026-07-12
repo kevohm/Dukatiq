@@ -1,22 +1,10 @@
 import {
-    useId,
-    useState,
-    type InputHTMLAttributes,
     type ReactNode,
-    type SelectHTMLAttributes,
-    type TextareaHTMLAttributes,
 } from 'react'
 import {
-    Search,
-    X,
-    Eye,
-    EyeOff,
-    ChevronDown,
-    Check,
+
     AlertCircle,
-    Moon,
-    Sun,
-    type LucideIcon,
+
 } from 'lucide-react'
 
 /* -------------------------------------------------------------------------
@@ -51,12 +39,7 @@ export function Field({
                     className="text-sm capitalize font-medium text--heading"
                 >
                     {label}
-                    {required && (
-                        <span className="text-danger">
-                            {' '}
-                            *
-                        </span>
-                    )}
+                    {required && <span className="text-danger"> *</span>}
                 </label>
             )}
             {children}
@@ -76,7 +59,6 @@ export function Field({
         </div>
     )
 }
-
 
 // Base classes shared by every "box" style control (text input, search, select, textarea).
 export const controlBase =

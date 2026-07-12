@@ -1,13 +1,11 @@
 import {
-    ArrowUp,
     Briefcase,
     DollarSignIcon,
     PiggyBank,
     ShoppingCart,
     type LucideIcon,
 } from 'lucide-react'
-import React from 'react'
-import { Badge, badgeColors } from '../../../components/ui/Badge'
+
 import StatsCard, { type StatIconColor } from './StatsCard'
 import type { IChange } from './PercentageChange'
 

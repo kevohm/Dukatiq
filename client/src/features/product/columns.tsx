@@ -1,4 +1,4 @@
-import { Delete, Edit, Eye, Trash } from 'lucide-react'
+import {  Edit, Eye, Trash } from 'lucide-react'
 import type { ColumnDef } from '../../components/data-table/types'
 import type { Product } from './types'
 import { Button } from '../../components/ui/Button'

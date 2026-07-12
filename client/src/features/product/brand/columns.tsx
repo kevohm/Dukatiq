@@ -26,7 +26,7 @@ export const productBrandColumns: ColumnDef<ProductBrand>[] = [
         id: 'actions',
         header: 'Actions',
         cell: (row) => (
-            <Link to="/product-brand/edit/$id" params={{ id: row.id }}>
+            <Link to="/products/brand/edit/$id" params={{ id: row.id }}>
                 <Button variant="primary">
                     <Edit className="h-4 w-4" />
                 </Button>

@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import { expenseApi } from './api'
-import type { Expense, IExpenseUpdatePayload } from './types'
+import type {  IExpenseUpdatePayload } from './types'
 
 const EXPENSE_KEY = ['expenses']
 

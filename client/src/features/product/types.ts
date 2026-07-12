@@ -46,12 +46,20 @@ export type Product = {
     updated_at: string
 }
 
+interface UnitPayload {
+    unit_name: string
+    conversion_factor: number
+    is_base_unit: boolean
+}
+    
+
 export interface IProductCreatePayload {
     name: string
     category: string
     brand: string
     cost_price: number
     selling_price: number
+    units:  UnitPayload[]
 }
 
 export interface IProductUpdatePayload {

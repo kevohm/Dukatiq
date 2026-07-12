@@ -21,8 +21,6 @@ export type InventoryMovementPayload = {
     product_id: string
     unit_id: string
     quantity: number
-    reference_type?: string
-    reference_id?: string
 }
 
 export type InventoryAdjustmentPayload = InventoryMovementPayload & {
