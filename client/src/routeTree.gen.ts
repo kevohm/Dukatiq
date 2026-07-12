@@ -10,10 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as SalesIndexRouteImport } from './routes/sales/index'
 import { Route as ProductsIndexRouteImport } from './routes/products/index'
 import { Route as InventoryIndexRouteImport } from './routes/inventory/index'
 import { Route as ExpensesIndexRouteImport } from './routes/expenses/index'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as ProductsAddRouteImport } from './routes/products/add'
 import { Route as ExpensesAddRouteImport } from './routes/expenses/add'
 import { Route as ProductsCategoryIndexRouteImport } from './routes/products/category/index'
@@ -34,11 +34,6 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SalesIndexRoute = SalesIndexRouteImport.update({
-  id: '/sales/',
-  path: '/sales/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ProductsIndexRoute = ProductsIndexRouteImport.update({
   id: '/products/',
   path: '/products/',
@@ -52,6 +47,11 @@ const InventoryIndexRoute = InventoryIndexRouteImport.update({
 const ExpensesIndexRoute = ExpensesIndexRouteImport.update({
   id: '/expenses/',
   path: '/expenses/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/dashboard/',
+  path: '/dashboard/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProductsAddRoute = ProductsAddRouteImport.update({
@@ -129,10 +129,10 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/expenses/add': typeof ExpensesAddRoute
   '/products/add': typeof ProductsAddRoute
+  '/dashboard/': typeof DashboardIndexRoute
   '/expenses/': typeof ExpensesIndexRoute
   '/inventory/': typeof InventoryIndexRoute
   '/products/': typeof ProductsIndexRoute
-  '/sales/': typeof SalesIndexRoute
   '/expenses/edit/$id': typeof ExpensesEditIdRoute
   '/expenses/view/$id': typeof ExpensesViewIdRoute
   '/products/brand/add': typeof ProductsBrandAddRoute
@@ -150,10 +150,10 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/expenses/add': typeof ExpensesAddRoute
   '/products/add': typeof ProductsAddRoute
+  '/dashboard': typeof DashboardIndexRoute
   '/expenses': typeof ExpensesIndexRoute
   '/inventory': typeof InventoryIndexRoute
   '/products': typeof ProductsIndexRoute
-  '/sales': typeof SalesIndexRoute
   '/expenses/edit/$id': typeof ExpensesEditIdRoute
   '/expenses/view/$id': typeof ExpensesViewIdRoute
   '/products/brand/add': typeof ProductsBrandAddRoute
@@ -172,10 +172,10 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/expenses/add': typeof ExpensesAddRoute
   '/products/add': typeof ProductsAddRoute
+  '/dashboard/': typeof DashboardIndexRoute
   '/expenses/': typeof ExpensesIndexRoute
   '/inventory/': typeof InventoryIndexRoute
   '/products/': typeof ProductsIndexRoute
-  '/sales/': typeof SalesIndexRoute
   '/expenses/edit/$id': typeof ExpensesEditIdRoute
   '/expenses/view/$id': typeof ExpensesViewIdRoute
   '/products/brand/add': typeof ProductsBrandAddRoute
@@ -195,10 +195,10 @@ export interface FileRouteTypes {
     | '/'
     | '/expenses/add'
     | '/products/add'
+    | '/dashboard/'
     | '/expenses/'
     | '/inventory/'
     | '/products/'
-    | '/sales/'
     | '/expenses/edit/$id'
     | '/expenses/view/$id'
     | '/products/brand/add'
@@ -216,10 +216,10 @@ export interface FileRouteTypes {
     | '/'
     | '/expenses/add'
     | '/products/add'
+    | '/dashboard'
     | '/expenses'
     | '/inventory'
     | '/products'
-    | '/sales'
     | '/expenses/edit/$id'
     | '/expenses/view/$id'
     | '/products/brand/add'
@@ -237,10 +237,10 @@ export interface FileRouteTypes {
     | '/'
     | '/expenses/add'
     | '/products/add'
+    | '/dashboard/'
     | '/expenses/'
     | '/inventory/'
     | '/products/'
-    | '/sales/'
     | '/expenses/edit/$id'
     | '/expenses/view/$id'
     | '/products/brand/add'
@@ -259,10 +259,10 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ExpensesAddRoute: typeof ExpensesAddRoute
   ProductsAddRoute: typeof ProductsAddRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
   ExpensesIndexRoute: typeof ExpensesIndexRoute
   InventoryIndexRoute: typeof InventoryIndexRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
-  SalesIndexRoute: typeof SalesIndexRoute
   ExpensesEditIdRoute: typeof ExpensesEditIdRoute
   ExpensesViewIdRoute: typeof ExpensesViewIdRoute
   ProductsBrandAddRoute: typeof ProductsBrandAddRoute
@@ -286,13 +286,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sales/': {
-      id: '/sales/'
-      path: '/sales'
-      fullPath: '/sales/'
-      preLoaderRoute: typeof SalesIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/products/': {
       id: '/products/'
       path: '/products'
@@ -312,6 +305,13 @@ declare module '@tanstack/react-router' {
       path: '/expenses'
       fullPath: '/expenses/'
       preLoaderRoute: typeof ExpensesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/products/add': {
@@ -419,10 +419,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ExpensesAddRoute: ExpensesAddRoute,
   ProductsAddRoute: ProductsAddRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
   ExpensesIndexRoute: ExpensesIndexRoute,
   InventoryIndexRoute: InventoryIndexRoute,
   ProductsIndexRoute: ProductsIndexRoute,
-  SalesIndexRoute: SalesIndexRoute,
   ExpensesEditIdRoute: ExpensesEditIdRoute,
   ExpensesViewIdRoute: ExpensesViewIdRoute,
   ProductsBrandAddRoute: ProductsBrandAddRoute,

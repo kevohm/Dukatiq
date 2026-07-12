@@ -38,8 +38,22 @@ export class SaleRepository {
             // -----------------------------
             const saleItems = items.map((item) =>
                 manager.create(SaleItem, {
-                    ...item,
-                    sale_id: sale.id,
+                    quantity: item.quantity,
+                    selling_price: item.selling_price,
+                    cost_price: item.cost_price,
+                    profit: item.profit,
+
+                    sale: {
+                        id: sale.id,
+                    },
+
+                    product: {
+                        id: item.product_id,
+                    },
+
+                    unit: {
+                        id: item.unit_id,
+                    },
                 })
             )
 

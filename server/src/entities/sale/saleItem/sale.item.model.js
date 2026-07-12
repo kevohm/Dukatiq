@@ -22,7 +22,7 @@ export const SaleItem = new EntitySchema({
 
         profit: {
             type: 'float',
-        },
+        }
     },
 
     relations: {
@@ -42,6 +42,15 @@ export const SaleItem = new EntitySchema({
             target: 'Product',
             joinColumn: {
                 name: 'product_id',
+            },
+            onDelete: 'SET NULL',
+            onUpdate: 'CASCADE',
+        },
+        unit: {
+            type: 'many-to-one',
+            target: 'Unit',
+            joinColumn: {
+                name: 'unit_id',
             },
             onDelete: 'SET NULL',
             onUpdate: 'CASCADE',

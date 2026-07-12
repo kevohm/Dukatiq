@@ -46,6 +46,7 @@ export class InventoryService {
             data?.product_id,
             data?.unit_id
         )
+        console.log(productUnit)
         const normalized_quantity = data.quantity * productUnit.conversion_factor
 
         const event = await InventoryRepository.create({

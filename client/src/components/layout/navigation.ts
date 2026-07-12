@@ -11,7 +11,7 @@ import type { NavItem } from './types'
 export const mainNav: NavItem[] = [
     {
         name: 'Sales',
-        path: '/sales',
+        path: '/',
         icon: ShoppingCart,
     },
     {
@@ -31,7 +31,7 @@ export const mainNav: NavItem[] = [
     },
     {
         name: 'Dashboard',
-        path: '/',
+        path: '/dashboard',
         icon: LayoutDashboard,
     },
 ]

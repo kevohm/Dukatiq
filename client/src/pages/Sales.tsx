@@ -92,6 +92,7 @@ const Sales = () => {
 
     const handleCompleteSale = () => {
         if (!cartItems.length) return
+        console.log(cartItems)
         createSale(
             {
                 items: cartItems.map((item) => ({

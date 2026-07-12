@@ -1,10 +1,15 @@
 import { createFileRoute } from '@tanstack/react-router'
-import Dashboard from '../pages/Dashboard/Dashboard'
+import Sales from '../pages/Sales'
+import { CartProvider } from '../app/providers/CartProvider'
 
 export const Route = createFileRoute('/')({
-  component: RouteComponent,
+    component: RouteComponent,
 })
 
 function RouteComponent() {
-  return <Dashboard/>
+    return (
+        <CartProvider>
+            <Sales />
+        </CartProvider>
+    )
 }
