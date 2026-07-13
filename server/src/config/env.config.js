@@ -46,11 +46,14 @@ export const dbConfig = {
 /**
  * CORS config
  */
+const origins = getEnv('CORS_ORIGIN', '*')
+    .split(',')
+    .map((origin) => origin.trim())
+
 export const corsConfig = {
-    origin: getEnv('CORS_ORIGIN', '*'),
+    origin: origins,
     credentials: true,
 }
-
 /**
  * Cookie/session config
  */
