@@ -47,10 +47,9 @@ const Expense = () => {
                 title="Expense"
                 actions={
                     <Link to="/expenses/add">
-                  
-                    <Button variant="primary" icon={<Plus size={16} />}>
-                        Add Expense
-                    </Button>
+                        <Button variant="primary" icon={<Plus size={16} />}>
+                            Add Expense
+                        </Button>
                     </Link>
                 }
             ></Topbar>

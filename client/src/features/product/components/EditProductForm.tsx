@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { TextInput } from '../../../components/ui/TextInput'
-import {  useProduct, useUpdateProduct } from '../hooks'
+import { useProduct, useUpdateProduct } from '../hooks'
 import { Button } from '../../../components/ui/Button'
-import { useNavigate} from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 import BackButton from '../../../components/shared/BackButton'
 import type { ApiError } from '../../../errors/error'
 import { Loader } from 'lucide-react'
 import LoadingSection from '../../../components/shared/LoadingSection'
-import { useProductCategories} from '../category/hooks'
+import { useProductCategories } from '../category/hooks'
 import { Select } from '../../../components/ui/Select'
 import { useProductBrands } from '../brand/hooks'
 import type { IProductUpdatePayload } from '../types'
@@ -17,7 +17,7 @@ interface props {
 }
 const EditProductForm: React.FC<props> = ({ id }) => {
     const productQuery = useProduct(id)
-    const { mutateAsync, isPending,  } = useUpdateProduct()
+    const { mutateAsync, isPending } = useUpdateProduct()
     const productCategoryQuery = useProductCategories()
     const productBrandQuery = useProductBrands()
 

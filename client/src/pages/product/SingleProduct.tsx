@@ -20,7 +20,7 @@ const SingleProduct = () => {
         <AppBodyWrapper>
             <Topbar
                 title={
-                    <div className='flex gap-2.5'>
+                    <div className="flex gap-2.5">
                         <h1 className="text-2xl font-bold">
                             {productQuery?.data?.name}
                         </h1>

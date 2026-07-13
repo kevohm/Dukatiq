@@ -48,7 +48,11 @@ const Sales = () => {
         quantity: number,
         conversionFactor: number
     ) => {
-        const canUnitBeSold = canAddUnitToCart(productId, quantity, conversionFactor)
+        const canUnitBeSold = canAddUnitToCart(
+            productId,
+            quantity,
+            conversionFactor
+        )
 
         if (!canUnitBeSold) {
             toast.error('Not enough stock')
@@ -56,12 +60,15 @@ const Sales = () => {
         }
 
         return true
-
     }
 
     const addToCart = (product: soldProduct) => {
-        const canBeAddedCart = checkIfCanAddToCart(product?.id,  1, product?.conversion_factor)
-        if(!canBeAddedCart) return
+        const canBeAddedCart = checkIfCanAddToCart(
+            product?.id,
+            1,
+            product?.conversion_factor
+        )
+        if (!canBeAddedCart) return
         addItem(product)
     }
 
@@ -72,11 +79,11 @@ const Sales = () => {
         conversionFactor: number
     ) => {
         if (delta > 0) {
-             const canBeAddedCart = checkIfCanAddToCart(
-                 productId,
-                 delta,
-                 conversionFactor
-             )
+            const canBeAddedCart = checkIfCanAddToCart(
+                productId,
+                delta,
+                conversionFactor
+            )
             if (!canBeAddedCart) return
         }
         updateQuantity(productId, unitId, delta)

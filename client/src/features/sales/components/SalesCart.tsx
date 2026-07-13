@@ -20,7 +20,7 @@ type SalesCartProps = {
     onPaymentMethodChange: (method: SalePaymentMethod) => void
     onUpdateQuantity: (
         productId: string,
-        unitId:string,
+        unitId: string,
         delta: number,
         conversionFactor: number
     ) => void

@@ -49,10 +49,9 @@ const Product = () => {
                 title="Products"
                 actions={
                     <Link to="/products/add">
-                  
-                    <Button variant="primary" icon={<Plus size={16} />}>
-                        Add Product
-                    </Button>
+                        <Button variant="primary" icon={<Plus size={16} />}>
+                            Add Product
+                        </Button>
                     </Link>
                 }
             ></Topbar>

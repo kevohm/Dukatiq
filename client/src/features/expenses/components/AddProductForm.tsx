@@ -13,7 +13,6 @@ import { useCreateExpense } from '../hooks'
 
 const AddExpenseForm = () => {
     const { mutateAsync, isPending } = useCreateExpense()
-  
 
     const navigate = useNavigate()
 

@@ -14,7 +14,7 @@ const variants = {
 
 export function Button({
     variant = 'secondary',
-    type="button",
+    type = 'button',
     icon,
     className,
     children,

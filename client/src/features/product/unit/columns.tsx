@@ -17,7 +17,12 @@ const DeleteButton = ({ id }: { id: string }) => {
         })
     }
     return (
-        <Button variant="primary" type='button' disabled={isPending} onClick={handleDelete}>
+        <Button
+            variant="primary"
+            type="button"
+            disabled={isPending}
+            onClick={handleDelete}
+        >
             <Trash className="w-4 h-4" />
         </Button>
     )
@@ -90,7 +95,7 @@ export const productColumns: ColumnDef<Product>[] = [
         header: 'Actions',
         cell: (row: Product) => {
             return (
-                <div className='flex gap-2.5'>
+                <div className="flex gap-2.5">
                     <Link to="/products/view/$id" params={{ id: row?.id }}>
                         <Button>
                             <Eye className="w-4 h-4" />
