@@ -6,8 +6,9 @@ type TopbarProps = {
     title: string | ReactNode
     subTitle?: string
     actions?: ReactNode // e.g. <Button>New Work Order</Button>
-    toggles?: ReactNode // e.g. Auto Refresh switch
+    toggles?: ReactNode // e.g. Auto Refresh switchqw
 }
+
 
 export function Topbar({ title, subTitle, actions, toggles }: TopbarProps) {
     return (
