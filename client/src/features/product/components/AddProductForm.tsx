@@ -3,6 +3,7 @@ import { useNavigate } from '@tanstack/react-router'
 import BackButton from '../../../components/shared/BackButton'
 import type { ApiError } from '../../../errors/error'
 import { useCreateProduct } from '../hooks'
+import { useDeleteFile, useUploadFile } from '../../file/hooks'
 import type { IProductCreatePayload } from '../types'
 import { AddProductStepper } from './AddProductStepper'
 import { ProductBasicStep } from './ProductBasicStep'
@@ -10,9 +11,10 @@ import { ProductPricingStep } from './ProductPricingStep'
 import { ProductStepFooter } from './ProductStepFooter'
 import { ProductUnitsStep } from './ProductUnitsStep'
 import { ProductReviewStep } from './ProductReviewStep'
+import { ProductImageStep } from './ProductImageStep'
 
 
-const steps = ['Basic info', 'Pricing', 'Units', 'Review'] as const
+const steps = ['Basic info', 'Pricing', 'Units', 'Image', 'Review'] as const
 
 type ProductFormBody = IProductCreatePayload & {
     description?: string
@@ -24,13 +26,19 @@ type ProductFormBody = IProductCreatePayload & {
         conversion_factor: number
         is_base_unit: boolean
     }>
+    image_url?: string
+    image_key?: string
 }
 
 const AddProductForm = () => {
     const { mutateAsync, isPending } = useCreateProduct()
+    const { mutateAsync: uploadFile, isPending: isUploadingImage } = useUploadFile()
+    const { mutateAsync: deleteFile, isPending: isDeletingImage } = useDeleteFile()
     const navigate = useNavigate()
     const [errors, setErrors] = useState<Record<string, string>>({})
     const [stepIndex, setStepIndex] = useState(0)
+    const [imageFile, setImageFile] = useState<File>()
+    const [imagePreviewUrl, setImagePreviewUrl] = useState<string>()
 
     const [body, setBody] = useState<ProductFormBody>({
         name: '',
@@ -67,7 +75,7 @@ const AddProductForm = () => {
         setErrors((e) => ({ ...e, [name]: '' }))
     }
 
-    const nextStep = () => {
+    const nextStep = async () => {
         if (stepIndex === 0) {
             const required = ['name', 'category', 'brand']
             const missing = required.filter(
@@ -100,6 +108,24 @@ const AddProductForm = () => {
                 setErrors((e) => ({
                     ...e,
                     selling_price: 'Selling price must be greater than zero',
+                }))
+                return
+            }
+        }
+
+        if (stepIndex === 3 && imageFile && !body.image_key) {
+            try {
+                const image = await uploadFile({ file: imageFile })
+                setBody((current) => ({
+                    ...current,
+                    image_url: image.url,
+                    image_key: image.key,
+                }))
+            } catch (error) {
+                const message = (error as ApiError)?.message
+                setErrors((current) => ({
+                    ...current,
+                    image: message || 'Unable to upload the image',
                 }))
                 return
             }
@@ -168,6 +194,8 @@ const AddProductForm = () => {
                 cost_price: body.cost_price,
                 selling_price: body.selling_price,
                 units: body.units,
+                image_url: body.image_url,
+                image_key: body.image_key,
             }
             console.log(payload)
             await mutateAsync(payload)
@@ -180,6 +208,76 @@ const AddProductForm = () => {
         }
     }
 
+    const handleImageChange = (file?: File) => {
+        if (!file) return
+
+        if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
+            setErrors((current) => ({
+                ...current,
+                image: 'Select a PNG, JPEG, or WebP image',
+            }))
+            return
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            setErrors((current) => ({
+                ...current,
+                image: 'Image size must be 5 MB or less',
+            }))
+            return
+        }
+
+        setImageFile(file)
+        setImagePreviewUrl(URL.createObjectURL(file))
+        setBody((current) => ({
+            ...current,
+            image_url: undefined,
+            image_key: undefined,
+        }))
+        setErrors((current) => ({ ...current, image: '' }))
+    }
+
+    const handleRemoveImage = async () => {
+        if (body.image_key) {
+            try {
+                await deleteFile(body.image_key)
+            } catch (error) {
+                const message = (error as ApiError)?.message
+                setErrors((current) => ({
+                    ...current,
+                    image: message || 'Unable to remove the image',
+                }))
+                return
+            }
+        }
+
+        setImageFile(undefined)
+        setImagePreviewUrl(undefined)
+        setBody((current) => ({
+            ...current,
+            image_url: undefined,
+            image_key: undefined,
+        }))
+        setErrors((current) => ({ ...current, image: '' }))
+    }
+
+    const handleCancel = async () => {
+        if (body.image_key) {
+            try {
+                await deleteFile(body.image_key)
+            } catch (error) {
+                const message = (error as ApiError)?.message
+                setErrors((current) => ({
+                    ...current,
+                    image: message || 'Unable to remove the uploaded image',
+                }))
+                return
+            }
+        }
+
+        navigate({ to: '/products' })
+    }
+
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
             <div className="flex items-center justify-between">
@@ -189,7 +287,11 @@ const AddProductForm = () => {
                     </h2>
                     <p className="text-sm text-muted">{currentStep}</p>
                 </div>
-                <BackButton label="Cancel" />
+                <BackButton
+                    label="Cancel"
+                    onClick={handleCancel}
+                    disabled={isUploadingImage || isDeletingImage}
+                />
             </div>
 
             <AddProductStepper stepIndex={stepIndex} />
@@ -219,13 +321,23 @@ const AddProductForm = () => {
                 />
             ) : null}
 
-            {stepIndex === 3 && <ProductReviewStep body={body} />}
+            {stepIndex === 3 ? (
+                <ProductImageStep
+                    previewUrl={imagePreviewUrl}
+                    error={errors.image}
+                    isRemoving={isDeletingImage}
+                    onChange={handleImageChange}
+                    onRemove={handleRemoveImage}
+                />
+            ) : null}
+
+            {stepIndex === 4 && <ProductReviewStep body={body} />}
 
             <ProductStepFooter
           
                 stepIndex={stepIndex}
                 stepCount={steps.length}
-                isPending={isPending}
+                isPending={isPending || isUploadingImage || isDeletingImage}
                 onPrevious={previousStep}
                 onNext={nextStep}
             />

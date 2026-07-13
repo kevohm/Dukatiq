@@ -4,6 +4,7 @@ import {
     CardHeader,
     CardTitle,
 } from '../../../components/ui/Card'
+import { FileImage } from '../../file/components/FileImage'
 
 type Props = {
     body: {
@@ -12,6 +13,7 @@ type Props = {
         brand: string
         cost_price: number
         selling_price: number
+        image_key?: string
         units?: {
             unit_name: string
             conversion_factor: number
@@ -23,6 +25,24 @@ type Props = {
 export function ProductReviewStep({ body }: Props) {
     return (
         <div className="space-y-6">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Product Image</CardTitle>
+                </CardHeader>
+
+                <CardContent>
+                    {body.image_key ? (
+                        <FileImage
+                            fileKey={body.image_key}
+                            alt={body.name}
+                            className="h-32 w-32 rounded-lg border border-border object-cover"
+                        />
+                    ) : (
+                        <p className="text-sm text-muted">No image selected</p>
+                    )}
+                </CardContent>
+            </Card>
+
             <Card>
                 <CardHeader>
                     <CardTitle>Basic Information</CardTitle>

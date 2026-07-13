@@ -60,6 +60,8 @@ export interface IProductCreatePayload {
     cost_price: number
     selling_price: number
     units:  UnitPayload[]
+    image_url?: string
+    image_key?: string
 }
 
 export interface IProductUpdatePayload {

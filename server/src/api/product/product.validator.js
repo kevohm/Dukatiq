@@ -43,6 +43,11 @@ export class ProductValidator {
             .int('Low stock threshold must be a whole number')
             .min(0, 'Low stock threshold cannot be negative')
             .default(10),
+
+        image_url: z.string().url('Invalid image URL').optional(),
+
+        image_key: z.string().min(1, 'Image key is required').optional(),
+
         units: z
             .array(
                 z.object({

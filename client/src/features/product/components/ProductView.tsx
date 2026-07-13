@@ -12,6 +12,7 @@ import {
 import { Badge } from '../../../components/ui/Badge'
 import { Card } from '../../../components/ui/Card'
 import type { Product } from '../types'
+import { FileImage } from '../../file/components/FileImage'
 
 
 interface Props {
@@ -69,9 +70,17 @@ export default function ProductView({ product }: Props) {
             <div className="grid lg:grid-cols-3 gap-6">
                 {/* Image */}
                 <Card className="flex items-center justify-center min-h-72">
-                    {product.image_url ? (
+                    {product.image_key ? (
+                        <FileImage
+                            fileKey={product.image_key}
+                            alt={product.name}
+                            className="object-contain max-h-64"
+                            fallback={<span className="text-muted">Loading product image...</span>}
+                        />
+                    ) : product.image_url ? (
                         <img
                             src={product.image_url}
+                            alt={product.name}
                             className="object-contain max-h-64"
                         />
                     ) : (

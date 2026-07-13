@@ -2,6 +2,7 @@ import {
     BadgeDollarSign,
     Check,
     CircleDollarSign,
+    ImagePlus,
     Package2,
     ScanSearch,
 } from 'lucide-react'
@@ -18,6 +19,10 @@ const steps = [
     {
         label: 'Units',
         icon: CircleDollarSign,
+    },
+    {
+        label: 'Image',
+        icon: ImagePlus,
     },
     {
         label: 'Review',

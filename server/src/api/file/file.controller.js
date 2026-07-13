@@ -25,7 +25,7 @@ export async function deleteSingleFile(req, res) {
 }
 
 export async function getFileUrl(req, res) {
-    const response = await FileService.getSignedFileUrl(req.body)
+    const response = await FileService.getSignedFileUrl(req.query)
     res.status(response.status).json({
         success: response.success,
         data: response?.data,
