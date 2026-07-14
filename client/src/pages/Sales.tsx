@@ -154,7 +154,7 @@ const Sales = () => {
                     </aside>
                 </div>
 
-                <div className="fixed bottom-4 right-4 z-40 xl:hidden">
+                <div className="fixed bottom-24  md:bottom-4 right-4 z-40 xl:hidden">
                     <Button
                         variant="primary"
                         type="button"

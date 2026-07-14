@@ -13,11 +13,11 @@ export default function MobileDrawer({ open, onClose }: MobileDrawerProps) {
 
     return (
         <div
-            className="fixed inset-0 z-50 bg-black/40 md:hidden"
+            className="fixed inset-0 !z-[100] bg-black/40 md:hidden"
             onClick={onClose}
         >
             <div
-                className="absolute bottom-0 left-0 right-0 rounded-t-2xl bg-background p-5"
+                className="absolute bg-white bottom-0 left-0 right-0 rounded-t-2xl bg-background p-5"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="mb-5 flex items-center justify-between">
