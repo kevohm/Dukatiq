@@ -41,7 +41,7 @@ const ProductList = () => {
         const file = e.target.files?.[0]
 
         if (!file) return
-
+        //@ts-ignore
         const rows = await importSpreadsheet(file)
 
         // console.log(rows)
