@@ -28,7 +28,7 @@ describe('File Controller (Integration)', () => {
 
         it('should return 400 if no file provided', async () => {
             const res = await request(app).post('/api/file/upload')
-            console.log(res.body, res.error)
+            // console.log(res.body, res.error)
             expect(res.status).toBe(400)
             expect(res.body.message).toBe('No file provided')
         })
@@ -66,7 +66,7 @@ describe('File Controller (Integration)', () => {
             const res = await request(app)
                 .get('/api/file/url')
                 .query({ key: imageRes?.body?.key })
-            console.log(res.body, res.error)
+            // console.log(res.body, res.error)
             expect(res.status).toBe(200)
             expect(res.body?.data?.url).toBeDefined()
             expect(res.body?.data?.expires_in).toBeDefined()

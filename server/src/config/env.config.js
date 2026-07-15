@@ -40,7 +40,8 @@ export const env = {
  * Database config
  */
 export const dbConfig = {
-    path: requiredEnv('DB_PATH', path.join(__dirname, '../database/shop.sqlite')),
+    url: requiredEnv('DATABASE_URL'),
+    testUrl: env.isTest ? requiredEnv('DATABASE_URL_TEST') : undefined,
 }
 
 /**

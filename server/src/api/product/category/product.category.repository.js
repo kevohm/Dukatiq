@@ -1,76 +1,65 @@
+import { eq } from 'drizzle-orm'
 import { db } from '../../../config/database.js'
-import { ProductCategory } from '../../../entities/product/category.model.js'
+import { productCategories } from '../../../db/schema.js'
 import { AppError, ERROR_CODES } from '../../../errors/app.error.js'
 
 export class ProductCategoryRepository {
-    static repo = db.getRepository(ProductCategory)
-
-    // Get all categories
     static async getAll() {
-        return this.repo.find()
+        return db.select().from(productCategories)
     }
-
-    // Get category by ID
     static async getById(id) {
-        const category = await this.repo.findOne({
-            where: { id },
-        })
-
-        if (!category) {
+        const [row] = await db
+            .select()
+            .from(productCategories)
+            .where(eq(productCategories.id, id))
+        if (!row)
             throw new AppError({
                 message: 'Category not found',
                 code: ERROR_CODES.PRODUCT_CATEGORY.NOT_FOUND,
                 status: 404,
                 meta: { resource: 'product_category', id },
             })
-        }
-
-        return category
+        return row
     }
-
-    // Get category by name
-    static async getByName(name) {
-        return this.repo.findOne({
-            where: { name },
-        })
+    static async getByName(name, client = db) {
+        const [row] = await client
+            .select()
+            .from(productCategories)
+            .where(eq(productCategories.name, name))
+        return row
     }
-
-    // Create new category
-    static async create(data, manager = this.repo.manager) {
-        const category = manager.create(ProductCategory, data)
-        return manager.save(ProductCategory, category)
+    static async create(data, client = db) {
+        const [row] = await client
+            .insert(productCategories)
+            .values(data)
+            .returning()
+        return row
     }
-
-    // Find or create category
-    static async findOrCreate(data, manager = this.repo.manager) {
-        const category = await this.getByName(data.name)
-
-        if (!category) {
-            return this.create(data, manager)
-        }
-
-        return category
+    static async findOrCreate(data, client = db) {
+        return (
+            (await this.getByName(data.name, client)) ??
+            this.create(data, client)
+        )
     }
-
-    // Update category
     static async update(id, data) {
-        await this.repo.update(id, data)
+        await db
+            .update(productCategories)
+            .set({ ...data, updated_at: new Date() })
+            .where(eq(productCategories.id, id))
         return this.getById(id)
     }
-
-    // Delete category
     static async delete(id) {
-        const result = await this.repo.delete(id)
-
-        if (!result.affected) {
+        const row = await db
+            .delete(productCategories)
+            .where(eq(productCategories.id, id))
+            .returning({ id: productCategories.id })
+        if (!row.length)
             throw new AppError({
                 message: 'Failed to delete category',
                 code: ERROR_CODES.PRODUCT_CATEGORY.DELETE_FAILED,
                 status: 500,
                 meta: { resource: 'product_category', id },
             })
-        }
-
-        return result
+        return row[0]
     }
 }

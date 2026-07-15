@@ -14,11 +14,11 @@ export const RefreshToken = new EntitySchema({
         },
 
         expires_at: {
-            type: 'datetime',
+            type: 'timestamp'
         },
 
         revoked_at: {
-            type: 'datetime',
+           type: 'timestamp',
             nullable: true,
         },
 

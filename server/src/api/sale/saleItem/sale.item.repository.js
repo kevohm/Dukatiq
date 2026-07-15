@@ -1,90 +1,13 @@
-import { EntityManager } from 'typeorm'
+import { asc, eq } from 'drizzle-orm'
 import { db } from '../../../config/database.js'
-import { SaleItem } from './sale.item.model.js'
+import { saleItems } from '../../../db/schema.js'
 
 export class SaleItemRepository {
-    static repo = db.getRepository(SaleItem)
-
-    // -----------------------------
-    // CREATE SINGLE ITEM
-    // -----------------------------
-    static async create(
-        data,
-        manager = this.repo.manager
-    ) {
-        const saleItem = manager.create(SaleItem, data)
-        return manager.save(saleItem)
-    }
-
-    // -----------------------------
-    // BULK CREATE
-    // -----------------------------
-    static async bulkCreate(
-        items,
-        manager = this.repo.manager
-    ) {
-        const saleItems = manager.create(SaleItem, items)
-        return manager.save(saleItems)
-    }
-
-    // -----------------------------
-    // UPDATE ITEM
-    // -----------------------------
-    static async update(
-        id,
-        data,
-        manager = this.repo.manager
-    ) {
-        await manager.update(SaleItem, id, data)
-        return this.findById(id, manager)
-    }
-
-    // -----------------------------
-    // DELETE ITEM
-    // -----------------------------
-    static async delete(
-        id,
-        manager = this.repo.manager
-    ) {
-        return manager.delete(SaleItem, id)
-    }
-
-    // -----------------------------
-    // FIND BY ID
-    // -----------------------------
-    static async findById(
-        id,
-        manager = this.repo.manager
-    ) {
-        return manager.findOne(SaleItem, {
-            where: { id },
-        })
-    }
-
-    // -----------------------------
-    // FIND ALL ITEMS FOR A SALE
-    // -----------------------------
-    static async findBySaleId(
-        sale_id,
-        manager = this.repo.manager
-    ) {
-        return manager.find(SaleItem, {
-            where: { sale_id },
-            order: {
-                createdAt: 'ASC',
-            },
-        })
-    }
-
-    // -----------------------------
-    // DELETE ALL ITEMS FOR A SALE
-    // -----------------------------
-    static async deleteBySaleId(
-        sale_id,
-        manager = this.repo.manager
-    ) {
-        return manager.delete(SaleItem, {
-            sale_id,
-        })
-    }
+    static async create(data, client = db) { const [item] = await client.insert(saleItems).values(data).returning(); return item }
+    static async bulkCreate(items, client = db) { return client.insert(saleItems).values(items).returning() }
+    static async update(id, data, client = db) { await client.update(saleItems).set({ ...data, updated_at: new Date() }).where(eq(saleItems.id, id)); return this.findById(id, client) }
+    static async delete(id, client = db) { return client.delete(saleItems).where(eq(saleItems.id, id)).returning() }
+    static async findById(id, client = db) { const [item] = await client.select().from(saleItems).where(eq(saleItems.id, id)); return item }
+    static async findBySaleId(sale_id, client = db) { return client.select().from(saleItems).where(eq(saleItems.sale_id, sale_id)).orderBy(asc(saleItems.created_at)) }
+    static async deleteBySaleId(sale_id, client = db) { return client.delete(saleItems).where(eq(saleItems.sale_id, sale_id)).returning() }
 }

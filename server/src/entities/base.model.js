@@ -11,12 +11,14 @@ export const baseColumns = {
     },
 
     created_at: {
-        type: 'datetime',
+        type: 'timestamp',
         createDate: true,
+        default: () => 'CURRENT_TIMESTAMP',
     },
 
     updated_at: {
-        type: 'datetime',
+        type: 'timestamp',
         updateDate: true,
+        default: () => 'CURRENT_TIMESTAMP',
     },
 }

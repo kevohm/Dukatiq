@@ -11,6 +11,7 @@ import {
 import dayjs from 'dayjs'
 import { signAccessToken } from '../../utils/auth/jwt.js'
 import { AuthSerializer } from './auth.serializer.js'
+import { db } from '../../config/database.js'
 
 export class AuthService {
     static async signup(body) {
@@ -87,6 +88,9 @@ export class AuthService {
         { id, old_token, user_agent, ip },
         transaction = null
     ) {
+        if (!transaction) {
+            return db.transaction((tx) => this.refresh({ id, old_token, user_agent, ip }, tx))
+        }
         const token = await AuthRepository.findActiveTokenById(id, transaction)
         if (!token) {
             throw new AppError({

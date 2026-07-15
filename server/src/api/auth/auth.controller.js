@@ -63,7 +63,6 @@ export const me = async (req, res, next) => {
 }
 
 export const refresh = async (req, res) => {
-    const t = await sequelize.transaction()
     try {
         const [id, token] = getRefreshToken(req)
         const response = await AuthService.refresh(
@@ -73,7 +72,6 @@ export const refresh = async (req, res) => {
                 user_agent: req.headers['user-agent'],
                 ip: req.ip,
             },
-            t
         )
 
         setTokenCookies({
@@ -81,13 +79,11 @@ export const refresh = async (req, res) => {
             refreshToken: response?.data?.refreshToken,
             accessToken: response?.data?.accessToken,
         })
-        t.commit()
         res.status(response.status).json({
             success: response?.status,
             message: response?.message,
         })
     } catch (error) {
-        t.rollback()
         throw error
     }
 }

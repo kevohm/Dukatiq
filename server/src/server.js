@@ -1,5 +1,4 @@
-import { fa } from 'zod/v4/locales'
-import { db } from './config/database.js'
+import { pool, closeDatabase } from './config/database.js'
 import { config } from './config/env.config.js'
 import { logger } from './config/logger.config.js'
 import { createApp } from './index.js'
@@ -10,7 +9,7 @@ const APP_NAME = config.server.name
 
 app.listen(PORT, async () => {
     try {
-        await db.initialize()
+        await pool.query('SELECT 1')
         logger.info('connected to db')
         logger.info(
             {
@@ -25,7 +24,8 @@ app.listen(PORT, async () => {
 })
 
 // Graceful shutdown
-process.on('SIGINT', () => {
+process.on('SIGINT', async () => {
     logger.info(`Shutting down ${APP_NAME}`)
+    await closeDatabase()
     process.exit(0)
 })

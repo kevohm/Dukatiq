@@ -12,7 +12,7 @@ import { Badge } from '../../components/ui/Badge'
 const SingleProduct = () => {
     const { id } = useParams({ from: '/products/view/$id' })
     const productQuery = useProduct(id)
-    console.log(productQuery?.data)
+    // console.log(productQuery?.data)
     if (productQuery?.isLoading) {
         return <LoadingSection title="Fetching products" />
     }

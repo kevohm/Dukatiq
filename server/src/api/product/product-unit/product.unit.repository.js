@@ -1,94 +1,75 @@
+import { and, count, eq } from 'drizzle-orm'
 import { db } from '../../../config/database.js'
-import {ProductUnit} from '../../../entities/product/product.unit.model.js'
-import { AppError, ERROR_CODES } from '../../../errors/app.error.js'
+import { productUnits, products, units } from '../../../db/schema.js'
 
 export class ProductUnitRepository {
-    static repo = db.getRepository(ProductUnit)
-
     static async getByProduct(product_id) {
-        return this.repo.find({
-            where: {
-                product: {
-                    id: product_id,
-                },
-            },
-            relations: {
-                unit: true,
-            },
-        })
+        return db
+            .select({ ...productUnits, unit: units })
+            .from(productUnits)
+            .leftJoin(units, eq(productUnits.unit_id, units.id))
+            .where(eq(productUnits.product_id, product_id))
     }
-
-    static async getBaseUnit(product_id) {
-        return this.repo.findOne({
-            where: {
-                product: {
-                    id: product_id,
-                },
-                is_base_unit: true,
-            },
-        })
+    static async getBaseUnit(product_id, client = db) {
+        const [row] = await client
+            .select()
+            .from(productUnits)
+            .where(
+                and(
+                    eq(productUnits.product_id, product_id),
+                    eq(productUnits.is_base_unit, true)
+                )
+            )
+        return row
     }
-
-    static async getByUnit(product_id, unit_id) {
-        return this.repo.findOne({
-            where: {
-                product: {
-                    id: product_id,
-                },
-                unit: {
-                    id: unit_id,
-                },
-            },
-        })
+    static async getByUnit(product_id, unit_id, client = db) {
+        const [row] = await client
+            .select()
+            .from(productUnits)
+            .where(
+                and(
+                    eq(productUnits.product_id, product_id),
+                    eq(productUnits.unit_id, unit_id)
+                )
+            )
+        return row
     }
-
     static async findById(id) {
-        return this.repo.findOne({
-            where: { id },
-            relations: {
-                product: true,
-                unit: true,
-            },
-        })
+        const [row] = await db
+            .select({ ...productUnits, product: products, unit: units })
+            .from(productUnits)
+            .leftJoin(products, eq(productUnits.product_id, products.id))
+            .leftJoin(units, eq(productUnits.unit_id, units.id))
+            .where(eq(productUnits.id, id))
+        return row
     }
-
-    static async create(data, manager = this.repo.manager) {
-        const base = await this.getBaseUnit(data.product_id)
-
-        const entity = manager.create(ProductUnit,{
-            conversion_factor: data.conversion_factor,
-            is_base_unit: base ? false : Boolean(data.is_base_unit),
-
-            product: {
-                id: data.product_id,
-            },
-
-            unit: {
-                id: data.unit_id,
-            },
-        })
-
-        return manager.save(ProductUnit, entity)
+    static async create(data, client = db) {
+        const base = await this.getBaseUnit(data.product_id, client)
+        const [row] = await client
+            .insert(productUnits)
+            .values({
+                ...data,
+                is_base_unit: base ? false : Boolean(data.is_base_unit),
+            })
+            .returning()
+        return row
     }
-
-    static async findOrCreate(data, manager = this.repo.manager) {
-        const productUnit = await this.getByUnit(data.product_id, data.unit_id)
-
-        if (!productUnit) {
-            return this.create(data, manager)
-        }
-
-        return productUnit
+    static async findOrCreate(data, client = db) {
+        return (
+            (await this.getByUnit(data.product_id, data.unit_id, client)) ??
+            this.create(data, client)
+        )
     }
-
     static async countActiveUnits(productId) {
-        return this.repo.count({
-            where: {
-                product: {
-                    id: productId,
-                },
-                is_base_unit: true,
-            },
-        })
+        const [row] = await db
+            .select({ count: count() })
+            .from(productUnits)
+            .where(
+                and(
+                    eq(productUnits.product_id, productId),
+                    eq(productUnits.is_base_unit, true)
+                )
+            )
+        return Number(row.count)
     }
 }

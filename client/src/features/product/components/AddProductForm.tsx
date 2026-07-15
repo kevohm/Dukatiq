@@ -197,7 +197,7 @@ const AddProductForm = () => {
                 image_url: body.image_url,
                 image_key: body.image_key,
             }
-            console.log(payload)
+            // console.log(payload)
             await mutateAsync(payload)
             navigate({ to: '/products' })
         } catch (error) {

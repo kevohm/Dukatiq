@@ -1,165 +1,18 @@
-
+import { and, eq, gt, isNull } from 'drizzle-orm'
 import { db } from '../../config/database.js'
-import { User } from '../../entities/user/user.model.js'
-import {RefreshToken} from "../../entities/user/refresh.model.js"
+import { refreshTokens, users } from '../../db/schema.js'
 import { hashPassword } from '../../utils/auth/password.js'
 import { AppError, ERROR_CODES } from '../../errors/app.error.js'
 
 export class AuthRepository {
-    static userRepo = db.getRepository(User)
-    static refreshTokenRepo = db.getRepository(RefreshToken)
-
-    // -----------------------------
-    // GET USER BY ID
-    // -----------------------------
-    static async findById(
-        id,
-        manager = this.userRepo.manager
-    ) {
-        return manager.findOne(User, {
-            where: { id },
-        })
-    }
-
-    // -----------------------------
-    // GET USER BY EMAIL
-    // -----------------------------
-    static async findByEmail(
-        email,
-        manager = this.userRepo.manager
-    ) {
-        return manager.findOne(User, {
-            where: { email },
-        })
-    }
-
-    // -----------------------------
-    // CREATE USER
-    // -----------------------------
-    static async create(
-        data,
-        manager = this.userRepo.manager
-    ) {
-        const password = await hashPassword(data.password)
-
-        const user = manager.create(User, {
-            ...data,
-            password,
-        })
-
-        return manager.save(user)
-    }
-
-    // -----------------------------
-    // FIND OR CREATE USER
-    // -----------------------------
-    static async findOrCreate(
-        data,
-        manager = this.userRepo.manager
-    ) {
-        const user = await this.findByEmail(data.email, manager)
-
-        if (!user) {
-            return this.create(data, manager)
-        }
-
-        return user
-    }
-
-    // -----------------------------
-    // UPDATE USER
-    // -----------------------------
-    static async update(
-        id,
-        data,
-        manager = this.userRepo.manager
-    ) {
-        await manager.update(User, id, data)
-        return this.findById(id, manager)
-    }
-
-    // -----------------------------
-    // DELETE USER
-    // -----------------------------
-    static async delete(
-        id,
-        manager = this.userRepo.manager
-    ) {
-        const result = await manager.delete(User, id)
-
-        if (!result.affected) {
-            throw new AppError({
-                message: 'Failed to delete user',
-                code: ERROR_CODES.AUTH.INVALID_REFRESH_TOKEN,
-                status: 500,
-                meta: {
-                    resource: 'auth',
-                    id,
-                },
-            })
-        }
-
-        return result
-    }
-
-    // -----------------------------
-    // SAVE REFRESH TOKEN
-    // -----------------------------
-    static async saveRefreshToken(
-        data,
-        manager = this.refreshTokenRepo.manager
-    ) {
-        const token = manager.create(RefreshToken, {
-            ...data,
-            revoked_at: null,
-        })
-
-        return manager.save(token)
-    }
-
-    // -----------------------------
-    // FIND ALL VALID TOKENS
-    // -----------------------------
-    static async findValidTokens(
-        manager = this.refreshTokenRepo.manager
-    ) {
-        return manager.find(RefreshToken, {
-            where: {
-                revoked_at: null,
-                expires_at: MoreThan(new Date()),
-            },
-        })
-    }
-
-    // -----------------------------
-    // FIND ACTIVE TOKEN
-    // -----------------------------
-    static async findActiveTokenById(
-        id,
-        manager = this.refreshTokenRepo.manager
-    ) {
-        return manager.findOne(RefreshToken, {
-            where: {
-                id,
-                revoked_at: null,
-                expires_at: MoreThan(new Date()),
-            },
-        })
-    }
-
-    // -----------------------------
-    // REVOKE TOKEN
-    // -----------------------------
-    static async revokeToken(
-        id,
-        manager = this.refreshTokenRepo.manager
-    ) {
-        return manager.update(
-            RefreshToken,
-            { id },
-            {
-                revoked_at: new Date(),
-            }
-        )
-    }
+    static async findById(id, client = db) { const [user] = await client.select().from(users).where(eq(users.id, id)); return user }
+    static async findByEmail(email, client = db) { const [user] = await client.select().from(users).where(eq(users.email, email)); return user }
+    static async create(data, client = db) { const password = await hashPassword(data.password); const [user] = await client.insert(users).values({ ...data, password }).returning(); return user }
+    static async findOrCreate(data, client = db) { return (await this.findByEmail(data.email, client)) ?? this.create(data, client) }
+    static async update(id, data, client = db) { await client.update(users).set({ ...data, updated_at: new Date() }).where(eq(users.id, id)); return this.findById(id, client) }
+    static async delete(id, client = db) { const deleted = await client.delete(users).where(eq(users.id, id)).returning({ id: users.id }); if (!deleted.length) throw new AppError({ message: 'Failed to delete user', code: ERROR_CODES.AUTH.INVALID_REFRESH_TOKEN, status: 500, meta: { resource: 'auth', id } }); return deleted[0] }
+    static async saveRefreshToken(data, client = db) { const [token] = await client.insert(refreshTokens).values({ ...data, revoked_at: null }).returning(); return token }
+    static async findValidTokens(client = db) { return client.select().from(refreshTokens).where(and(isNull(refreshTokens.revoked_at), gt(refreshTokens.expires_at, new Date()))) }
+    static async findActiveTokenById(id, client = db) { const [token] = await client.select().from(refreshTokens).where(and(eq(refreshTokens.id, id), isNull(refreshTokens.revoked_at), gt(refreshTokens.expires_at, new Date()))); return token }
+    static async revokeToken(id, client = db) { return client.update(refreshTokens).set({ revoked_at: new Date(), updated_at: new Date() }).where(eq(refreshTokens.id, id)).returning() }
 }

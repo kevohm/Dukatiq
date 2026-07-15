@@ -44,7 +44,7 @@ const ProductList = () => {
 
         const rows = await importSpreadsheet(file)
 
-        console.log(rows)
+        // console.log(rows)
 
         // TODO:
         // await importProducts(rows)

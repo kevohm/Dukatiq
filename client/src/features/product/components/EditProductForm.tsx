@@ -146,7 +146,7 @@ const EditProductForm: React.FC<props> = ({ id }) => {
                     {isPending && (
                         <Loader className="w-4 h-4 animate-spin ease-in-out " />
                     )}
-                    {isPending ? 'Adding Product' : 'Add Product'}
+                    {isPending ? 'Updating Product' : 'Update Product'}
                 </Button>
             </div>
         </form>

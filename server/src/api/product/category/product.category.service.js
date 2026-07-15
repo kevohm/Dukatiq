@@ -10,7 +10,7 @@ export class ProductCategoryService {
             status: StatusCodes.OK,
             success: true,
             data,
-            message: 'Expense category found',
+            message: 'Product category found',
         }
     }
 
@@ -28,7 +28,7 @@ export class ProductCategoryService {
             status: StatusCodes.OK,
             success: true,
             data: category,
-            message: 'Expense category found',
+            message: 'Product category found',
         }
     }
     static async add(body) {
@@ -46,7 +46,7 @@ export class ProductCategoryService {
             })
         }
         const category = await ProductCategoryRepository.create(data)
-
+        // console.log(category)
         return {
             status: StatusCodes.CREATED,
             success: true,

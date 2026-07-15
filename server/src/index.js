@@ -21,9 +21,9 @@ export const createApp = () => {
     // ─────────────────────
     // Middleware
     // ─────────────────────
-    if(config.env.isDev || config.env.isProd){
-        app.use(httpLogger)
-    }
+    // if(config.env.isDev || config.env.isProd){
+    //     app.use(httpLogger)
+    // }
     app.use(helmet())
     app.use(compression())
     app.use(cors(config.cors))

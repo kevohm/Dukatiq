@@ -29,6 +29,8 @@ export function InventoryTransactionDialog() {
     const stockOut = useStockOut()
     const adjustStock = useAdjustStock()
 
+    // console.log(products)
+
     const selectedProduct = useMemo(
         () => products.find((product) => product.id === productId),
         [products, productId]
@@ -56,7 +58,7 @@ export function InventoryTransactionDialog() {
         const defaultUnit =
             product?.productUnits?.find((unit) => unit.is_base_unit) ??
             product?.productUnits?.[0]
-        setUnitId(defaultUnit?.id ?? '')
+        setUnitId(defaultUnit?.unit?.id ?? '')
     }
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -80,7 +82,7 @@ export function InventoryTransactionDialog() {
             quantity: numericQuantity,
         }
 
-        console.log(payload)
+        // console.log(payload)
 
         try {
             if (movementType === 'stock_in') await stockIn.mutateAsync(payload)
