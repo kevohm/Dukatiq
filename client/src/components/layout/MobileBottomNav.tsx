@@ -10,7 +10,7 @@ type Props = {
 
 export default function MobileBottomNav({ onMoreClick }: Props) {
     return (
-        <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-background md:hidden">
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-white md:hidden">
             <div className="flex">
                 {mainNav.slice(0, 4).map(({ name, path, icon: Icon }) => {
                     const active = useIsActive(path)

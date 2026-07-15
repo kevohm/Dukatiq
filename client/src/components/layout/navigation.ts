@@ -38,6 +38,11 @@ export const mainNav: NavItem[] = [
 
 export const secondaryNav: NavItem[] = [
     {
+        name: 'Dashboard',
+        path: '/dashboard',
+        icon: LayoutDashboard,
+    },
+    {
         name: 'Settings',
         path: '/settings',
         icon: Settings,
