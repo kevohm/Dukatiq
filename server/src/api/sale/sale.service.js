@@ -1,6 +1,4 @@
 import { SaleRepository } from './sale.repository.js'
-import { SaleItem } from '../../entities/sale/saleItem/sale.item.model.js'
-import { Product } from '../../entities/product/product.model.js'
 import { AppError, ERROR_CODES } from '../../errors/app.error.js'
 import { SaleValidator } from './sale.validator.js'
 import { ProductUnitService } from '../product/product-unit/product.unit.service.js'
