@@ -148,4 +148,43 @@ export class InventoryRepository {
             client
         )
     }
+
+    static async recalculateProductStock(tx, productId) {
+        const rows = await tx
+            .select()
+            .from(inventory)
+            .where(eq(inventory.product_id, productId))
+
+        const stock = rows.reduce((total, row) => {
+            switch (row.type) {
+                case 'stock_in':
+                    return total + row.normalized_quantity
+
+                case 'stock_out':
+                    return total - row.normalized_quantity
+
+                case 'adjustment':
+                    if (row.adjustment_type === 'increase') {
+                        return total + row.normalized_quantity
+                    }
+
+                    if (row.adjustment_type === 'decrease') {
+                        return total - row.normalized_quantity
+                    }
+
+                    return total
+
+                default:
+                    return total
+            }
+        }, 0)
+
+        await tx
+            .update(products)
+            .set({
+                stock_quantity: stock,
+                updated_at: new Date(),
+            })
+            .where(eq(products.id, productId))
+    }
 }

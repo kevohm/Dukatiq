@@ -8,6 +8,7 @@ import { ProductRepository } from '../product/product.repository.js'
 import { ProductUnitService } from '../product/product-unit/product.unit.service.js'
 import { ProductUnitRepository } from '../product/product-unit/product.unit.repository.js'
 import { calculateStockChange } from '../../utils/inventory/inventory.utils.js'
+import { inventory } from '../../db/schema.js'
 
 export function assertSufficientStock({ currentStock, change, product_id }) {
     if (currentStock + change < 0) {
@@ -46,7 +47,8 @@ export class InventoryService {
             data?.unit_id
         )
         // console.log(productUnit,data)
-        const normalized_quantity = data.quantity * productUnit.conversion_factor
+        const normalized_quantity =
+            data.quantity * productUnit.conversion_factor
 
         const event = await InventoryRepository.create({
             ...data,
@@ -138,5 +140,9 @@ export class InventoryService {
             data: event,
             message: 'Stock adjusted successfully',
         }
+    }
+
+    static async recalculateProductStock(tx, productId) {
+        return await InventoryRepository.recalculateProductStock(tx,productId)
     }
 }

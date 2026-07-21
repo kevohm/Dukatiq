@@ -78,7 +78,6 @@ export class ProductUnitSyncRepository {
                 unit_id: unitId,
                 product_id: productId,
             }
-            console.log(productUnit)
             const existing = await db
                 .select()
                 .from(productUnits)
