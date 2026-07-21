@@ -1,7 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { productApi } from './api'
-import type { IProductUpdatePayload} from './types'
+
+import type {  IProductUpdatePayload } from './types'
 import { isAxiosError } from 'axios'
+import { productService } from '@/data/service'
 
 const PRODUCT_KEY = ['products']
 
@@ -11,7 +12,7 @@ const PRODUCT_KEY = ['products']
 export function useProducts() {
     return useQuery({
         queryKey: PRODUCT_KEY,
-        queryFn: productApi.getAll,
+        queryFn: productService.getAll,
     })
 }
 
@@ -21,7 +22,7 @@ export function useProducts() {
 export function useProduct(id?: string) {
     return useQuery({
         queryKey: ['product', id],
-        queryFn: () => productApi.getOne(id),
+        queryFn: () => productService.getById(id),
         enabled: !!id,
     })
 }
@@ -33,11 +34,12 @@ export function useCreateProduct() {
     const qc = useQueryClient()
 
     return useMutation({
-        mutationFn: productApi.create,
+        mutationFn: productService.create,
         onSuccess: () => {
             qc.invalidateQueries({ queryKey: PRODUCT_KEY })
         },
         onError: (error) => {
+            console.log(error)
             if (isAxiosError(error)) {
                 return error.response?.data
             } else {
@@ -54,8 +56,13 @@ export function useUpdateProduct() {
     const qc = useQueryClient()
 
     return useMutation({
-        mutationFn: ({ id, data }: { id: string; data: IProductUpdatePayload }) =>
-            productApi.update(id, data),
+        mutationFn: ({
+            id,
+            data,
+        }: {
+            id: string
+            data: IProductUpdatePayload
+        }) => productService.update(id, data),
 
         onSuccess: (_, variables) => {
             qc.invalidateQueries({ queryKey: PRODUCT_KEY })
@@ -73,7 +80,7 @@ export function useDeleteProduct() {
     const qc = useQueryClient()
 
     return useMutation({
-        mutationFn: (id: string) => productApi.remove(id),
+        mutationFn: (id: string) => productService.delete(id),
 
         onSuccess: () => {
             qc.invalidateQueries({ queryKey: PRODUCT_KEY })

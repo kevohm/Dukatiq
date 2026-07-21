@@ -1,6 +1,6 @@
 import type { ColumnDef } from '../../components/data-table/types'
 import { Badge, type BadgeColor } from '../../components/ui/Badge'
-import type { InventoryEvent } from './types'
+import { InventoryAdjustmentTypeEnum, InventoryTypeEnum, type InventoryEvent } from './types'
 
 const typeLabels = {
     stock_in: 'Stock in',
@@ -35,13 +35,7 @@ export const inventoryColumns: ColumnDef<InventoryEvent>[] = [
         sortValue: (row) => row.product?.name ?? '',
         cell: (row) => row.product?.name ?? '—',
     },
-    {
-        id: 'unit',
-        header: 'Unit',
-        sortable: true,
-        sortValue: (row) => row.unit?.name ?? '',
-        cell: (row) => row.unit?.name ?? '—',
-    },
+
     {
         id: 'type',
         header: 'Movement',
@@ -58,10 +52,43 @@ export const inventoryColumns: ColumnDef<InventoryEvent>[] = [
         sortValue: (row) => row.quantity,
         cell: (row) => {
             const isDecrease =
-                row.type === 'stock_out' || row.adjustment_type === 'decrease'
+                row.type === InventoryTypeEnum.STOCK_OUT ||
+                row.adjustment_type === InventoryAdjustmentTypeEnum.OUT
+
             return (
-                <span className={isDecrease ? 'font-medium text-danger' : 'font-medium text-green-600'}>
-                    {isDecrease ? '-' : '+'}{row.quantity}
+                <span
+                    className={
+                        isDecrease
+                            ? 'font-medium text-danger'
+                            : 'font-medium text-green-600'
+                    }
+                >
+                    {isDecrease ? '-' : '+'}
+                    {row.quantity} {row.unit?.name ?? ''}
+                </span>
+            )
+        },
+    },
+    {
+        id: 'normalized_quantity',
+        header: 'Stock Change',
+        sortable: true,
+        sortValue: (row) => row.normalized_quantity,
+        cell: (row) => {
+            const isDecrease =
+                row.type === InventoryTypeEnum.STOCK_OUT ||
+                row.adjustment_type === InventoryAdjustmentTypeEnum.OUT
+
+            return (
+                <span
+                    className={
+                        isDecrease
+                            ? 'font-medium text-danger'
+                            : 'font-medium text-green-600'
+                    }
+                >
+                    {isDecrease ? '-' : '+'}
+                    {row.normalized_quantity} base units
                 </span>
             )
         },
@@ -72,5 +99,25 @@ export const inventoryColumns: ColumnDef<InventoryEvent>[] = [
         sortable: true,
         sortValue: (row) => row.reference_type ?? '',
         cell: (row) => row.reference_type ?? '—',
+    },
+    {
+        id: 'adjustment_type',
+        header: 'Adjustment',
+        sortable: true,
+        sortValue: (row) => row.adjustment_type ?? '',
+        cell: (row) => {
+            if (row.type !== InventoryTypeEnum.ADJUSTMENT) {
+                return '—'
+            }
+
+            const isDecrease =
+                row.adjustment_type === InventoryAdjustmentTypeEnum.OUT
+
+            return (
+                <Badge color={isDecrease ? 'red' : 'green'}>
+                    {isDecrease ? 'Decrease' : 'Increase'}
+                </Badge>
+            )
+        },
     },
 ]

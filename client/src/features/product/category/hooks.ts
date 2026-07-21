@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
-import { productCategoryApi } from './api'
 import type { ProductCategory } from './types'
+import { productCategoryService } from '@/data/service'
 
 const PRODUCT_CATEGORY_KEY = ['product-categories']
 
@@ -11,7 +11,7 @@ const PRODUCT_CATEGORY_KEY = ['product-categories']
 export function useProductCategories() {
     return useQuery({
         queryKey: PRODUCT_CATEGORY_KEY,
-        queryFn: productCategoryApi.getAll,
+        queryFn: productCategoryService.getAll,
     })
 }
 
@@ -21,7 +21,7 @@ export function useProductCategories() {
 export function useProductCategory(id?: string) {
     return useQuery({
         queryKey: ['product-category', id],
-        queryFn: () => productCategoryApi.getOne(id),
+        queryFn: () => productCategoryService.getById(id),
         enabled: !!id,
     })
 }
@@ -33,7 +33,7 @@ export function useCreateProductCategory() {
     const qc = useQueryClient()
 
     return useMutation({
-        mutationFn: productCategoryApi.create,
+        mutationFn: productCategoryService.create,
 
         onSuccess: () => {
             qc.invalidateQueries({
@@ -64,7 +64,7 @@ export function useUpdateProductCategory() {
         }: {
             id: string
             data: Partial<ProductCategory>
-        }) => productCategoryApi.update(id, data),
+        }) => productCategoryService.update(id, data),
 
         onSuccess: (_, variables) => {
             qc.invalidateQueries({
@@ -85,7 +85,7 @@ export function useDeleteProductCategory() {
     const qc = useQueryClient()
 
     return useMutation({
-        mutationFn: (id: string) => productCategoryApi.remove(id),
+        mutationFn: (id: string) => productCategoryService.delete(id),
 
         onSuccess: () => {
             qc.invalidateQueries({

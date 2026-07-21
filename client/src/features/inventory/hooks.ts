@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { inventoryApi } from './api'
+import { inventoryService } from '@/data/service/inventory/inventory.service'
 
 const INVENTORY_KEY = ['inventory']
 
@@ -18,26 +18,26 @@ function useInventoryMutation<T>(mutationFn: (data: T) => Promise<unknown>) {
 export function useInventory() {
     return useQuery({
         queryKey: INVENTORY_KEY,
-        queryFn: inventoryApi.getAll,
+        queryFn: inventoryService.getAll,
     })
 }
 
 export function useProductStock(productId?: string) {
     return useQuery({
         queryKey: ['inventory', 'stock', productId],
-        queryFn: () => inventoryApi.getStock(productId!),
+        queryFn: () => inventoryService.getStock(productId!),
         enabled: Boolean(productId),
     })
 }
 
 export function useStockIn() {
-    return useInventoryMutation(inventoryApi.stockIn)
+    return useInventoryMutation(inventoryService.stockIn)
 }
 
 export function useStockOut() {
-    return useInventoryMutation(inventoryApi.stockOut)
+    return useInventoryMutation(inventoryService.stockOut)
 }
 
 export function useAdjustStock() {
-    return useInventoryMutation(inventoryApi.adjust)
+    return useInventoryMutation(inventoryService.adjust)
 }

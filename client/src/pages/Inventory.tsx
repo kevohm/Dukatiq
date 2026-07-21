@@ -49,7 +49,10 @@ const Inventory = () => {
             <div className="flex-1 overflow-y-auto px-6">
                 {isLoading && <div className="py-6 text-sm text-muted">Loading inventory...</div>}
                 {isError && <div className="py-6 text-sm text-danger">Unable to load inventory records.</div>}
-                {!isLoading && !isError && <DataTable columns={inventoryColumns} data={paginated} getRowId={(row) => row.id} selectable={false} />}
+                
+                {!isLoading && !isError && <DataTable columns={inventoryColumns} 
+                //@ts-ignore
+                data={paginated} getRowId={(row) => row.id} selectable={false} />}
             </div>
             {!isLoading && !isError && (
                 <DataTablePagination

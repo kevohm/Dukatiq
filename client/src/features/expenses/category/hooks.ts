@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
-import { expenseCategoryApi } from './api'
 import type { ExpenseCategory } from './types'
+import { expenseCategoryService } from '@/data/service'
 
 const EXPENSE_CATEGORY_KEY = ['expense-categories']
 
@@ -11,7 +11,7 @@ const EXPENSE_CATEGORY_KEY = ['expense-categories']
 export function useExpenseCategories() {
     return useQuery({
         queryKey: EXPENSE_CATEGORY_KEY,
-        queryFn: expenseCategoryApi.getAll,
+        queryFn: expenseCategoryService.getAll,
     })
 }
 
@@ -21,7 +21,7 @@ export function useExpenseCategories() {
 export function useExpenseCategory(id?: string) {
     return useQuery({
         queryKey: ['expense-category', id],
-        queryFn: () => expenseCategoryApi.getOne(id),
+        queryFn: () => expenseCategoryService.getById(id),
         enabled: !!id,
     })
 }
@@ -33,7 +33,7 @@ export function useCreateExpenseCategory() {
     const qc = useQueryClient()
 
     return useMutation({
-        mutationFn: expenseCategoryApi.create,
+        mutationFn: expenseCategoryService.create,
 
         onSuccess: () => {
             qc.invalidateQueries({
@@ -64,7 +64,7 @@ export function useUpdateExpenseCategory() {
         }: {
             id: string
             data: Partial<ExpenseCategory>
-        }) => expenseCategoryApi.update(id, data),
+        }) => expenseCategoryService.update(id, data),
 
         onSuccess: (_, variables) => {
             qc.invalidateQueries({
@@ -85,7 +85,7 @@ export function useDeleteExpenseCategory() {
     const qc = useQueryClient()
 
     return useMutation({
-        mutationFn: (id: string) => expenseCategoryApi.remove(id),
+        mutationFn: (id: string) => expenseCategoryService.delete(id),
 
         onSuccess: () => {
             qc.invalidateQueries({

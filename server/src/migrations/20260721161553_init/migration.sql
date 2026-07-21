@@ -49,7 +49,8 @@ CREATE TABLE "product_unit" (
 	"conversion_factor" double precision NOT NULL,
 	"is_base_unit" boolean DEFAULT false NOT NULL,
 	"product_id" uuid NOT NULL,
-	"unit_id" uuid NOT NULL
+	"unit_id" uuid NOT NULL,
+	CONSTRAINT "product_unit_product_unit_unique" UNIQUE("product_id","unit_id")
 );
 --> statement-breakpoint
 CREATE TABLE "product" (
@@ -101,6 +102,15 @@ CREATE TABLE "sale" (
 	"payment_method" varchar DEFAULT 'cash' NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "sync_checkpoint" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"collection" varchar NOT NULL UNIQUE,
+	"last_synced_at" timestamp with time zone NOT NULL,
+	"last_synced_id" uuid
+);
+--> statement-breakpoint
 CREATE TABLE "unit" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
@@ -121,8 +131,10 @@ CREATE TABLE "user" (
 ALTER TABLE "expense" ADD CONSTRAINT "expense_category_id_expense_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "expense_category"("id") ON DELETE SET NULL ON UPDATE CASCADE;--> statement-breakpoint
 ALTER TABLE "inventory" ADD CONSTRAINT "inventory_product_id_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "product"("id") ON DELETE SET NULL ON UPDATE CASCADE;--> statement-breakpoint
 ALTER TABLE "inventory" ADD CONSTRAINT "inventory_unit_id_unit_id_fkey" FOREIGN KEY ("unit_id") REFERENCES "unit"("id") ON DELETE SET NULL ON UPDATE CASCADE;--> statement-breakpoint
+
 ALTER TABLE "product_unit" ADD CONSTRAINT "product_unit_product_id_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "product"("id") ON DELETE CASCADE ON UPDATE CASCADE;--> statement-breakpoint
 ALTER TABLE "product_unit" ADD CONSTRAINT "product_unit_unit_id_unit_id_fkey" FOREIGN KEY ("unit_id") REFERENCES "unit"("id") ON DELETE RESTRICT ON UPDATE CASCADE;--> statement-breakpoint
+
 ALTER TABLE "product" ADD CONSTRAINT "product_category_id_product_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "product_category"("id") ON DELETE SET NULL ON UPDATE CASCADE;--> statement-breakpoint
 ALTER TABLE "product" ADD CONSTRAINT "product_brand_id_product_brand_id_fkey" FOREIGN KEY ("brand_id") REFERENCES "product_brand"("id") ON DELETE SET NULL ON UPDATE CASCADE;--> statement-breakpoint
 ALTER TABLE "refresh_token" ADD CONSTRAINT "refresh_token_user_id_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE SET NULL ON UPDATE CASCADE;--> statement-breakpoint

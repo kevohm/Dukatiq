@@ -1,82 +1,120 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { productApi } from './api'
-import type { IProductUpdatePayload } from './types'
-import {  isAxiosError } from 'axios'
 
-const PRODUCT_KEY = ['products']
+import type {
+    IProductUnitCreatePayload,
+    IProductUnitUpdatePayload,
+} from './types'
+import { productUnitService } from '@/data/service'
+
+const PRODUCT_UNIT_KEY = ['productUnits']
 
 /* -----------------------------
-   GET ALL PRODUCTS
+   GET ALL PRODUCT UNITS
 ------------------------------*/
-export function useProducts() {
+export function useProductUnits() {
     return useQuery({
-        queryKey: PRODUCT_KEY,
-        queryFn: productApi.getAll,
+        queryKey: PRODUCT_UNIT_KEY,
+        queryFn: () => productUnitService.getAll(),
     })
 }
 
 /* -----------------------------
-   GET SINGLE PRODUCT
+   GET SINGLE PRODUCT UNIT
 ------------------------------*/
-export function useProduct(id?: string) {
+export function useProductUnit(id?: string) {
     return useQuery({
-        queryKey: ['product', id],
-        queryFn: () => productApi.getOne(id),
+        queryKey: ['productUnit', id],
+        queryFn: () => productUnitService.getById(id),
         enabled: !!id,
     })
 }
 
 /* -----------------------------
-   CREATE PRODUCT
+   GET PRODUCT UNIT BY PRODUCT + UNIT
 ------------------------------*/
-export function useCreateProduct() {
-    const qc = useQueryClient()
-
-    return useMutation({
-        mutationFn: productApi.create,
-        onSuccess: () => {
-            qc.invalidateQueries({ queryKey: PRODUCT_KEY })
-        },
-        onError: (error) => {
-            if (isAxiosError(error)) {
-                return error.response?.data
-            } else {
-                return error
-            }
-        },
+export function useProductUnitByProductAndUnit(
+    productId?: string,
+    unitId?: string
+) {
+    return useQuery({
+        queryKey: ['productUnit', productId, unitId],
+        queryFn: () =>
+            productUnitService.getByProductAndUnit(productId, unitId),
+        enabled: !!productId && !!unitId,
     })
 }
 
 /* -----------------------------
-   UPDATE PRODUCT
+   GET PRODUCT UNIT BY PRODUCT
 ------------------------------*/
-export function useUpdateProduct() {
+export function useProductUnitByProduct(
+    productId?: string,
+) {
+    return useQuery({
+        queryKey: ['productUnit', productId],
+        queryFn: () =>
+            productUnitService.getByProduct(productId),
+        enabled: !!productId
+    })
+}
+/* -----------------------------
+   CREATE PRODUCT UNIT
+------------------------------*/
+export function useCreateProductUnit() {
     const qc = useQueryClient()
 
     return useMutation({
-        mutationFn: ({ id, data }: { id: string; data: IProductUpdatePayload }) =>
-            productApi.update(id, data),
+        mutationFn: (payload: IProductUnitCreatePayload) =>
+            productUnitService.create(payload),
 
-        onSuccess: (_, variables) => {
-            qc.invalidateQueries({ queryKey: PRODUCT_KEY })
+        onSuccess: () => {
             qc.invalidateQueries({
-                queryKey: ['product', variables.id],
+                queryKey: PRODUCT_UNIT_KEY,
             })
         },
     })
 }
 
 /* -----------------------------
-   DELETE PRODUCT
+   UPDATE PRODUCT UNIT
 ------------------------------*/
-export function useDeleteProduct() {
+export function useUpdateProductUnit() {
     const qc = useQueryClient()
 
     return useMutation({
-        mutationFn: (id: string) => productApi.remove(id),
+        mutationFn: ({
+            id,
+            data,
+        }: {
+            id: string
+            data: IProductUnitUpdatePayload
+        }) => productUnitService.update(id, data),
+
+        onSuccess: (_, variables) => {
+            qc.invalidateQueries({
+                queryKey: PRODUCT_UNIT_KEY,
+            })
+
+            qc.invalidateQueries({
+                queryKey: ['productUnit', variables.id],
+            })
+        },
+    })
+}
+
+/* -----------------------------
+   DELETE PRODUCT UNIT
+------------------------------*/
+export function useDeleteProductUnit() {
+    const qc = useQueryClient()
+
+    return useMutation({
+        mutationFn: (id: string) => productUnitService.delete(id),
 
         onSuccess: () => {
-            qc.invalidateQueries({ queryKey: PRODUCT_KEY })
+            qc.invalidateQueries({
+                queryKey: PRODUCT_UNIT_KEY,
+            })
         },
     })
 }

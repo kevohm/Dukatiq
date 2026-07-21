@@ -24,11 +24,13 @@ const SingleProduct = () => {
                         <h1 className="text-2xl font-bold">
                             {productQuery?.data?.name}
                         </h1>
-
                         <div className="flex gap-2 mt-2">
-                            <Badge>{productQuery?.data?.category.name}</Badge>
+                            <Badge>{
+                            //@ts-ignore
+                            productQuery?.data?.category.name}</Badge>
                             <Badge color="blue">
-                                {productQuery?.data?.brand.name}
+                                {//@ts-ignore
+                                productQuery?.data?.brand.name}
                             </Badge>
                         </div>
                     </div>
@@ -45,6 +47,7 @@ const SingleProduct = () => {
             />
             <div className="px-6">
                 {productQuery?.data && (
+                    //@ts-ignore
                     <ProductView product={productQuery?.data} />
                 )}
             </div>

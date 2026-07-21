@@ -1,29 +1,63 @@
 import type { Product, Unit } from '../product/types'
 
-export type InventoryEventType = 'stock_in' | 'stock_out' | 'adjustment'
-export type InventoryAdjustmentType = 'increase' | 'decrease'
+export const InventoryAdjustmentTypeEnum = {
+    IN: 'increase',
+    OUT: 'decrease',
+} as const
+
+export type InventoryAdjustmentType =
+    (typeof InventoryAdjustmentTypeEnum)[keyof typeof InventoryAdjustmentTypeEnum]
+
+export const InventoryReferenceTypeEnum = {
+    SALE: 'sale',
+    PURCHASE: 'purchase',
+    ADJUSTMENT: 'adjustment',
+    TRANSFER: 'transfer',
+} as const
+
+export type InventoryReferenceType =
+    (typeof InventoryReferenceTypeEnum)[keyof typeof InventoryReferenceTypeEnum]
+
+export const InventoryTypeEnum = {
+    STOCK_IN: 'stock_in',
+    STOCK_OUT: 'stock_out',
+    ADJUSTMENT: 'adjustment',
+} as const
+
+export type InventoryType =
+    (typeof InventoryTypeEnum)[keyof typeof InventoryTypeEnum]
 
 export type InventoryEvent = {
     id: string
-    type: InventoryEventType
+    type: InventoryType
     quantity: number
     normalized_quantity: number
     adjustment_type: InventoryAdjustmentType | null
-    reference_type: string | null
+    reference_type: InventoryReferenceType | null
     reference_id: string | null
     product: Pick<Product, 'id' | 'name'> | null
-    unit: Unit | null
+    unit: Pick<Unit, "id" | "name"> | null
     created_at: string
     updated_at: string
 }
 
-export type InventoryMovementPayload = {
+export type InventoryCreatePayload = {
     product_id: string
     unit_id: string
     quantity: number
 }
 
-export type InventoryAdjustmentPayload = InventoryMovementPayload & {
+export type InventoryCreateInternaPayload = {
+    type: InventoryType
+    product_id: string
+    unit_id: string
+    quantity: number
+    adjustment_type?: InventoryAdjustmentType | null
+    reference_type: InventoryReferenceType | null
+    reference_id: string | null
+}
+
+export type InventoryAdjustmentPayload = InventoryCreatePayload & {
     adjustment_type: InventoryAdjustmentType
 }
 

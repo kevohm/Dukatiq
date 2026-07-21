@@ -11,6 +11,7 @@ import unitRoutes from "../api/product/unit/unit.route.js";
 import productUnitRoutes from '../api/product/product-unit/product.unit.route.js'
 import saleRoutes from '../api/sale/sale.route.js'
 import dashboardRoutes from '../api/dashboard/dashboard.route.js'
+import syncRoutes from '../api/sync/sync.route.js'
 
 const router = express.Router()
 
@@ -26,6 +27,9 @@ router.use('/product-unit', productUnitRoutes)
 router.use("/inventory", inventoryRoutes )
 router.use('/sale', saleRoutes)
 router.use('/analytics', dashboardRoutes)
+
+// Syncing
+router.use('/api/sync', syncRoutes)
 
 export const appRouter = router
 

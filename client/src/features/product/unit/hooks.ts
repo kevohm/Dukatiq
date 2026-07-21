@@ -1,82 +1,91 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { productApi } from './api'
-import type { IProductUpdatePayload} from './types'
+import type { IUnitUpdatePayload } from './types'
 import { isAxiosError } from 'axios'
+import { unitService } from '@/data/service'
 
-const PRODUCT_KEY = ['products']
+const UNIT_KEY = ['units']
 
 /* -----------------------------
-   GET ALL PRODUCTS
+   GET ALL UNITS
 ------------------------------*/
-export function useProducts() {
+export function useUnits() {
     return useQuery({
-        queryKey: PRODUCT_KEY,
-        queryFn: productApi.getAll,
+        queryKey: UNIT_KEY,
+        queryFn: unitService.getAll,
     })
 }
 
 /* -----------------------------
-   GET SINGLE PRODUCT
+   GET SINGLE UNIT
 ------------------------------*/
-export function useProduct(id?: string) {
+export function useUnit(id?: string) {
     return useQuery({
-        queryKey: ['product', id],
-        queryFn: () => productApi.getOne(id),
+        queryKey: ['unit', id],
+        queryFn: () => unitService.getById(id),
         enabled: !!id,
     })
 }
 
 /* -----------------------------
-   CREATE PRODUCT
+   CREATE UNIT
 ------------------------------*/
-export function useCreateProduct() {
+export function useCreateUnit() {
     const qc = useQueryClient()
 
     return useMutation({
-        mutationFn: productApi.create,
+        mutationFn: unitService.create,
+
         onSuccess: () => {
-            qc.invalidateQueries({ queryKey: PRODUCT_KEY })
+            qc.invalidateQueries({
+                queryKey: UNIT_KEY,
+            })
         },
+
         onError: (error) => {
             if (isAxiosError(error)) {
                 return error.response?.data
-            } else {
-                return error
             }
+
+            return error
         },
     })
 }
 
 /* -----------------------------
-   UPDATE PRODUCT
+   UPDATE UNIT
 ------------------------------*/
-export function useUpdateProduct() {
+export function useUpdateUnit() {
     const qc = useQueryClient()
 
     return useMutation({
-        mutationFn: ({ id, data }: { id: string; data: IProductUpdatePayload }) =>
-            productApi.update(id, data),
+        mutationFn: ({ id, data }: { id: string; data: IUnitUpdatePayload }) =>
+            unitService.update(id, data),
 
         onSuccess: (_, variables) => {
-            qc.invalidateQueries({ queryKey: PRODUCT_KEY })
             qc.invalidateQueries({
-                queryKey: ['product', variables.id],
+                queryKey: UNIT_KEY,
+            })
+
+            qc.invalidateQueries({
+                queryKey: ['unit', variables.id],
             })
         },
     })
 }
 
 /* -----------------------------
-   DELETE PRODUCT
+   DELETE UNIT
 ------------------------------*/
-export function useDeleteProduct() {
+export function useDeleteUnit() {
     const qc = useQueryClient()
 
     return useMutation({
-        mutationFn: (id: string) => productApi.remove(id),
+        mutationFn: (id: string) => unitService.delete(id),
 
         onSuccess: () => {
-            qc.invalidateQueries({ queryKey: PRODUCT_KEY })
+            qc.invalidateQueries({
+                queryKey: UNIT_KEY,
+            })
         },
     })
 }

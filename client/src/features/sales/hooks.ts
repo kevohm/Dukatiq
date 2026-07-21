@@ -1,11 +1,11 @@
 import { useMutation } from '@tanstack/react-query'
-import { saleApi } from './api'
 import toast from 'react-hot-toast'
 import type { ApiError } from '../../errors/error'
+import { saleService } from '@/data/service'
 
 export function useCreateSale() {
     return useMutation({
-        mutationFn: saleApi.create,
+        mutationFn: saleService.create,
         onSuccess: () => {
             toast.success('Sale completed successfully')
         },

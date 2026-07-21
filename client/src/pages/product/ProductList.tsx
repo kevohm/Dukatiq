@@ -14,8 +14,6 @@ import { DataTableToolbar } from '../../components/data-table/DataTableToolbar'
 import { Button } from '../../components/ui/Button'
 import { Topbar } from '../../components/layout/Topbar'
 import AppBodyWrapper from '../../components/layout/AppBodyWrapper'
-import { mapProductsForExport } from '../../features/product/export'
-import { ExportDropdown } from '../../features/product/components/ExportDropdown'
 
 const ProductList = () => {
     const { data = [], isLoading, error } = useProducts()
@@ -95,10 +93,10 @@ const ProductList = () => {
                             </Button>
                         </label>
 
-                        <ExportDropdown
+                        {/* <ExportDropdown
                             filename="products"
                             data={mapProductsForExport(filtered)}
-                        />
+                        /> */}
                     </>
                 }
             />

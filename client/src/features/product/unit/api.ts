@@ -1,16 +1,16 @@
 import { api } from '../../../lib/utils'
-import type { IProductCreatePayload, IProductUpdatePayload, Product } from './types'
+import type { Unit } from '../types'
+import type { IUnitCreatePayload, IUnitUpdatePayload } from './types'
 
 
+export const unitApi = {
+    getAll: () => api.get<Unit[]>('/products'),
 
-export const productApi = {
-    getAll: () => api.get<Product[]>('/products'),
+    getOne: (id?: string) => api.get<Unit>(`/products/${id}`),
 
-    getOne: (id?: string) => api.get<Product>(`/products/${id}`),
+    create: (data: IUnitCreatePayload) => api.post<Unit>('/products', data),
 
-    create: (data: IProductCreatePayload) => api.post<Product>('/products', data),
-
-    update: (id: string, data: IProductUpdatePayload) => api.put<Product>(`/products/${id}`, data),
+    update: (id: string, data: IUnitUpdatePayload) => api.put<Unit>(`/products/${id}`, data),
 
     remove: (id: string) => api.delete(`/products/${id}`),
 }

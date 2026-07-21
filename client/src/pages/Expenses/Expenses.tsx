@@ -67,6 +67,7 @@ const Expense = () => {
             <div className="flex-1 overflow-y-auto px-6">
                 <DataTable
                     columns={expenseColumns}
+                    //@ts-ignore
                     data={paginated}
                     getRowId={(row) => row.id}
                 />

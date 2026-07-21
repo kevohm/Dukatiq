@@ -2,7 +2,7 @@ import { api } from '../../lib/utils'
 import type {
     InventoryAdjustmentPayload,
     InventoryEvent,
-    InventoryMovementPayload,
+    InventoryCreatePayload,
     ProductStockSummary,
 } from './types'
 
@@ -12,10 +12,10 @@ export const inventoryApi = {
     getStock: (productId: string) =>
         api.get<ProductStockSummary>(`/inventory/stock/${productId}`),
 
-    stockIn: (data: InventoryMovementPayload) =>
+    stockIn: (data: InventoryCreatePayload) =>
         api.post<InventoryEvent>('/inventory/stock-in', data),
 
-    stockOut: (data: InventoryMovementPayload) =>
+    stockOut: (data: InventoryCreatePayload) =>
         api.post<InventoryEvent>('/inventory/stock-out', data),
 
     adjust: (data: InventoryAdjustmentPayload) =>

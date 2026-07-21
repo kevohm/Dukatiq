@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
-import { Bell } from 'lucide-react'
-import { Button } from '../ui/Button'
+// import { Bell } from 'lucide-react'
+// import { Button } from '../ui/Button'
+import { SyncStatusButton } from '../shared/SyncStatusButton'
 
 type TopbarProps = {
     title: string | ReactNode
@@ -24,7 +25,8 @@ export function Topbar({ title, subTitle, actions, toggles }: TopbarProps) {
 
             <div className="flex items-center gap-4">
                 {toggles}
-                <Button
+                <SyncStatusButton/>
+                {/* <Button
                     type="button"
                     variant="secondary"
                     className="relative rounded-full p-2 "
@@ -32,7 +34,7 @@ export function Topbar({ title, subTitle, actions, toggles }: TopbarProps) {
                 >
                     <Bell size={20} />
                     <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-danger" />
-                </Button>
+                </Button> */}
                 {actions}
             </div>
         </header>

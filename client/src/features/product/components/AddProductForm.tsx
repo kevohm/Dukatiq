@@ -35,6 +35,7 @@ const AddProductForm = () => {
     const { mutateAsync: uploadFile, isPending: isUploadingImage } = useUploadFile()
     const { mutateAsync: deleteFile, isPending: isDeletingImage } = useDeleteFile()
     const navigate = useNavigate()
+    // console.log(isPending)
     const [errors, setErrors] = useState<Record<string, string>>({})
     const [stepIndex, setStepIndex] = useState(0)
     const [imageFile, setImageFile] = useState<File>()

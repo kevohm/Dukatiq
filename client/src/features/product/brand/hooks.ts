@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
-import { productBrandApi } from './api'
 import type { ProductBrand } from './types'
+import { brandService } from '@/data/service'
 
 const PRODUCT_BRAND_KEY = ['product-brands']
 
@@ -11,7 +11,7 @@ const PRODUCT_BRAND_KEY = ['product-brands']
 export function useProductBrands() {
     return useQuery({
         queryKey: PRODUCT_BRAND_KEY,
-        queryFn: productBrandApi.getAll,
+        queryFn: brandService.getAll,
     })
 }
 
@@ -21,7 +21,7 @@ export function useProductBrands() {
 export function useProductBrand(id?: string) {
     return useQuery({
         queryKey: ['product-brand', id],
-        queryFn: () => productBrandApi.getOne(id),
+        queryFn: () => brandService.getById(id),
         enabled: !!id,
     })
 }
@@ -33,7 +33,7 @@ export function useCreateProductBrand() {
     const qc = useQueryClient()
 
     return useMutation({
-        mutationFn: productBrandApi.create,
+        mutationFn: brandService.create,
 
         onSuccess: () => {
             qc.invalidateQueries({
@@ -64,7 +64,7 @@ export function useUpdateProductBrand() {
         }: {
             id: string
             data: Partial<ProductBrand>
-        }) => productBrandApi.update(id, data),
+        }) => brandService.update(id, data),
 
         onSuccess: (_, variables) => {
             qc.invalidateQueries({
@@ -85,7 +85,7 @@ export function useDeleteProductBrand() {
     const qc = useQueryClient()
 
     return useMutation({
-        mutationFn: (id: string) => productBrandApi.remove(id),
+        mutationFn: (id: string) => brandService.delete(id),
 
         onSuccess: () => {
             qc.invalidateQueries({

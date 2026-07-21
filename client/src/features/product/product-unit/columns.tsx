@@ -1,14 +1,15 @@
 import { Edit, Eye, Trash } from 'lucide-react'
 import type { ColumnDef } from '../../../components/data-table/types'
-import type { Product } from './types'
+
 import { Button } from '../../../components/ui/Button'
 import { Badge } from '../../../components/ui/Badge'
 import { Link } from '@tanstack/react-router'
-import { useDeleteProduct } from './hooks'
 import toast from 'react-hot-toast'
+import type { Product } from '../types'
+import { useDeleteProductUnit } from './hooks'
 
 const DeleteButton = ({ id }: { id: string }) => {
-    const { mutateAsync, isPending } = useDeleteProduct()
+    const { mutateAsync, isPending } = useDeleteProductUnit()
     const handleDelete = async () => {
         toast.promise(() => mutateAsync(id), {
             loading: 'Deleting product',

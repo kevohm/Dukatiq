@@ -141,6 +141,7 @@ const Sales = () => {
             <div className="px-4 pb-6">
                 <div className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
                     <ProductSearch
+                    //@ts-ignore
                         products={filteredProducts}
                         search={search}
                         isLoading={isLoading}

@@ -10,6 +10,7 @@
         "db:generate": "drizzle-kit generate",
         "db:migrate": "drizzle-kit migrate",
         "db:pull": "drizzle-kit pull",
+        "db:reset": "drizzle-kit drop && drizzle-kit push",
         "test": "vitest",
         "test:coverage": "vitest run --coverage"
     },

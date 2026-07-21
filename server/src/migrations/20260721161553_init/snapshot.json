@@ -1,7 +1,7 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "e875418b-d47d-4819-a4b2-6ef8d74eb7e7",
+  "id": "cb5e740d-c82c-4a12-a2b2-6293ac115c42",
   "prevIds": [
     "00000000-0000-0000-0000-000000000000"
   ],
@@ -63,6 +63,12 @@
     {
       "isRlsEnabled": false,
       "name": "sale",
+      "entityType": "tables",
+      "schema": "public"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "sync_checkpoint",
       "entityType": "tables",
       "schema": "public"
     },
@@ -1038,6 +1044,84 @@
       "name": "id",
       "entityType": "columns",
       "schema": "public",
+      "table": "sync_checkpoint"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sync_checkpoint"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sync_checkpoint"
+    },
+    {
+      "type": "varchar",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "collection",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sync_checkpoint"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "last_synced_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sync_checkpoint"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "last_synced_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sync_checkpoint"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "entityType": "columns",
+      "schema": "public",
       "table": "unit"
     },
     {
@@ -1462,6 +1546,16 @@
         "id"
       ],
       "nameExplicit": false,
+      "name": "sync_checkpoint_pkey",
+      "schema": "public",
+      "table": "sync_checkpoint",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
       "name": "unit_pkey",
       "schema": "public",
       "table": "unit",
@@ -1476,6 +1570,18 @@
       "schema": "public",
       "table": "user",
       "entityType": "pks"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        "product_id",
+        "unit_id"
+      ],
+      "nullsNotDistinct": false,
+      "name": "product_unit_product_unit_unique",
+      "entityType": "uniques",
+      "schema": "public",
+      "table": "product_unit"
     },
     {
       "nameExplicit": false,
@@ -1519,6 +1625,17 @@
       "name": "refresh_token_token_hash_key",
       "schema": "public",
       "table": "refresh_token",
+      "entityType": "uniques"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "collection"
+      ],
+      "nullsNotDistinct": false,
+      "name": "sync_checkpoint_collection_key",
+      "schema": "public",
+      "table": "sync_checkpoint",
       "entityType": "uniques"
     },
     {

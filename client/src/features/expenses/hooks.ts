@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
-import { expenseApi } from './api'
 import type {  IExpenseUpdatePayload } from './types'
+import { expenseService } from '@/data/service'
 
 const EXPENSE_KEY = ['expenses']
 
@@ -11,7 +11,7 @@ const EXPENSE_KEY = ['expenses']
 export function useExpenses() {
     return useQuery({
         queryKey: EXPENSE_KEY,
-        queryFn: expenseApi.getAll,
+        queryFn: expenseService.getAll,
     })
 }
 
@@ -21,7 +21,7 @@ export function useExpenses() {
 export function useExpense(id?: string) {
     return useQuery({
         queryKey: ['expense', id],
-        queryFn: () => expenseApi.getOne(id),
+        queryFn: () => expenseService.getById(id),
         enabled: !!id,
     })
 }
@@ -33,7 +33,7 @@ export function useCreateExpense() {
     const qc = useQueryClient()
 
     return useMutation({
-        mutationFn: expenseApi.create,
+        mutationFn: expenseService.create,
 
         onSuccess: () => {
             qc.invalidateQueries({
@@ -64,7 +64,7 @@ export function useUpdateExpense() {
         }: {
             id: string
             data: IExpenseUpdatePayload
-        }) => expenseApi.update(id, data),
+        }) => expenseService.update(id, data),
 
         onSuccess: (_, variables) => {
             qc.invalidateQueries({
@@ -85,7 +85,7 @@ export function useDeleteExpense() {
     const qc = useQueryClient()
 
     return useMutation({
-        mutationFn: (id: string) => expenseApi.remove(id),
+        mutationFn: (id: string) => expenseService.delete(id),
 
         onSuccess: () => {
             qc.invalidateQueries({

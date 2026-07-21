@@ -7,24 +7,26 @@ import { Select } from '../../../components/ui/Select'
 import { TextInput } from '../../../components/ui/TextInput'
 import { useProducts } from '../../product/hooks'
 import { useAdjustStock, useStockIn, useStockOut } from '../hooks'
-import type { InventoryAdjustmentType, InventoryEventType } from '../types'
+import {  InventoryTypeEnum, type InventoryAdjustmentType, type InventoryType} from '../types'
+import UnitPicker from './UnitPicker'
 
 const movementOptions = [
-    { value: 'stock_in', label: 'Stock in (restock)' },
+    { value: InventoryTypeEnum.STOCK_IN, label: 'Stock in (restock)' },
     // { value: 'stock_out', label: 'Stock out' },
-    { value: 'adjustment', label: 'Manual adjustment' },
+    { value: InventoryTypeEnum.ADJUSTMENT, label: 'Manual adjustment' },
 ]
 
 export function InventoryTransactionDialog() {
     const [open, setOpen] = useState(false)
     const [movementType, setMovementType] =
-        useState<InventoryEventType>('stock_in')
+        useState<InventoryType>('stock_in')
     const [adjustmentType, setAdjustmentType] =
         useState<InventoryAdjustmentType>('increase')
     const [productId, setProductId] = useState('')
     const [unitId, setUnitId] = useState('')
     const [quantity, setQuantity] = useState('')
     const { data: products = [], isLoading: isLoadingProducts } = useProducts()
+
     const stockIn = useStockIn()
     const stockOut = useStockOut()
     const adjustStock = useAdjustStock()
@@ -35,7 +37,6 @@ export function InventoryTransactionDialog() {
         () => products.find((product) => product.id === productId),
         [products, productId]
     )
-    const units = selectedProduct?.productUnits ?? []
     const isPending =
         stockIn.isPending || stockOut.isPending || adjustStock.isPending
 
@@ -54,11 +55,6 @@ export function InventoryTransactionDialog() {
 
     const handleProductChange = (nextProductId: string) => {
         setProductId(nextProductId)
-        const product = products.find((item) => item.id === nextProductId)
-        const defaultUnit =
-            product?.productUnits?.find((unit) => unit.is_base_unit) ??
-            product?.productUnits?.[0]
-        setUnitId(defaultUnit?.unit?.id ?? '')
     }
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -85,9 +81,9 @@ export function InventoryTransactionDialog() {
         // console.log(payload)
 
         try {
-            if (movementType === 'stock_in') await stockIn.mutateAsync(payload)
+            if (movementType === InventoryTypeEnum.STOCK_IN) await stockIn.mutateAsync(payload)
             // if (movementType === 'stock_out') await stockOut.mutateAsync(payload)
-            if (movementType === 'adjustment') {
+            if (movementType === InventoryTypeEnum.ADJUSTMENT) {
                 await adjustStock.mutateAsync({
                     ...payload,
                     adjustment_type: adjustmentType,
@@ -95,7 +91,8 @@ export function InventoryTransactionDialog() {
             }
             toast.success('Inventory movement recorded.')
             handleOpenChange(false)
-        } catch {
+        } catch(err) {
+            console.log(err)
             toast.error('Unable to record the inventory movement.')
         }
     }
@@ -137,7 +134,7 @@ export function InventoryTransactionDialog() {
                             value={movementType}
                             onChange={(event) =>
                                 setMovementType(
-                                    event.target.value as InventoryEventType
+                                    event.target.value as InventoryType
                                 )
                             }
                             options={movementOptions}
@@ -181,7 +178,7 @@ export function InventoryTransactionDialog() {
                             }))}
                             disabled={isLoadingProducts}
                         />
-                        <Select
+                        {/* <Select
                             label="Unit"
                             placeholder="Select unit"
                             value={unitId}
@@ -191,7 +188,15 @@ export function InventoryTransactionDialog() {
                                 label: unit.unit?.name ?? 'Unit',
                             }))}
                             disabled={!selectedProduct}
-                        />
+                        /> */}
+                        {selectedProduct?.id && (
+                            <UnitPicker
+                                productId={selectedProduct?.id}
+                                onChange={(unitId) => {
+                                    setUnitId(unitId)
+                                }}
+                            />
+                        )}
                         <TextInput
                             label="Quantity"
                             type="number"
