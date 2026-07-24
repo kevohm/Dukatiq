@@ -8,5 +8,5 @@ import { asc, or } from 'drizzle-orm'
 export const BrandSyncRepository = createSyncRepository({
     table: brands,
     collection: SyncCollections.BRAND,
-    uniqueField: 'name',
+    uniqueField: ['name',"id"],
 })

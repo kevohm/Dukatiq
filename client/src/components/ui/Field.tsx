@@ -18,6 +18,7 @@ interface FieldProps {
     error?: string
     required?: boolean
     children: ReactNode
+    className?:string
 }
 
 // Wraps any control with a label + optional helper/error text.
@@ -28,11 +29,12 @@ export function Field({
     hint,
     error,
     required,
+    className="",
     children,
 }: FieldProps) {
     const hintId = hint || error ? `${id}-hint` : undefined
     return (
-        <div className="flex flex-col gap-1.5">
+        <div className={`flex flex-col gap-1.5 ${className}`}>
             {label && (
                 <label
                     htmlFor={id}

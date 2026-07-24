@@ -1,4 +1,4 @@
-import { timestamp, uuid } from 'drizzle-orm/pg-core'
+import { boolean, timestamp, uuid } from 'drizzle-orm/pg-core'
 
 const id = () => uuid('id').defaultRandom().primaryKey()
 export const audit = {
@@ -9,4 +9,5 @@ export const audit = {
     updated_at: timestamp('updated_at', { withTimezone: true })
         .defaultNow()
         .notNull(),
+    is_deleted: boolean().default(false)
 }

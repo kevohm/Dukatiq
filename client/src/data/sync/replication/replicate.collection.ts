@@ -1,6 +1,7 @@
 import { replicateRxCollection } from 'rxdb/plugins/replication'
 import type { RxCollection } from 'rxdb'
 import { syncApi } from '../api'
+import { baseConfig } from '../config'
 
 interface ReplicationConfig {
     collection: RxCollection
@@ -12,10 +13,8 @@ export function replicateCollection({ collection, name }: ReplicationConfig) {
         collection,
 
         replicationIdentifier: `catalog/${name}`,
-        autoStart: false,
-        waitForLeadership: true,
-        live: false,
-        retryTime: 10000,
+        ...baseConfig,
+        deletedField:"is_deleted",
 
         push: {
             batchSize: 50,
@@ -27,6 +26,7 @@ export function replicateCollection({ collection, name }: ReplicationConfig) {
             modifier(doc) {
                 return doc
             },
+            
         },
 
         pull: {

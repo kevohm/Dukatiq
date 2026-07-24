@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+    "scripts": {
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "changeset publish"
+  },
+  "dependencies": {
+    "@changesets/cli": "^2.31.1"
+  }
+}

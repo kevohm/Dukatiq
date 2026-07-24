@@ -2,6 +2,7 @@ import type { BusinessDatabase } from '@/data/db/types'
 import { SyncCollections } from '../sync.collections'
 import { replicateRxCollection } from 'rxdb/plugins/replication'
 import { syncApi } from '../../api'
+import { baseConfig } from '../../config'
 
 export function replicateProductUnits(db: BusinessDatabase) {
     const collection = db.productUnits
@@ -10,11 +11,7 @@ export function replicateProductUnits(db: BusinessDatabase) {
     return replicateRxCollection({
         collection,
         replicationIdentifier: `catalog/${name}`,
-        autoStart: false,
-        waitForLeadership: true,
-        live: false,
-        retryTime: 10000,
-
+        ...baseConfig,
         push: {
             batchSize: 50,
 
@@ -31,6 +28,7 @@ export function replicateProductUnits(db: BusinessDatabase) {
                                 $in: unitIds,
                             },
                         },
+                        
                     })
                     .exec()
 

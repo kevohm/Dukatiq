@@ -37,5 +37,9 @@ export const baseProperties = {
         format: 'date-time',
         maxLength: 35,
     },
+    is_deleted: {
+        type: 'boolean',
+        default: false,
+    },
 }
 

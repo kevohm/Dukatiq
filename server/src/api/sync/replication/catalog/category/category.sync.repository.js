@@ -5,5 +5,5 @@ import { SyncCollections } from '../../../sync.collections.js'
 export const CategorySyncRepository = createSyncRepository({
     table: productCategories,
     collection:SyncCollections.CATEGORY,
-    uniqueField: 'name',
+    uniqueField: ['name'],
 })

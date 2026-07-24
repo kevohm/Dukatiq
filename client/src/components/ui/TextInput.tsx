@@ -1,8 +1,4 @@
-import {
-    useId,
-    useState,
-    type InputHTMLAttributes,
-} from 'react'
+import { useId, useState, type InputHTMLAttributes } from 'react'
 import { Eye, EyeOff, type LucideIcon } from 'lucide-react'
 import { controlBase, controlBorder, Field, type BaseFieldProps } from './Field'
 
@@ -11,6 +7,7 @@ export interface TextInputProps
         BaseFieldProps,
         Omit<InputHTMLAttributes<HTMLInputElement>, 'id' | 'className'> {
     leadingIcon?: LucideIcon
+    containerClassName?: string
 }
 
 export function TextInput({
@@ -21,6 +18,7 @@ export function TextInput({
     type = 'text',
     leadingIcon: LeadingIcon,
     className = '',
+    containerClassName = '',
     id,
     ...props
 }: TextInputProps) {
@@ -37,6 +35,7 @@ export function TextInput({
             hint={hint}
             error={error}
             required={required}
+            className={containerClassName}
         >
             <div className="relative">
                 {LeadingIcon && (

@@ -9,190 +9,230 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as ProductsIndexRouteImport } from './routes/products/index'
-import { Route as InventoryIndexRouteImport } from './routes/inventory/index'
-import { Route as ExpensesIndexRouteImport } from './routes/expenses/index'
-import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
-import { Route as ProductsAddRouteImport } from './routes/products/add'
-import { Route as ExpensesAddRouteImport } from './routes/expenses/add'
-import { Route as ProductsCategoryIndexRouteImport } from './routes/products/category/index'
-import { Route as ProductsBrandIndexRouteImport } from './routes/products/brand/index'
-import { Route as ProductsViewIdRouteImport } from './routes/products/view/$id'
-import { Route as ProductsEditIdRouteImport } from './routes/products/edit/$id'
-import { Route as ProductsCategoryAddRouteImport } from './routes/products/category/add'
-import { Route as ProductsBrandAddRouteImport } from './routes/products/brand/add'
-import { Route as ExpensesViewIdRouteImport } from './routes/expenses/view/$id'
-import { Route as ExpensesEditIdRouteImport } from './routes/expenses/edit/$id'
-import { Route as ProductsCategoryViewIdRouteImport } from './routes/products/category/view/$id'
-import { Route as ProductsCategoryEditIdRouteImport } from './routes/products/category/edit/$id'
-import { Route as ProductsBrandViewIdRouteImport } from './routes/products/brand/view/$id'
-import { Route as ProductsBrandEditIdRouteImport } from './routes/products/brand/edit/$id'
+import { Route as DashboardRouteImport } from './routes/_dashboard'
+import { Route as AuthRouteImport } from './routes/_auth'
+import { Route as DashboardIndexRouteImport } from './routes/_dashboard/index'
+import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
+import { Route as AuthLoginRouteImport } from './routes/_auth/login'
+import { Route as DashboardProductsIndexRouteImport } from './routes/_dashboard/products/index'
+import { Route as DashboardInventoryIndexRouteImport } from './routes/_dashboard/inventory/index'
+import { Route as DashboardExpensesIndexRouteImport } from './routes/_dashboard/expenses/index'
+import { Route as DashboardDashboardIndexRouteImport } from './routes/_dashboard/dashboard/index'
+import { Route as DashboardProductsAddRouteImport } from './routes/_dashboard/products/add'
+import { Route as DashboardExpensesAddRouteImport } from './routes/_dashboard/expenses/add'
+import { Route as DashboardProductsCategoryIndexRouteImport } from './routes/_dashboard/products/category/index'
+import { Route as DashboardProductsBrandIndexRouteImport } from './routes/_dashboard/products/brand/index'
+import { Route as DashboardProductsViewIdRouteImport } from './routes/_dashboard/products/view/$id'
+import { Route as DashboardProductsEditIdRouteImport } from './routes/_dashboard/products/edit/$id'
+import { Route as DashboardProductsCategoryAddRouteImport } from './routes/_dashboard/products/category/add'
+import { Route as DashboardProductsBrandAddRouteImport } from './routes/_dashboard/products/brand/add'
+import { Route as DashboardExpensesViewIdRouteImport } from './routes/_dashboard/expenses/view/$id'
+import { Route as DashboardExpensesEditIdRouteImport } from './routes/_dashboard/expenses/edit/$id'
+import { Route as DashboardProductsCategoryViewIdRouteImport } from './routes/_dashboard/products/category/view/$id'
+import { Route as DashboardProductsCategoryEditIdRouteImport } from './routes/_dashboard/products/category/edit/$id'
+import { Route as DashboardProductsBrandViewIdRouteImport } from './routes/_dashboard/products/brand/view/$id'
+import { Route as DashboardProductsBrandEditIdRouteImport } from './routes/_dashboard/products/brand/edit/$id'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/_dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProductsIndexRoute = ProductsIndexRouteImport.update({
-  id: '/products/',
-  path: '/products/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const InventoryIndexRoute = InventoryIndexRouteImport.update({
-  id: '/inventory/',
-  path: '/inventory/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExpensesIndexRoute = ExpensesIndexRouteImport.update({
-  id: '/expenses/',
-  path: '/expenses/',
+const AuthRoute = AuthRouteImport.update({
+  id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const AuthRegisterRoute = AuthRegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthLoginRoute = AuthLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AuthRoute,
+} as any)
+const DashboardProductsIndexRoute = DashboardProductsIndexRouteImport.update({
+  id: '/products/',
+  path: '/products/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardInventoryIndexRoute = DashboardInventoryIndexRouteImport.update({
+  id: '/inventory/',
+  path: '/inventory/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardExpensesIndexRoute = DashboardExpensesIndexRouteImport.update({
+  id: '/expenses/',
+  path: '/expenses/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardDashboardIndexRoute = DashboardDashboardIndexRouteImport.update({
   id: '/dashboard/',
   path: '/dashboard/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => DashboardRoute,
 } as any)
-const ProductsAddRoute = ProductsAddRouteImport.update({
+const DashboardProductsAddRoute = DashboardProductsAddRouteImport.update({
   id: '/products/add',
   path: '/products/add',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => DashboardRoute,
 } as any)
-const ExpensesAddRoute = ExpensesAddRouteImport.update({
+const DashboardExpensesAddRoute = DashboardExpensesAddRouteImport.update({
   id: '/expenses/add',
   path: '/expenses/add',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => DashboardRoute,
 } as any)
-const ProductsCategoryIndexRoute = ProductsCategoryIndexRouteImport.update({
-  id: '/products/category/',
-  path: '/products/category/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProductsBrandIndexRoute = ProductsBrandIndexRouteImport.update({
-  id: '/products/brand/',
-  path: '/products/brand/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProductsViewIdRoute = ProductsViewIdRouteImport.update({
+const DashboardProductsCategoryIndexRoute =
+  DashboardProductsCategoryIndexRouteImport.update({
+    id: '/products/category/',
+    path: '/products/category/',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardProductsBrandIndexRoute =
+  DashboardProductsBrandIndexRouteImport.update({
+    id: '/products/brand/',
+    path: '/products/brand/',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardProductsViewIdRoute = DashboardProductsViewIdRouteImport.update({
   id: '/products/view/$id',
   path: '/products/view/$id',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => DashboardRoute,
 } as any)
-const ProductsEditIdRoute = ProductsEditIdRouteImport.update({
+const DashboardProductsEditIdRoute = DashboardProductsEditIdRouteImport.update({
   id: '/products/edit/$id',
   path: '/products/edit/$id',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => DashboardRoute,
 } as any)
-const ProductsCategoryAddRoute = ProductsCategoryAddRouteImport.update({
-  id: '/products/category/add',
-  path: '/products/category/add',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProductsBrandAddRoute = ProductsBrandAddRouteImport.update({
-  id: '/products/brand/add',
-  path: '/products/brand/add',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExpensesViewIdRoute = ExpensesViewIdRouteImport.update({
+const DashboardProductsCategoryAddRoute =
+  DashboardProductsCategoryAddRouteImport.update({
+    id: '/products/category/add',
+    path: '/products/category/add',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardProductsBrandAddRoute =
+  DashboardProductsBrandAddRouteImport.update({
+    id: '/products/brand/add',
+    path: '/products/brand/add',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardExpensesViewIdRoute = DashboardExpensesViewIdRouteImport.update({
   id: '/expenses/view/$id',
   path: '/expenses/view/$id',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => DashboardRoute,
 } as any)
-const ExpensesEditIdRoute = ExpensesEditIdRouteImport.update({
+const DashboardExpensesEditIdRoute = DashboardExpensesEditIdRouteImport.update({
   id: '/expenses/edit/$id',
   path: '/expenses/edit/$id',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => DashboardRoute,
 } as any)
-const ProductsCategoryViewIdRoute = ProductsCategoryViewIdRouteImport.update({
-  id: '/products/category/view/$id',
-  path: '/products/category/view/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProductsCategoryEditIdRoute = ProductsCategoryEditIdRouteImport.update({
-  id: '/products/category/edit/$id',
-  path: '/products/category/edit/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProductsBrandViewIdRoute = ProductsBrandViewIdRouteImport.update({
-  id: '/products/brand/view/$id',
-  path: '/products/brand/view/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProductsBrandEditIdRoute = ProductsBrandEditIdRouteImport.update({
-  id: '/products/brand/edit/$id',
-  path: '/products/brand/edit/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const DashboardProductsCategoryViewIdRoute =
+  DashboardProductsCategoryViewIdRouteImport.update({
+    id: '/products/category/view/$id',
+    path: '/products/category/view/$id',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardProductsCategoryEditIdRoute =
+  DashboardProductsCategoryEditIdRouteImport.update({
+    id: '/products/category/edit/$id',
+    path: '/products/category/edit/$id',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardProductsBrandViewIdRoute =
+  DashboardProductsBrandViewIdRouteImport.update({
+    id: '/products/brand/view/$id',
+    path: '/products/brand/view/$id',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardProductsBrandEditIdRoute =
+  DashboardProductsBrandEditIdRouteImport.update({
+    id: '/products/brand/edit/$id',
+    path: '/products/brand/edit/$id',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/expenses/add': typeof ExpensesAddRoute
-  '/products/add': typeof ProductsAddRoute
-  '/dashboard/': typeof DashboardIndexRoute
-  '/expenses/': typeof ExpensesIndexRoute
-  '/inventory/': typeof InventoryIndexRoute
-  '/products/': typeof ProductsIndexRoute
-  '/expenses/edit/$id': typeof ExpensesEditIdRoute
-  '/expenses/view/$id': typeof ExpensesViewIdRoute
-  '/products/brand/add': typeof ProductsBrandAddRoute
-  '/products/category/add': typeof ProductsCategoryAddRoute
-  '/products/edit/$id': typeof ProductsEditIdRoute
-  '/products/view/$id': typeof ProductsViewIdRoute
-  '/products/brand/': typeof ProductsBrandIndexRoute
-  '/products/category/': typeof ProductsCategoryIndexRoute
-  '/products/brand/edit/$id': typeof ProductsBrandEditIdRoute
-  '/products/brand/view/$id': typeof ProductsBrandViewIdRoute
-  '/products/category/edit/$id': typeof ProductsCategoryEditIdRoute
-  '/products/category/view/$id': typeof ProductsCategoryViewIdRoute
+  '/': typeof DashboardIndexRoute
+  '/login': typeof AuthLoginRoute
+  '/register': typeof AuthRegisterRoute
+  '/expenses/add': typeof DashboardExpensesAddRoute
+  '/products/add': typeof DashboardProductsAddRoute
+  '/dashboard/': typeof DashboardDashboardIndexRoute
+  '/expenses/': typeof DashboardExpensesIndexRoute
+  '/inventory/': typeof DashboardInventoryIndexRoute
+  '/products/': typeof DashboardProductsIndexRoute
+  '/expenses/edit/$id': typeof DashboardExpensesEditIdRoute
+  '/expenses/view/$id': typeof DashboardExpensesViewIdRoute
+  '/products/brand/add': typeof DashboardProductsBrandAddRoute
+  '/products/category/add': typeof DashboardProductsCategoryAddRoute
+  '/products/edit/$id': typeof DashboardProductsEditIdRoute
+  '/products/view/$id': typeof DashboardProductsViewIdRoute
+  '/products/brand/': typeof DashboardProductsBrandIndexRoute
+  '/products/category/': typeof DashboardProductsCategoryIndexRoute
+  '/products/brand/edit/$id': typeof DashboardProductsBrandEditIdRoute
+  '/products/brand/view/$id': typeof DashboardProductsBrandViewIdRoute
+  '/products/category/edit/$id': typeof DashboardProductsCategoryEditIdRoute
+  '/products/category/view/$id': typeof DashboardProductsCategoryViewIdRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/expenses/add': typeof ExpensesAddRoute
-  '/products/add': typeof ProductsAddRoute
-  '/dashboard': typeof DashboardIndexRoute
-  '/expenses': typeof ExpensesIndexRoute
-  '/inventory': typeof InventoryIndexRoute
-  '/products': typeof ProductsIndexRoute
-  '/expenses/edit/$id': typeof ExpensesEditIdRoute
-  '/expenses/view/$id': typeof ExpensesViewIdRoute
-  '/products/brand/add': typeof ProductsBrandAddRoute
-  '/products/category/add': typeof ProductsCategoryAddRoute
-  '/products/edit/$id': typeof ProductsEditIdRoute
-  '/products/view/$id': typeof ProductsViewIdRoute
-  '/products/brand': typeof ProductsBrandIndexRoute
-  '/products/category': typeof ProductsCategoryIndexRoute
-  '/products/brand/edit/$id': typeof ProductsBrandEditIdRoute
-  '/products/brand/view/$id': typeof ProductsBrandViewIdRoute
-  '/products/category/edit/$id': typeof ProductsCategoryEditIdRoute
-  '/products/category/view/$id': typeof ProductsCategoryViewIdRoute
+  '/': typeof DashboardIndexRoute
+  '/login': typeof AuthLoginRoute
+  '/register': typeof AuthRegisterRoute
+  '/expenses/add': typeof DashboardExpensesAddRoute
+  '/products/add': typeof DashboardProductsAddRoute
+  '/dashboard': typeof DashboardDashboardIndexRoute
+  '/expenses': typeof DashboardExpensesIndexRoute
+  '/inventory': typeof DashboardInventoryIndexRoute
+  '/products': typeof DashboardProductsIndexRoute
+  '/expenses/edit/$id': typeof DashboardExpensesEditIdRoute
+  '/expenses/view/$id': typeof DashboardExpensesViewIdRoute
+  '/products/brand/add': typeof DashboardProductsBrandAddRoute
+  '/products/category/add': typeof DashboardProductsCategoryAddRoute
+  '/products/edit/$id': typeof DashboardProductsEditIdRoute
+  '/products/view/$id': typeof DashboardProductsViewIdRoute
+  '/products/brand': typeof DashboardProductsBrandIndexRoute
+  '/products/category': typeof DashboardProductsCategoryIndexRoute
+  '/products/brand/edit/$id': typeof DashboardProductsBrandEditIdRoute
+  '/products/brand/view/$id': typeof DashboardProductsBrandViewIdRoute
+  '/products/category/edit/$id': typeof DashboardProductsCategoryEditIdRoute
+  '/products/category/view/$id': typeof DashboardProductsCategoryViewIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/expenses/add': typeof ExpensesAddRoute
-  '/products/add': typeof ProductsAddRoute
-  '/dashboard/': typeof DashboardIndexRoute
-  '/expenses/': typeof ExpensesIndexRoute
-  '/inventory/': typeof InventoryIndexRoute
-  '/products/': typeof ProductsIndexRoute
-  '/expenses/edit/$id': typeof ExpensesEditIdRoute
-  '/expenses/view/$id': typeof ExpensesViewIdRoute
-  '/products/brand/add': typeof ProductsBrandAddRoute
-  '/products/category/add': typeof ProductsCategoryAddRoute
-  '/products/edit/$id': typeof ProductsEditIdRoute
-  '/products/view/$id': typeof ProductsViewIdRoute
-  '/products/brand/': typeof ProductsBrandIndexRoute
-  '/products/category/': typeof ProductsCategoryIndexRoute
-  '/products/brand/edit/$id': typeof ProductsBrandEditIdRoute
-  '/products/brand/view/$id': typeof ProductsBrandViewIdRoute
-  '/products/category/edit/$id': typeof ProductsCategoryEditIdRoute
-  '/products/category/view/$id': typeof ProductsCategoryViewIdRoute
+  '/_auth': typeof AuthRouteWithChildren
+  '/_dashboard': typeof DashboardRouteWithChildren
+  '/_auth/login': typeof AuthLoginRoute
+  '/_auth/register': typeof AuthRegisterRoute
+  '/_dashboard/': typeof DashboardIndexRoute
+  '/_dashboard/expenses/add': typeof DashboardExpensesAddRoute
+  '/_dashboard/products/add': typeof DashboardProductsAddRoute
+  '/_dashboard/dashboard/': typeof DashboardDashboardIndexRoute
+  '/_dashboard/expenses/': typeof DashboardExpensesIndexRoute
+  '/_dashboard/inventory/': typeof DashboardInventoryIndexRoute
+  '/_dashboard/products/': typeof DashboardProductsIndexRoute
+  '/_dashboard/expenses/edit/$id': typeof DashboardExpensesEditIdRoute
+  '/_dashboard/expenses/view/$id': typeof DashboardExpensesViewIdRoute
+  '/_dashboard/products/brand/add': typeof DashboardProductsBrandAddRoute
+  '/_dashboard/products/category/add': typeof DashboardProductsCategoryAddRoute
+  '/_dashboard/products/edit/$id': typeof DashboardProductsEditIdRoute
+  '/_dashboard/products/view/$id': typeof DashboardProductsViewIdRoute
+  '/_dashboard/products/brand/': typeof DashboardProductsBrandIndexRoute
+  '/_dashboard/products/category/': typeof DashboardProductsCategoryIndexRoute
+  '/_dashboard/products/brand/edit/$id': typeof DashboardProductsBrandEditIdRoute
+  '/_dashboard/products/brand/view/$id': typeof DashboardProductsBrandViewIdRoute
+  '/_dashboard/products/category/edit/$id': typeof DashboardProductsCategoryEditIdRoute
+  '/_dashboard/products/category/view/$id': typeof DashboardProductsCategoryViewIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/login'
+    | '/register'
     | '/expenses/add'
     | '/products/add'
     | '/dashboard/'
@@ -214,6 +254,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/login'
+    | '/register'
     | '/expenses/add'
     | '/products/add'
     | '/dashboard'
@@ -234,207 +276,265 @@ export interface FileRouteTypes {
     | '/products/category/view/$id'
   id:
     | '__root__'
-    | '/'
-    | '/expenses/add'
-    | '/products/add'
-    | '/dashboard/'
-    | '/expenses/'
-    | '/inventory/'
-    | '/products/'
-    | '/expenses/edit/$id'
-    | '/expenses/view/$id'
-    | '/products/brand/add'
-    | '/products/category/add'
-    | '/products/edit/$id'
-    | '/products/view/$id'
-    | '/products/brand/'
-    | '/products/category/'
-    | '/products/brand/edit/$id'
-    | '/products/brand/view/$id'
-    | '/products/category/edit/$id'
-    | '/products/category/view/$id'
+    | '/_auth'
+    | '/_dashboard'
+    | '/_auth/login'
+    | '/_auth/register'
+    | '/_dashboard/'
+    | '/_dashboard/expenses/add'
+    | '/_dashboard/products/add'
+    | '/_dashboard/dashboard/'
+    | '/_dashboard/expenses/'
+    | '/_dashboard/inventory/'
+    | '/_dashboard/products/'
+    | '/_dashboard/expenses/edit/$id'
+    | '/_dashboard/expenses/view/$id'
+    | '/_dashboard/products/brand/add'
+    | '/_dashboard/products/category/add'
+    | '/_dashboard/products/edit/$id'
+    | '/_dashboard/products/view/$id'
+    | '/_dashboard/products/brand/'
+    | '/_dashboard/products/category/'
+    | '/_dashboard/products/brand/edit/$id'
+    | '/_dashboard/products/brand/view/$id'
+    | '/_dashboard/products/category/edit/$id'
+    | '/_dashboard/products/category/view/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  ExpensesAddRoute: typeof ExpensesAddRoute
-  ProductsAddRoute: typeof ProductsAddRoute
-  DashboardIndexRoute: typeof DashboardIndexRoute
-  ExpensesIndexRoute: typeof ExpensesIndexRoute
-  InventoryIndexRoute: typeof InventoryIndexRoute
-  ProductsIndexRoute: typeof ProductsIndexRoute
-  ExpensesEditIdRoute: typeof ExpensesEditIdRoute
-  ExpensesViewIdRoute: typeof ExpensesViewIdRoute
-  ProductsBrandAddRoute: typeof ProductsBrandAddRoute
-  ProductsCategoryAddRoute: typeof ProductsCategoryAddRoute
-  ProductsEditIdRoute: typeof ProductsEditIdRoute
-  ProductsViewIdRoute: typeof ProductsViewIdRoute
-  ProductsBrandIndexRoute: typeof ProductsBrandIndexRoute
-  ProductsCategoryIndexRoute: typeof ProductsCategoryIndexRoute
-  ProductsBrandEditIdRoute: typeof ProductsBrandEditIdRoute
-  ProductsBrandViewIdRoute: typeof ProductsBrandViewIdRoute
-  ProductsCategoryEditIdRoute: typeof ProductsCategoryEditIdRoute
-  ProductsCategoryViewIdRoute: typeof ProductsCategoryViewIdRoute
+  AuthRoute: typeof AuthRouteWithChildren
+  DashboardRoute: typeof DashboardRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_dashboard': {
+      id: '/_dashboard'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_dashboard/': {
+      id: '/_dashboard/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/products/': {
-      id: '/products/'
+    '/_auth/register': {
+      id: '/_auth/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof AuthRegisterRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/login': {
+      id: '/_auth/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_dashboard/products/': {
+      id: '/_dashboard/products/'
       path: '/products'
       fullPath: '/products/'
-      preLoaderRoute: typeof ProductsIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DashboardProductsIndexRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/inventory/': {
-      id: '/inventory/'
+    '/_dashboard/inventory/': {
+      id: '/_dashboard/inventory/'
       path: '/inventory'
       fullPath: '/inventory/'
-      preLoaderRoute: typeof InventoryIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DashboardInventoryIndexRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/expenses/': {
-      id: '/expenses/'
+    '/_dashboard/expenses/': {
+      id: '/_dashboard/expenses/'
       path: '/expenses'
       fullPath: '/expenses/'
-      preLoaderRoute: typeof ExpensesIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DashboardExpensesIndexRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/dashboard/': {
-      id: '/dashboard/'
+    '/_dashboard/dashboard/': {
+      id: '/_dashboard/dashboard/'
       path: '/dashboard'
       fullPath: '/dashboard/'
-      preLoaderRoute: typeof DashboardIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DashboardDashboardIndexRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/products/add': {
-      id: '/products/add'
+    '/_dashboard/products/add': {
+      id: '/_dashboard/products/add'
       path: '/products/add'
       fullPath: '/products/add'
-      preLoaderRoute: typeof ProductsAddRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DashboardProductsAddRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/expenses/add': {
-      id: '/expenses/add'
+    '/_dashboard/expenses/add': {
+      id: '/_dashboard/expenses/add'
       path: '/expenses/add'
       fullPath: '/expenses/add'
-      preLoaderRoute: typeof ExpensesAddRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DashboardExpensesAddRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/products/category/': {
-      id: '/products/category/'
+    '/_dashboard/products/category/': {
+      id: '/_dashboard/products/category/'
       path: '/products/category'
       fullPath: '/products/category/'
-      preLoaderRoute: typeof ProductsCategoryIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DashboardProductsCategoryIndexRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/products/brand/': {
-      id: '/products/brand/'
+    '/_dashboard/products/brand/': {
+      id: '/_dashboard/products/brand/'
       path: '/products/brand'
       fullPath: '/products/brand/'
-      preLoaderRoute: typeof ProductsBrandIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DashboardProductsBrandIndexRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/products/view/$id': {
-      id: '/products/view/$id'
+    '/_dashboard/products/view/$id': {
+      id: '/_dashboard/products/view/$id'
       path: '/products/view/$id'
       fullPath: '/products/view/$id'
-      preLoaderRoute: typeof ProductsViewIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DashboardProductsViewIdRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/products/edit/$id': {
-      id: '/products/edit/$id'
+    '/_dashboard/products/edit/$id': {
+      id: '/_dashboard/products/edit/$id'
       path: '/products/edit/$id'
       fullPath: '/products/edit/$id'
-      preLoaderRoute: typeof ProductsEditIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DashboardProductsEditIdRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/products/category/add': {
-      id: '/products/category/add'
+    '/_dashboard/products/category/add': {
+      id: '/_dashboard/products/category/add'
       path: '/products/category/add'
       fullPath: '/products/category/add'
-      preLoaderRoute: typeof ProductsCategoryAddRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DashboardProductsCategoryAddRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/products/brand/add': {
-      id: '/products/brand/add'
+    '/_dashboard/products/brand/add': {
+      id: '/_dashboard/products/brand/add'
       path: '/products/brand/add'
       fullPath: '/products/brand/add'
-      preLoaderRoute: typeof ProductsBrandAddRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DashboardProductsBrandAddRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/expenses/view/$id': {
-      id: '/expenses/view/$id'
+    '/_dashboard/expenses/view/$id': {
+      id: '/_dashboard/expenses/view/$id'
       path: '/expenses/view/$id'
       fullPath: '/expenses/view/$id'
-      preLoaderRoute: typeof ExpensesViewIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DashboardExpensesViewIdRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/expenses/edit/$id': {
-      id: '/expenses/edit/$id'
+    '/_dashboard/expenses/edit/$id': {
+      id: '/_dashboard/expenses/edit/$id'
       path: '/expenses/edit/$id'
       fullPath: '/expenses/edit/$id'
-      preLoaderRoute: typeof ExpensesEditIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DashboardExpensesEditIdRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/products/category/view/$id': {
-      id: '/products/category/view/$id'
+    '/_dashboard/products/category/view/$id': {
+      id: '/_dashboard/products/category/view/$id'
       path: '/products/category/view/$id'
       fullPath: '/products/category/view/$id'
-      preLoaderRoute: typeof ProductsCategoryViewIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DashboardProductsCategoryViewIdRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/products/category/edit/$id': {
-      id: '/products/category/edit/$id'
+    '/_dashboard/products/category/edit/$id': {
+      id: '/_dashboard/products/category/edit/$id'
       path: '/products/category/edit/$id'
       fullPath: '/products/category/edit/$id'
-      preLoaderRoute: typeof ProductsCategoryEditIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DashboardProductsCategoryEditIdRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/products/brand/view/$id': {
-      id: '/products/brand/view/$id'
+    '/_dashboard/products/brand/view/$id': {
+      id: '/_dashboard/products/brand/view/$id'
       path: '/products/brand/view/$id'
       fullPath: '/products/brand/view/$id'
-      preLoaderRoute: typeof ProductsBrandViewIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DashboardProductsBrandViewIdRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/products/brand/edit/$id': {
-      id: '/products/brand/edit/$id'
+    '/_dashboard/products/brand/edit/$id': {
+      id: '/_dashboard/products/brand/edit/$id'
       path: '/products/brand/edit/$id'
       fullPath: '/products/brand/edit/$id'
-      preLoaderRoute: typeof ProductsBrandEditIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DashboardProductsBrandEditIdRouteImport
+      parentRoute: typeof DashboardRoute
     }
   }
 }
 
-const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  ExpensesAddRoute: ExpensesAddRoute,
-  ProductsAddRoute: ProductsAddRoute,
+interface AuthRouteChildren {
+  AuthLoginRoute: typeof AuthLoginRoute
+  AuthRegisterRoute: typeof AuthRegisterRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthLoginRoute: AuthLoginRoute,
+  AuthRegisterRoute: AuthRegisterRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
+interface DashboardRouteChildren {
+  DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardExpensesAddRoute: typeof DashboardExpensesAddRoute
+  DashboardProductsAddRoute: typeof DashboardProductsAddRoute
+  DashboardDashboardIndexRoute: typeof DashboardDashboardIndexRoute
+  DashboardExpensesIndexRoute: typeof DashboardExpensesIndexRoute
+  DashboardInventoryIndexRoute: typeof DashboardInventoryIndexRoute
+  DashboardProductsIndexRoute: typeof DashboardProductsIndexRoute
+  DashboardExpensesEditIdRoute: typeof DashboardExpensesEditIdRoute
+  DashboardExpensesViewIdRoute: typeof DashboardExpensesViewIdRoute
+  DashboardProductsBrandAddRoute: typeof DashboardProductsBrandAddRoute
+  DashboardProductsCategoryAddRoute: typeof DashboardProductsCategoryAddRoute
+  DashboardProductsEditIdRoute: typeof DashboardProductsEditIdRoute
+  DashboardProductsViewIdRoute: typeof DashboardProductsViewIdRoute
+  DashboardProductsBrandIndexRoute: typeof DashboardProductsBrandIndexRoute
+  DashboardProductsCategoryIndexRoute: typeof DashboardProductsCategoryIndexRoute
+  DashboardProductsBrandEditIdRoute: typeof DashboardProductsBrandEditIdRoute
+  DashboardProductsBrandViewIdRoute: typeof DashboardProductsBrandViewIdRoute
+  DashboardProductsCategoryEditIdRoute: typeof DashboardProductsCategoryEditIdRoute
+  DashboardProductsCategoryViewIdRoute: typeof DashboardProductsCategoryViewIdRoute
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardIndexRoute: DashboardIndexRoute,
-  ExpensesIndexRoute: ExpensesIndexRoute,
-  InventoryIndexRoute: InventoryIndexRoute,
-  ProductsIndexRoute: ProductsIndexRoute,
-  ExpensesEditIdRoute: ExpensesEditIdRoute,
-  ExpensesViewIdRoute: ExpensesViewIdRoute,
-  ProductsBrandAddRoute: ProductsBrandAddRoute,
-  ProductsCategoryAddRoute: ProductsCategoryAddRoute,
-  ProductsEditIdRoute: ProductsEditIdRoute,
-  ProductsViewIdRoute: ProductsViewIdRoute,
-  ProductsBrandIndexRoute: ProductsBrandIndexRoute,
-  ProductsCategoryIndexRoute: ProductsCategoryIndexRoute,
-  ProductsBrandEditIdRoute: ProductsBrandEditIdRoute,
-  ProductsBrandViewIdRoute: ProductsBrandViewIdRoute,
-  ProductsCategoryEditIdRoute: ProductsCategoryEditIdRoute,
-  ProductsCategoryViewIdRoute: ProductsCategoryViewIdRoute,
+  DashboardExpensesAddRoute: DashboardExpensesAddRoute,
+  DashboardProductsAddRoute: DashboardProductsAddRoute,
+  DashboardDashboardIndexRoute: DashboardDashboardIndexRoute,
+  DashboardExpensesIndexRoute: DashboardExpensesIndexRoute,
+  DashboardInventoryIndexRoute: DashboardInventoryIndexRoute,
+  DashboardProductsIndexRoute: DashboardProductsIndexRoute,
+  DashboardExpensesEditIdRoute: DashboardExpensesEditIdRoute,
+  DashboardExpensesViewIdRoute: DashboardExpensesViewIdRoute,
+  DashboardProductsBrandAddRoute: DashboardProductsBrandAddRoute,
+  DashboardProductsCategoryAddRoute: DashboardProductsCategoryAddRoute,
+  DashboardProductsEditIdRoute: DashboardProductsEditIdRoute,
+  DashboardProductsViewIdRoute: DashboardProductsViewIdRoute,
+  DashboardProductsBrandIndexRoute: DashboardProductsBrandIndexRoute,
+  DashboardProductsCategoryIndexRoute: DashboardProductsCategoryIndexRoute,
+  DashboardProductsBrandEditIdRoute: DashboardProductsBrandEditIdRoute,
+  DashboardProductsBrandViewIdRoute: DashboardProductsBrandViewIdRoute,
+  DashboardProductsCategoryEditIdRoute: DashboardProductsCategoryEditIdRoute,
+  DashboardProductsCategoryViewIdRoute: DashboardProductsCategoryViewIdRoute,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
+
+const rootRouteChildren: RootRouteChildren = {
+  AuthRoute: AuthRouteWithChildren,
+  DashboardRoute: DashboardRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

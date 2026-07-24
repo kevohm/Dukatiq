@@ -47,6 +47,7 @@ export function getDatabase(): Promise<BusinessDatabase> {
         const db = await createRxDatabase<BusinessCollections>({
             name: 'businessdb',
             storage,
+        
         })
 
         await db.addCollections(collections)

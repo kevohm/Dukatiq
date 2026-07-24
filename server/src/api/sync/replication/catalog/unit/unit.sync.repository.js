@@ -5,5 +5,5 @@ import { SyncCollections } from '../../../sync.collections.js'
 export const UnitSyncRepository = createSyncRepository({
     table: units,
     collection:SyncCollections.UNIT,
-    uniqueField: 'name',
+    uniqueField: ['name'],
 })
