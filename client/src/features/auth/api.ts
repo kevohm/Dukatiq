@@ -1,5 +1,5 @@
 import { api } from '../../lib/utils'
-import type { ILocalAccessPayload, ILocalAccessResponse, ILoginPayload,  ISignupPayload, IVerifyLocalAccessPayload, User } from './types'
+import type { ILocalAccessPayload, ILocalAccessResponse, ILoginPayload,  ISignupPayload,User } from './types'
 
 
 

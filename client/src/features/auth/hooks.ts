@@ -17,7 +17,7 @@ export function useLogin() {
         //     qc.invalidateQueries({ queryKey: AUTH_KEY })
         // },
 
-        onSuccess: async (response, variables) => {
+        onSuccess: async (response) => {
             const data = response
             try {
                 await localSessionService.createSession({
@@ -109,8 +109,8 @@ export function useSetOfflinePassword() {
 
     return useMutation({
         mutationFn: authApi.localAccess,
-        onSuccess: async (response, variables) => {
-            const data = response.data
+        onSuccess: async () => {
+            // const data = response.data
 
             qc.invalidateQueries({
                 queryKey: AUTH_KEY,
@@ -132,8 +132,8 @@ export function useVerifyOfflinePassword() {
 
     return useMutation({
         mutationFn: localAccessService.verifyLocalAccess,
-        onSuccess: async (response) => {
-            const data = response
+        onSuccess: async () => {
+            // const data = response
             
             // No need we do not extend time unless on login
             // try {
