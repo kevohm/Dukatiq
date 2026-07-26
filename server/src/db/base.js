@@ -9,5 +9,5 @@ export const audit = {
     updated_at: timestamp('updated_at', { withTimezone: true })
         .defaultNow()
         .notNull(),
-    is_deleted: boolean().default(false)
+    is_deleted: boolean("is_deleted").default(false)
 }

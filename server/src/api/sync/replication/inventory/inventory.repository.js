@@ -6,7 +6,7 @@ import { SyncCheckpointService } from '../../repositories/sync-checkpoint.servic
 import { InventoryService } from '../../../inventory/inventory.service.js'
 import { createSyncRepository } from '../base.sync.repository.js'
 
-async function beforePush(doc) {
+async function beforePush(tx, doc) {
     let unitId = doc.unit_id
 
     if (unitId) {

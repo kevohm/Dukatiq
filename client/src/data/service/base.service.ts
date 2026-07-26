@@ -9,8 +9,8 @@ export class BaseService<
 > {
     protected getRepository: () => Promise<TRepository>
 
-    constructor(getRepository: () => Promise<TRepository>) {
-        this.getRepository = getRepository
+    constructor(getRepo: () => Promise<TRepository>) {
+        this.getRepository = getRepo
     }
 
     async getAll() {

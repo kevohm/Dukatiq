@@ -4,7 +4,7 @@ import { Topbar } from '../../components/layout/Topbar'
 import EditProductForm from '../../features/product/components/EditProductForm'
 
 const EditProduct = () => {
-    const { id } = useParams({ from: '/products/edit/$id' })
+    const { id } = useParams({ from: '/_dashboard/products/edit/$id' })
 
     return (
         <AppBodyWrapper>

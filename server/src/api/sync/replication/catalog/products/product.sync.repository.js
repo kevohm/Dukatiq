@@ -10,11 +10,11 @@ import { SyncCheckpointRepository } from '../../../repositories/sync-checkpoint.
 import { SyncCheckpointService } from '../../../repositories/sync-checkpoint.service.js'
 import { createSyncRepository } from '../../base.sync.repository.js'
 
-async function beforePush(doc) {
+async function beforePush(tx, doc) {
     let categoryId = doc.category_id
 
     if (categoryId) {
-        const category = await db
+        const category = await tx
             .select({ id: productCategories.id })
             .from(productCategories)
             .where(
@@ -33,7 +33,7 @@ async function beforePush(doc) {
     let brandId = doc.brand_id
 
     if (brandId) {
-        const brand = await db
+        const brand = await tx
             .select({ id: brands.id })
             .from(brands)
             .where(or(eq(brands.id, brandId), eq(brands.name, doc?.brand_name)))

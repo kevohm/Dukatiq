@@ -1,10 +1,10 @@
 import { api } from '../../lib/utils'
-import type { ILoginPayload, ISignupPayload, User } from './types'
+import type { ILocalAccessPayload, ILocalAccessResponse, ILoginPayload,  ISignupPayload, IVerifyLocalAccessPayload, User } from './types'
 
 
 
 export const authApi = {
-    me: () => api.get<User>('/auth/me'),
+    me: () => api.getRaw<User>('/auth/me'),
 
     login: (data: ILoginPayload) => api.post<User>('/auth/login', data),
 
@@ -14,4 +14,6 @@ export const authApi = {
 
     refresh: () => api.post(`/auth/refresh`),
 
+    localAccess: (data: ILocalAccessPayload) =>
+        api.postRaw<ILocalAccessResponse>('/auth/local-access', data)
 }

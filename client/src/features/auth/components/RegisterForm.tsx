@@ -15,6 +15,7 @@ const RegisterForm = () => {
     const navigate = useNavigate()
 
     const [errors, setErrors] = useState<Record<string, string>>({})
+    const [confirmPass, setConfirmPass] = useState("")
 
     const [body, setBody] = useState<ISignupPayload>({
         first_name:"",
@@ -58,15 +59,19 @@ const RegisterForm = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-
+        if(confirmPass !== body?.password){
+            setErrors(err=>({...err, "confirm-password":"Passwords do not match"}))
+            return
+        }
         try {
             await mutateAsync(body)
+              toast.success("Account created. Login ot proceed")
             navigate({ to: '/login' })
         } catch (error) {
-            console.log(error)
-            const err = (error as ApiError)?.errors
-            if(error?.message){
-                toast.error(error?.message)
+                  const apiErr = (error as ApiError)
+            const err = apiErr?.errors
+            if(apiErr?.message){
+                toast.error(apiErr?.message)
             }
             
             if (err) {
@@ -109,10 +114,27 @@ const RegisterForm = () => {
                 containerClassName="col-span-full"
                 label="Password"
                 name="password"
+                type="password"
                 required
                 value={body.password}
-                onChange={handleChange}
+                onChange={(e)=>{
+                    handleChange(e)
+                    resetError('confirm-password')
+                }}
                 error={getError('password')}
+            />
+            <TextInput
+                containerClassName="col-span-full"
+                label="Confirm Password"
+                name="consfirm-password"
+                type="password"
+                required
+                value={confirmPass}
+                onChange={(e)=>{
+                    setConfirmPass(e.target.value)
+                    resetError('confirm-password')
+                }}
+                error={getError('confirm-password')}
             />
 
             <div className="flex items-center justify-between w-full col-span-full ">

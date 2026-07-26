@@ -15,6 +15,7 @@ export interface SelectProps
     placeholder?: string
     loading?: boolean
     loadingText?: string
+    containerClassName?:string
 }
 
 export function Select({
@@ -29,6 +30,7 @@ export function Select({
     className = '',
     id,
     disabled,
+    containerClassName='',
     ...props
 }: SelectProps) {
     const autoId = useId()
@@ -41,13 +43,14 @@ export function Select({
             hint={hint}
             error={error}
             required={required}
+            className={containerClassName}
         >
             <div className="relative">
                 <select
                     id={inputId}
                     aria-invalid={!!error}
                     disabled={disabled || loading}
-                    defaultValue=""
+                    // defaultValue=""
                     className={`${controlBase} ${controlBorder(
                         error
                     )} h-10 appearance-none pl-3 pr-9 ${

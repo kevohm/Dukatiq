@@ -27,7 +27,8 @@ export function NetworkStatusToast() {
         if (!isOnline && previous.current.isOnline) {
             toast.error("You're offline.", {
                 id: TOAST_ID,
-                duration: Infinity,
+                duration: 3000,
+                position: 'bottom-left',
             })
         }
         // API became unavailable
@@ -38,7 +39,8 @@ export function NetworkStatusToast() {
         ) {
             toast.error('Cannot connect to the server.', {
                 id: TOAST_ID,
-                duration: Infinity,
+                duration: 3000,
+                position: 'bottom-left',
             })
         }
         // Only notify when recovering from an actual issue
@@ -46,6 +48,7 @@ export function NetworkStatusToast() {
             toast.success('Connection restored.', {
                 id: TOAST_ID,
                 duration: 3000,
+                position:"bottom-left"
             })
         }
 

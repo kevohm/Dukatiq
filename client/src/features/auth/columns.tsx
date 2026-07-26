@@ -3,12 +3,14 @@ import type { ColumnDef } from '../../components/data-table/types'
 import { Button } from '../../components/ui/Button'
 import { Badge } from '../../components/ui/Badge'
 import { Link } from '@tanstack/react-router'
-import { useDeleteProduct } from './hooks'
+
 import toast from 'react-hot-toast'
 import type { ProductDoc } from '@/data/models/product/product'
 
-import { useProductCategory } from './category/hooks'
-import { useProductBrand } from './brand/hooks'
+
+import { useDeleteProduct } from '../product/hooks'
+import { useProductCategory } from '../product/category/hooks'
+import { useProductBrand } from '../product/brand/hooks'
 
 type ProductType = ProductDoc
 const DeleteButton = ({ id }: { id: string }) => {

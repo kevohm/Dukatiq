@@ -15,6 +15,8 @@ import { brands } from '../models/product/product.brand'
 import { units } from '../models/product/unit'
 import { expenses } from '../models/expense/expense'
 import { expenseCategories } from '../models/expense/expense.category'
+import { localAccess } from '../models/local-access'
+import { localSessions } from '../models/local-session'
 
 addRxPlugin(RxDBDevModePlugin)
 
@@ -33,7 +35,9 @@ export const collections = {
     saleItems,
     inventory,
     expenses,
-    expenseCategories
+    expenseCategories,
+    localAccess,
+    localSessions
 } as const
 
 let dbPromise: Promise<BusinessDatabase> | null = null

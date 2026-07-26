@@ -3,8 +3,8 @@ import { drizzle } from 'drizzle-orm/node-postgres'
 import * as schema from '../db/schema.js'
 import { config } from './env.config.js'
 
-const connectionString = config.env.isTest ? process.env.DATABASE_URL_TEST : process.env.DATABASE_URL
-if (!connectionString) throw new Error(`Missing required ${config.env.isTest ? 'DATABASE_URL_TEST' : 'DATABASE_URL'}`)
+const connectionString = config.db.url
+if (!connectionString) throw new Error(`Missing required ${'DATABASE_URL'}`)
 
 export const pool = new Pool({ connectionString, ssl: config.env.isProd ? { rejectUnauthorized: false } : undefined })
 

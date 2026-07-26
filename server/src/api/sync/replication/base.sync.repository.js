@@ -8,8 +8,8 @@ export function createSyncRepository({
     primaryKey = 'id',
     // Pass columns that define unique constraints (e.g. ['name'] or ['product_id', 'unit_id'])
     uniqueKeys = [],
-    beforePush = async () => null,
-    afterPush = async () => {},
+    beforePush=()=>null,
+    afterPush,
 }) {
     // Helper to build unique lookup queries dynamically
     function buildUniqueCondition(doc) {
@@ -88,7 +88,7 @@ export function createSyncRepository({
 
                     // tranform data
                     if (beforePush) {
-                        const newDoc = await beforePush(doc)
+                        const newDoc = await beforePush(tx, doc)
                         doc = newDoc ?? doc
                     }
 

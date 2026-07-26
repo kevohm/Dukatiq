@@ -9,9 +9,11 @@ import { useLogin } from '../hooks'
 import type { ILoginPayload } from '../types'
 import toast from 'react-hot-toast'
 import { useNavigate } from '@tanstack/react-router'
+import { useAuth } from '@/app/providers/AuthProvider'
 
 const LoginForm = () => {
     const { mutateAsync, isPending } = useLogin()
+    const { getCurrentUser } = useAuth()
     const navigate = useNavigate()
 
     const [errors, setErrors] = useState<Record<string, string>>({})
@@ -59,11 +61,14 @@ const LoginForm = () => {
 
         try {
             await mutateAsync(body)
-            navigate({ to: '/' })
+            await getCurrentUser()
+            toast.success('Login successfull. Redirecting..')
+            navigate({ to: '/local-access' })
         } catch (error) {
-            const err = (error as ApiError)?.errors
-            if (error?.message) {
-                toast.error(error?.message)
+            const apiErr = error as ApiError
+            const err = apiErr?.errors
+            if (apiErr?.message) {
+                toast.error(apiErr?.message)
             }
             if (err) {
                 setErrors(err)
@@ -87,6 +92,7 @@ const LoginForm = () => {
             <TextInput
                 label="Password"
                 name="password"
+                type="password"
                 required
                 value={body.password}
                 onChange={handleChange}

@@ -9,6 +9,7 @@ export const apiClient = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
+    withCredentials:true
 })
 
 apiClient.interceptors.request.use((config) => {
@@ -26,16 +27,12 @@ apiClient.interceptors.response.use(
         networkEvents.setApiAvailable(true)
         return response
     },
-    (error) => {
-        const status = error.response?.status
+    async (error) => {
+        // const status = error.response?.status
         if (!error.response) {
             networkEvents.setApiAvailable(false)
         }
 
-        if (status === 401) {
-            localStorage.removeItem('token')
-            window.location.href = '/login'
-        }
         const err = parseError(error)
         return Promise.reject(err)
     }

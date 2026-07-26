@@ -1,7 +1,7 @@
 
 
 export const generateId = ()=>{
-    return globalThis.crypto.randomUUID()
+    return crypto.randomUUID()
 }
 
 

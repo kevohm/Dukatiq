@@ -1,6 +1,14 @@
-import 'dotenv/config'
+import dotenv from "dotenv"
 import path from 'path'
 import { fileURLToPath } from 'url'
+
+const fileName =  process.env.NODE_ENV === "production" ? ".env" : process.env.NODE_ENV === "test" ?".env.test" :".env.development";
+
+dotenv.config({
+    path: path.resolve(process.cwd(), fileName),
+    override: true,
+    debug:false,
+})
 
 /**
  * __dirname equivalent for ES modules

@@ -2,8 +2,7 @@ import { baseProperties, type BaseDoc } from "./base";
 
 export interface UserDoc extends BaseDoc {
     id: string
-    first_name: string
-    last_name: string
+    full_name: string
     email: string
     password: string
 }
@@ -16,12 +15,7 @@ export const users = {
 
         properties: {
             ...baseProperties,
-
-            first_name: {
-                type: 'string',
-            },
-
-            last_name: {
+            full_name: {
                 type: 'string',
             },
 
@@ -39,8 +33,7 @@ export const users = {
             'id',
             'created_at',
             'updated_at',
-            'first_name',
-            'last_name',
+            'full_name',
             'email',
             'password',
         ],

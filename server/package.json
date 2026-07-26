@@ -12,6 +12,7 @@
         "db:pull": "drizzle-kit pull",
         "db:studio": "drizzle-kit studio",
         "db:reset": "drizzle-kit drop && drizzle-kit push",
+        "db:run": "docker compose --env-file .env.development -f docker-compose.yml -f docker-compose.dev.yml up dukatiq-postgres",
         "test": "vitest",
         "test:coverage": "vitest run --coverage"
     },

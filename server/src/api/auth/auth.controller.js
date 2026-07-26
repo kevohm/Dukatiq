@@ -7,6 +7,8 @@ import { cookieConfigs, setCookie } from '../../utils/cookie/cookie.js'
 import { COOKIE_KEYS } from '../../utils/cookie/cookie.keys.js'
 import { AuthService } from './auth.service.js'
 import { StatusCodes } from 'http-status-codes'
+import { RecoveryService } from './recovery/recovery.service.js'
+import { db } from '../../config/database.js'
 
 function getRefreshToken(req) {
     let payload = req.signedCookies?.[COOKIE_KEYS.refreshToken]
@@ -47,6 +49,19 @@ export const login = async (req, res, next) => {
 
 export const signup = async (req, res) => {
     const response = await AuthService.signup(req.body)
+    res.status(response.status).json({
+        success: response.success,
+        data: response.data,
+        message: response.message,
+    })
+}
+
+export const createLocalAccess = async (req, res) => {
+    const response = await db.transaction(async(tx)=>{
+        const userId = req.user?.id
+        return await RecoveryService.setLocalAccess(userId, req.body, tx)
+    })
+
     res.status(response.status).json({
         success: response.success,
         data: response.data,

@@ -9,46 +9,43 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as DashboardRouteImport } from './routes/_dashboard'
 import { Route as AuthRouteImport } from './routes/_auth'
-import { Route as DashboardIndexRouteImport } from './routes/_dashboard/index'
-import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
+import { Route as DashboardRouteImport } from './routes/_dashboard'
+import { Route as AuthLocalAccessRouteImport } from './routes/_auth/local-access'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
-import { Route as DashboardProductsIndexRouteImport } from './routes/_dashboard/products/index'
-import { Route as DashboardInventoryIndexRouteImport } from './routes/_dashboard/inventory/index'
-import { Route as DashboardExpensesIndexRouteImport } from './routes/_dashboard/expenses/index'
+import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
+import { Route as AuthVerifyAccessRouteImport } from './routes/_auth/verify-access'
+import { Route as DashboardIndexRouteImport } from './routes/_dashboard/index'
 import { Route as DashboardDashboardIndexRouteImport } from './routes/_dashboard/dashboard/index'
-import { Route as DashboardProductsAddRouteImport } from './routes/_dashboard/products/add'
+import { Route as DashboardExpensesIndexRouteImport } from './routes/_dashboard/expenses/index'
 import { Route as DashboardExpensesAddRouteImport } from './routes/_dashboard/expenses/add'
-import { Route as DashboardProductsCategoryIndexRouteImport } from './routes/_dashboard/products/category/index'
-import { Route as DashboardProductsBrandIndexRouteImport } from './routes/_dashboard/products/brand/index'
-import { Route as DashboardProductsViewIdRouteImport } from './routes/_dashboard/products/view/$id'
-import { Route as DashboardProductsEditIdRouteImport } from './routes/_dashboard/products/edit/$id'
-import { Route as DashboardProductsCategoryAddRouteImport } from './routes/_dashboard/products/category/add'
-import { Route as DashboardProductsBrandAddRouteImport } from './routes/_dashboard/products/brand/add'
-import { Route as DashboardExpensesViewIdRouteImport } from './routes/_dashboard/expenses/view/$id'
+import { Route as DashboardInventoryIndexRouteImport } from './routes/_dashboard/inventory/index'
+import { Route as DashboardProductsIndexRouteImport } from './routes/_dashboard/products/index'
+import { Route as DashboardProductsAddRouteImport } from './routes/_dashboard/products/add'
 import { Route as DashboardExpensesEditIdRouteImport } from './routes/_dashboard/expenses/edit/$id'
-import { Route as DashboardProductsCategoryViewIdRouteImport } from './routes/_dashboard/products/category/view/$id'
-import { Route as DashboardProductsCategoryEditIdRouteImport } from './routes/_dashboard/products/category/edit/$id'
-import { Route as DashboardProductsBrandViewIdRouteImport } from './routes/_dashboard/products/brand/view/$id'
+import { Route as DashboardExpensesViewIdRouteImport } from './routes/_dashboard/expenses/view/$id'
+import { Route as DashboardProductsBrandIndexRouteImport } from './routes/_dashboard/products/brand/index'
+import { Route as DashboardProductsBrandAddRouteImport } from './routes/_dashboard/products/brand/add'
+import { Route as DashboardProductsCategoryIndexRouteImport } from './routes/_dashboard/products/category/index'
+import { Route as DashboardProductsCategoryAddRouteImport } from './routes/_dashboard/products/category/add'
+import { Route as DashboardProductsEditIdRouteImport } from './routes/_dashboard/products/edit/$id'
+import { Route as DashboardProductsViewIdRouteImport } from './routes/_dashboard/products/view/$id'
 import { Route as DashboardProductsBrandEditIdRouteImport } from './routes/_dashboard/products/brand/edit/$id'
+import { Route as DashboardProductsBrandViewIdRouteImport } from './routes/_dashboard/products/brand/view/$id'
+import { Route as DashboardProductsCategoryEditIdRouteImport } from './routes/_dashboard/products/category/edit/$id'
+import { Route as DashboardProductsCategoryViewIdRouteImport } from './routes/_dashboard/products/category/view/$id'
 
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/_dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardIndexRoute = DashboardIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => DashboardRoute,
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/_dashboard',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AuthRegisterRoute = AuthRegisterRouteImport.update({
-  id: '/register',
-  path: '/register',
+const AuthLocalAccessRoute = AuthLocalAccessRouteImport.update({
+  id: '/local-access',
+  path: '/local-access',
   getParentRoute: () => AuthRoute,
 } as any)
 const AuthLoginRoute = AuthLoginRouteImport.update({
@@ -56,19 +53,19 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AuthRoute,
 } as any)
-const DashboardProductsIndexRoute = DashboardProductsIndexRouteImport.update({
-  id: '/products/',
-  path: '/products/',
-  getParentRoute: () => DashboardRoute,
+const AuthRegisterRoute = AuthRegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => AuthRoute,
 } as any)
-const DashboardInventoryIndexRoute = DashboardInventoryIndexRouteImport.update({
-  id: '/inventory/',
-  path: '/inventory/',
-  getParentRoute: () => DashboardRoute,
+const AuthVerifyAccessRoute = AuthVerifyAccessRouteImport.update({
+  id: '/verify-access',
+  path: '/verify-access',
+  getParentRoute: () => AuthRoute,
 } as any)
-const DashboardExpensesIndexRoute = DashboardExpensesIndexRouteImport.update({
-  id: '/expenses/',
-  path: '/expenses/',
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardDashboardIndexRoute = DashboardDashboardIndexRouteImport.update({
@@ -76,9 +73,9 @@ const DashboardDashboardIndexRoute = DashboardDashboardIndexRouteImport.update({
   path: '/dashboard/',
   getParentRoute: () => DashboardRoute,
 } as any)
-const DashboardProductsAddRoute = DashboardProductsAddRouteImport.update({
-  id: '/products/add',
-  path: '/products/add',
+const DashboardExpensesIndexRoute = DashboardExpensesIndexRouteImport.update({
+  id: '/expenses/',
+  path: '/expenses/',
   getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardExpensesAddRoute = DashboardExpensesAddRouteImport.update({
@@ -86,32 +83,35 @@ const DashboardExpensesAddRoute = DashboardExpensesAddRouteImport.update({
   path: '/expenses/add',
   getParentRoute: () => DashboardRoute,
 } as any)
-const DashboardProductsCategoryIndexRoute =
-  DashboardProductsCategoryIndexRouteImport.update({
-    id: '/products/category/',
-    path: '/products/category/',
-    getParentRoute: () => DashboardRoute,
-  } as any)
+const DashboardInventoryIndexRoute = DashboardInventoryIndexRouteImport.update({
+  id: '/inventory/',
+  path: '/inventory/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardProductsIndexRoute = DashboardProductsIndexRouteImport.update({
+  id: '/products/',
+  path: '/products/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardProductsAddRoute = DashboardProductsAddRouteImport.update({
+  id: '/products/add',
+  path: '/products/add',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardExpensesEditIdRoute = DashboardExpensesEditIdRouteImport.update({
+  id: '/expenses/edit/$id',
+  path: '/expenses/edit/$id',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardExpensesViewIdRoute = DashboardExpensesViewIdRouteImport.update({
+  id: '/expenses/view/$id',
+  path: '/expenses/view/$id',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardProductsBrandIndexRoute =
   DashboardProductsBrandIndexRouteImport.update({
     id: '/products/brand/',
     path: '/products/brand/',
-    getParentRoute: () => DashboardRoute,
-  } as any)
-const DashboardProductsViewIdRoute = DashboardProductsViewIdRouteImport.update({
-  id: '/products/view/$id',
-  path: '/products/view/$id',
-  getParentRoute: () => DashboardRoute,
-} as any)
-const DashboardProductsEditIdRoute = DashboardProductsEditIdRouteImport.update({
-  id: '/products/edit/$id',
-  path: '/products/edit/$id',
-  getParentRoute: () => DashboardRoute,
-} as any)
-const DashboardProductsCategoryAddRoute =
-  DashboardProductsCategoryAddRouteImport.update({
-    id: '/products/category/add',
-    path: '/products/category/add',
     getParentRoute: () => DashboardRoute,
   } as any)
 const DashboardProductsBrandAddRoute =
@@ -120,26 +120,32 @@ const DashboardProductsBrandAddRoute =
     path: '/products/brand/add',
     getParentRoute: () => DashboardRoute,
   } as any)
-const DashboardExpensesViewIdRoute = DashboardExpensesViewIdRouteImport.update({
-  id: '/expenses/view/$id',
-  path: '/expenses/view/$id',
-  getParentRoute: () => DashboardRoute,
-} as any)
-const DashboardExpensesEditIdRoute = DashboardExpensesEditIdRouteImport.update({
-  id: '/expenses/edit/$id',
-  path: '/expenses/edit/$id',
-  getParentRoute: () => DashboardRoute,
-} as any)
-const DashboardProductsCategoryViewIdRoute =
-  DashboardProductsCategoryViewIdRouteImport.update({
-    id: '/products/category/view/$id',
-    path: '/products/category/view/$id',
+const DashboardProductsCategoryIndexRoute =
+  DashboardProductsCategoryIndexRouteImport.update({
+    id: '/products/category/',
+    path: '/products/category/',
     getParentRoute: () => DashboardRoute,
   } as any)
-const DashboardProductsCategoryEditIdRoute =
-  DashboardProductsCategoryEditIdRouteImport.update({
-    id: '/products/category/edit/$id',
-    path: '/products/category/edit/$id',
+const DashboardProductsCategoryAddRoute =
+  DashboardProductsCategoryAddRouteImport.update({
+    id: '/products/category/add',
+    path: '/products/category/add',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardProductsEditIdRoute = DashboardProductsEditIdRouteImport.update({
+  id: '/products/edit/$id',
+  path: '/products/edit/$id',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardProductsViewIdRoute = DashboardProductsViewIdRouteImport.update({
+  id: '/products/view/$id',
+  path: '/products/view/$id',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardProductsBrandEditIdRoute =
+  DashboardProductsBrandEditIdRouteImport.update({
+    id: '/products/brand/edit/$id',
+    path: '/products/brand/edit/$id',
     getParentRoute: () => DashboardRoute,
   } as any)
 const DashboardProductsBrandViewIdRoute =
@@ -148,17 +154,25 @@ const DashboardProductsBrandViewIdRoute =
     path: '/products/brand/view/$id',
     getParentRoute: () => DashboardRoute,
   } as any)
-const DashboardProductsBrandEditIdRoute =
-  DashboardProductsBrandEditIdRouteImport.update({
-    id: '/products/brand/edit/$id',
-    path: '/products/brand/edit/$id',
+const DashboardProductsCategoryEditIdRoute =
+  DashboardProductsCategoryEditIdRouteImport.update({
+    id: '/products/category/edit/$id',
+    path: '/products/category/edit/$id',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardProductsCategoryViewIdRoute =
+  DashboardProductsCategoryViewIdRouteImport.update({
+    id: '/products/category/view/$id',
+    path: '/products/category/view/$id',
     getParentRoute: () => DashboardRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof DashboardIndexRoute
+  '/local-access': typeof AuthLocalAccessRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
+  '/verify-access': typeof AuthVerifyAccessRoute
   '/expenses/add': typeof DashboardExpensesAddRoute
   '/products/add': typeof DashboardProductsAddRoute
   '/dashboard/': typeof DashboardDashboardIndexRoute
@@ -180,8 +194,10 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof DashboardIndexRoute
+  '/local-access': typeof AuthLocalAccessRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
+  '/verify-access': typeof AuthVerifyAccessRoute
   '/expenses/add': typeof DashboardExpensesAddRoute
   '/products/add': typeof DashboardProductsAddRoute
   '/dashboard': typeof DashboardDashboardIndexRoute
@@ -205,8 +221,10 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_auth': typeof AuthRouteWithChildren
   '/_dashboard': typeof DashboardRouteWithChildren
+  '/_auth/local-access': typeof AuthLocalAccessRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
+  '/_auth/verify-access': typeof AuthVerifyAccessRoute
   '/_dashboard/': typeof DashboardIndexRoute
   '/_dashboard/expenses/add': typeof DashboardExpensesAddRoute
   '/_dashboard/products/add': typeof DashboardProductsAddRoute
@@ -231,8 +249,10 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/local-access'
     | '/login'
     | '/register'
+    | '/verify-access'
     | '/expenses/add'
     | '/products/add'
     | '/dashboard/'
@@ -254,8 +274,10 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/local-access'
     | '/login'
     | '/register'
+    | '/verify-access'
     | '/expenses/add'
     | '/products/add'
     | '/dashboard'
@@ -278,8 +300,10 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_auth'
     | '/_dashboard'
+    | '/_auth/local-access'
     | '/_auth/login'
     | '/_auth/register'
+    | '/_auth/verify-access'
     | '/_dashboard/'
     | '/_dashboard/expenses/add'
     | '/_dashboard/products/add'
@@ -308,13 +332,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_dashboard': {
-      id: '/_dashboard'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_auth': {
       id: '/_auth'
       path: ''
@@ -322,18 +339,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_dashboard/': {
-      id: '/_dashboard/'
-      path: '/'
+    '/_dashboard': {
+      id: '/_dashboard'
+      path: ''
       fullPath: '/'
-      preLoaderRoute: typeof DashboardIndexRouteImport
-      parentRoute: typeof DashboardRoute
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_auth/register': {
-      id: '/_auth/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof AuthRegisterRouteImport
+    '/_auth/local-access': {
+      id: '/_auth/local-access'
+      path: '/local-access'
+      fullPath: '/local-access'
+      preLoaderRoute: typeof AuthLocalAccessRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_auth/login': {
@@ -343,25 +360,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_dashboard/products/': {
-      id: '/_dashboard/products/'
-      path: '/products'
-      fullPath: '/products/'
-      preLoaderRoute: typeof DashboardProductsIndexRouteImport
-      parentRoute: typeof DashboardRoute
+    '/_auth/register': {
+      id: '/_auth/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof AuthRegisterRouteImport
+      parentRoute: typeof AuthRoute
     }
-    '/_dashboard/inventory/': {
-      id: '/_dashboard/inventory/'
-      path: '/inventory'
-      fullPath: '/inventory/'
-      preLoaderRoute: typeof DashboardInventoryIndexRouteImport
-      parentRoute: typeof DashboardRoute
+    '/_auth/verify-access': {
+      id: '/_auth/verify-access'
+      path: '/verify-access'
+      fullPath: '/verify-access'
+      preLoaderRoute: typeof AuthVerifyAccessRouteImport
+      parentRoute: typeof AuthRoute
     }
-    '/_dashboard/expenses/': {
-      id: '/_dashboard/expenses/'
-      path: '/expenses'
-      fullPath: '/expenses/'
-      preLoaderRoute: typeof DashboardExpensesIndexRouteImport
+    '/_dashboard/': {
+      id: '/_dashboard/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/_dashboard/dashboard/': {
@@ -371,11 +388,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardDashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/_dashboard/products/add': {
-      id: '/_dashboard/products/add'
-      path: '/products/add'
-      fullPath: '/products/add'
-      preLoaderRoute: typeof DashboardProductsAddRouteImport
+    '/_dashboard/expenses/': {
+      id: '/_dashboard/expenses/'
+      path: '/expenses'
+      fullPath: '/expenses/'
+      preLoaderRoute: typeof DashboardExpensesIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/_dashboard/expenses/add': {
@@ -385,53 +402,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardExpensesAddRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/_dashboard/products/category/': {
-      id: '/_dashboard/products/category/'
-      path: '/products/category'
-      fullPath: '/products/category/'
-      preLoaderRoute: typeof DashboardProductsCategoryIndexRouteImport
+    '/_dashboard/inventory/': {
+      id: '/_dashboard/inventory/'
+      path: '/inventory'
+      fullPath: '/inventory/'
+      preLoaderRoute: typeof DashboardInventoryIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/_dashboard/products/brand/': {
-      id: '/_dashboard/products/brand/'
-      path: '/products/brand'
-      fullPath: '/products/brand/'
-      preLoaderRoute: typeof DashboardProductsBrandIndexRouteImport
+    '/_dashboard/products/': {
+      id: '/_dashboard/products/'
+      path: '/products'
+      fullPath: '/products/'
+      preLoaderRoute: typeof DashboardProductsIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/_dashboard/products/view/$id': {
-      id: '/_dashboard/products/view/$id'
-      path: '/products/view/$id'
-      fullPath: '/products/view/$id'
-      preLoaderRoute: typeof DashboardProductsViewIdRouteImport
-      parentRoute: typeof DashboardRoute
-    }
-    '/_dashboard/products/edit/$id': {
-      id: '/_dashboard/products/edit/$id'
-      path: '/products/edit/$id'
-      fullPath: '/products/edit/$id'
-      preLoaderRoute: typeof DashboardProductsEditIdRouteImport
-      parentRoute: typeof DashboardRoute
-    }
-    '/_dashboard/products/category/add': {
-      id: '/_dashboard/products/category/add'
-      path: '/products/category/add'
-      fullPath: '/products/category/add'
-      preLoaderRoute: typeof DashboardProductsCategoryAddRouteImport
-      parentRoute: typeof DashboardRoute
-    }
-    '/_dashboard/products/brand/add': {
-      id: '/_dashboard/products/brand/add'
-      path: '/products/brand/add'
-      fullPath: '/products/brand/add'
-      preLoaderRoute: typeof DashboardProductsBrandAddRouteImport
-      parentRoute: typeof DashboardRoute
-    }
-    '/_dashboard/expenses/view/$id': {
-      id: '/_dashboard/expenses/view/$id'
-      path: '/expenses/view/$id'
-      fullPath: '/expenses/view/$id'
-      preLoaderRoute: typeof DashboardExpensesViewIdRouteImport
+    '/_dashboard/products/add': {
+      id: '/_dashboard/products/add'
+      path: '/products/add'
+      fullPath: '/products/add'
+      preLoaderRoute: typeof DashboardProductsAddRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/_dashboard/expenses/edit/$id': {
@@ -441,25 +430,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardExpensesEditIdRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/_dashboard/products/category/view/$id': {
-      id: '/_dashboard/products/category/view/$id'
-      path: '/products/category/view/$id'
-      fullPath: '/products/category/view/$id'
-      preLoaderRoute: typeof DashboardProductsCategoryViewIdRouteImport
+    '/_dashboard/expenses/view/$id': {
+      id: '/_dashboard/expenses/view/$id'
+      path: '/expenses/view/$id'
+      fullPath: '/expenses/view/$id'
+      preLoaderRoute: typeof DashboardExpensesViewIdRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/_dashboard/products/category/edit/$id': {
-      id: '/_dashboard/products/category/edit/$id'
-      path: '/products/category/edit/$id'
-      fullPath: '/products/category/edit/$id'
-      preLoaderRoute: typeof DashboardProductsCategoryEditIdRouteImport
+    '/_dashboard/products/brand/': {
+      id: '/_dashboard/products/brand/'
+      path: '/products/brand'
+      fullPath: '/products/brand/'
+      preLoaderRoute: typeof DashboardProductsBrandIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/_dashboard/products/brand/view/$id': {
-      id: '/_dashboard/products/brand/view/$id'
-      path: '/products/brand/view/$id'
-      fullPath: '/products/brand/view/$id'
-      preLoaderRoute: typeof DashboardProductsBrandViewIdRouteImport
+    '/_dashboard/products/brand/add': {
+      id: '/_dashboard/products/brand/add'
+      path: '/products/brand/add'
+      fullPath: '/products/brand/add'
+      preLoaderRoute: typeof DashboardProductsBrandAddRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/products/category/': {
+      id: '/_dashboard/products/category/'
+      path: '/products/category'
+      fullPath: '/products/category/'
+      preLoaderRoute: typeof DashboardProductsCategoryIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/products/category/add': {
+      id: '/_dashboard/products/category/add'
+      path: '/products/category/add'
+      fullPath: '/products/category/add'
+      preLoaderRoute: typeof DashboardProductsCategoryAddRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/products/edit/$id': {
+      id: '/_dashboard/products/edit/$id'
+      path: '/products/edit/$id'
+      fullPath: '/products/edit/$id'
+      preLoaderRoute: typeof DashboardProductsEditIdRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/products/view/$id': {
+      id: '/_dashboard/products/view/$id'
+      path: '/products/view/$id'
+      fullPath: '/products/view/$id'
+      preLoaderRoute: typeof DashboardProductsViewIdRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/_dashboard/products/brand/edit/$id': {
@@ -469,17 +486,42 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardProductsBrandEditIdRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/_dashboard/products/brand/view/$id': {
+      id: '/_dashboard/products/brand/view/$id'
+      path: '/products/brand/view/$id'
+      fullPath: '/products/brand/view/$id'
+      preLoaderRoute: typeof DashboardProductsBrandViewIdRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/products/category/edit/$id': {
+      id: '/_dashboard/products/category/edit/$id'
+      path: '/products/category/edit/$id'
+      fullPath: '/products/category/edit/$id'
+      preLoaderRoute: typeof DashboardProductsCategoryEditIdRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/products/category/view/$id': {
+      id: '/_dashboard/products/category/view/$id'
+      path: '/products/category/view/$id'
+      fullPath: '/products/category/view/$id'
+      preLoaderRoute: typeof DashboardProductsCategoryViewIdRouteImport
+      parentRoute: typeof DashboardRoute
+    }
   }
 }
 
 interface AuthRouteChildren {
+  AuthLocalAccessRoute: typeof AuthLocalAccessRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
+  AuthVerifyAccessRoute: typeof AuthVerifyAccessRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
+  AuthLocalAccessRoute: AuthLocalAccessRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,
+  AuthVerifyAccessRoute: AuthVerifyAccessRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)

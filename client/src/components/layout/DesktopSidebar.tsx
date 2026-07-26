@@ -3,10 +3,13 @@ import { useState } from 'react'
 import ThemeTrigger from '../theme/ThemeTrigger'
 import SidebarNav from './SidebarNav'
 import { mainNav, secondaryNav } from './navigation'
+import { useAuth } from '@/app/providers/AuthProvider'
 
 export default function DesktopSidebar() {
     const [compact, setCompact] = useState(false)
 
+      const {user, lastLoginAt} = useAuth()
+      console.log(user, lastLoginAt)
     return (
         <aside
             className={
@@ -32,14 +35,17 @@ export default function DesktopSidebar() {
                     </button>
                 </div>
 
-                {/* {!compact && (
+                {!compact && (
                     <div className="rounded-xl border p-3">
-                        <p className="font-medium">Cashier John</p>
+                        <p className="font-medium">{user?.full_name}</p>
+                        {
+                            lastLoginAt &&
                         <p className="text-xs text-muted-foreground">
-                            Today at the counter
+                            Last logged in at ({(new Date(lastLoginAt))?.toLocaleString()})
                         </p>
+                        }
                     </div>
-                )} */}
+                )}
 
                 <SidebarNav items={mainNav} compact={compact} />
 

@@ -6,10 +6,10 @@ import { SyncCollections } from '../../../sync.collections.js'
 import { SyncCheckpointService } from '../../../repositories/sync-checkpoint.service.js'
 import { createSyncRepository } from '../../base.sync.repository.js'
 
-async function beforePush(doc) {
+async function beforePush(tx, doc) {
     let unitId = doc?.unit_id
     if (unitId) {
-        const unit = await db
+        const unit = await tx
             .select()
             .from(units)
             .where(or(eq(units.id, unitId), eq(units.name, doc?.unit_name)))
@@ -20,11 +20,10 @@ async function beforePush(doc) {
     }
     let productId = doc?.product_id
     if (productId) {
-        const product = await db
+        const product = await tx
             .select()
             .from(products)
             .where(eq(products.id, productId))
-        console.log(product)
         if (product.length > 0) {
             productId = product[0]?.id
         }
