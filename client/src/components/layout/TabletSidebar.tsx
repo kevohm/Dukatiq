@@ -1,3 +1,4 @@
+import LogoutButton from '../shared/LogoutButton'
 import ThemeTrigger from '../theme/ThemeTrigger'
 import SidebarNav from './SidebarNav'
 import { mainNav, secondaryNav } from './navigation'
@@ -17,8 +18,9 @@ export default function TabletSidebar() {
                 </div>
             </div>
 
-            <div className="flex justify-center">
+            <div className="flex flex-col gap-6 justify-center">
                 <ThemeTrigger />
+                <LogoutButton />
             </div>
         </aside>
     )

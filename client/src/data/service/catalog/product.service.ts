@@ -33,7 +33,7 @@ export class ProductService {
 
         const units = await unitRepository.findByIds(unitIds)
 
-        const unitMap = new Map(units.map((unit) => [unit.id, unit]))
+        const unitMap = new Map(units.map((unit) => [unit.id, {id:unit.id, name:unit.name}]))
 
         // Fetch categories
         const categoryIds = [
@@ -46,7 +46,7 @@ export class ProductService {
             await productCategoryRepository.findByIds(categoryIds)
 
         const categoryMap = new Map(
-            categories.map((category) => [category.id, category])
+            categories.map((category) => [category.id, {id:category?.id, name:category?.name}])
         )
 
         // Fetch brands
@@ -58,7 +58,7 @@ export class ProductService {
 
         const brands = await brandRepository.findByIds(brandIds)
 
-        const brandMap = new Map(brands.map((brand) => [brand.id, brand]))
+        const brandMap = new Map(brands.map((brand) => [brand.id,  {id:brand?.id, name:brand?.name}]))
 
         // Group product units by product
         const productUnitMap = new Map<string, any[]>()
@@ -67,7 +67,9 @@ export class ProductService {
             const current = productUnitMap.get(productUnit.product_id) ?? []
 
             current.push({
-                ...productUnit,
+                conversion_factor: productUnit?.conversion_factor,
+                is_base_unit: productUnit?.is_base_unit,
+                id: productUnit?.id,
                 unit: unitMap.get(productUnit.unit_id),
             })
 
@@ -89,7 +91,7 @@ export class ProductService {
         if (!id) {
             throw new Error('Product does not exist')
         }
-        return productRepository.findOrThrow(id, 'Product does not exist')
+        return productRepository.findDetailed(id)
     }
 
     async create(payload: IProductCreatePayload) {

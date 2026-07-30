@@ -39,7 +39,7 @@ export function useCreateProduct() {
             qc.invalidateQueries({ queryKey: PRODUCT_KEY })
         },
         onError: (error) => {
-            console.log(error)
+            // console.log(error)
             if (isAxiosError(error)) {
                 return error.response?.data
             } else {

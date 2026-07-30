@@ -1,3 +1,4 @@
+import { Badge } from '@/components/ui/Badge'
 import { Button } from '../../../components/ui/Button'
 import { formatCurrency } from '../../../utils/currency'
 import type { Product } from '../../product/types'
@@ -15,9 +16,14 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
             <div className="flex items-start justify-between gap-3">
                 <div>
                     <p className="font-semibold text-heading">{product.name}</p>
-                    <p className="text-sm text-muted">
-                        {product.category?.name ?? 'Uncategorized'}
-                    </p>
+                    <div className="flex flex-wrap gap-2.5">
+                        <Badge color="gray" >
+                            {product.category?.name ?? 'Uncategorized'}
+                        </Badge>
+                        <Badge color="orange">
+                            {product.brand?.name ?? 'Uncategorized'}
+                        </Badge>
+                    </div>
                 </div>
                 <div className="text-right">
                     <p className="font-semibold text-heading">

@@ -12,15 +12,15 @@ export const apiClient = axios.create({
     withCredentials:true
 })
 
-apiClient.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token')
+// apiClient.interceptors.request.use((config) => {
+//     const token = localStorage.getItem('token')
 
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`
-    }
+//     if (token) {
+//         config.headers.Authorization = `Bearer ${token}`
+//     }
 
-    return config
-})
+//     return config
+// })
 
 apiClient.interceptors.response.use(
     (response) => {
@@ -29,11 +29,16 @@ apiClient.interceptors.response.use(
     },
     async (error) => {
         // const status = error.response?.status
-        if (!error.response) {
+        const isOffline =
+            !error.response &&
+            (!error.response?.status || !error?.status) &&
+            error?.message?.includes('Network Error')
+       
+        if (isOffline) {
             networkEvents.setApiAvailable(false)
         }
 
-        const err = parseError(error)
+        const err = parseError(error, isOffline)
         return Promise.reject(err)
     }
 )

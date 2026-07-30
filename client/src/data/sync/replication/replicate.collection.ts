@@ -14,6 +14,7 @@ export function replicateCollection({ collection, name }: ReplicationConfig) {
 
         replicationIdentifier: `catalog/${name}`,
         ...baseConfig,
+
         deletedField:"is_deleted",
 
         push: {

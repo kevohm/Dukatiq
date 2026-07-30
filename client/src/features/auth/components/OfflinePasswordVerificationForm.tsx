@@ -6,8 +6,9 @@ import { TextInput } from '../../../components/ui/TextInput'
 import { Button } from '../../../components/ui/Button'
 
 import type { ApiError } from '../../../errors/error'
-import { useVerifyOfflinePassword } from '../hooks'
-import { useAuth } from '@/app/providers/AuthProvider'
+import {  useVerifyOfflinePassword } from '../hooks'
+import { useNavigate } from '@tanstack/react-router'
+import { useOfflineAuth } from '@/app/providers/OfflineAuthProvider'
 
 
 interface OfflinePasswordVerificationFormProps {
@@ -17,8 +18,9 @@ interface OfflinePasswordVerificationFormProps {
 const OfflinePasswordVerificationForm = ({
     onSuccess,
 }: OfflinePasswordVerificationFormProps) => {
-    const {user} = useAuth()
-
+    // console.log(data)
+    const navigate = useNavigate()
+    const {getCurrentOfflineUser} = useOfflineAuth()
     const { mutateAsync, isPending } = useVerifyOfflinePassword()
 
     const [password, setPassword] = useState('')
@@ -33,19 +35,14 @@ const OfflinePasswordVerificationForm = ({
             setError('Password is required')
             return
         }
-        if(!user?.id){
-              setError('Invalid session')
-              return
-        }
 
         try {
             await mutateAsync({
-                password,
-                user_id: user?.id
+                password
             })
-
+            await getCurrentOfflineUser()
             toast.success('Access granted')
-
+            navigate({to:"/"})
             onSuccess?.()
         } catch (error) {
             const apiError = error as ApiError
@@ -57,6 +54,12 @@ const OfflinePasswordVerificationForm = ({
             setError(apiError.message ?? 'Invalid local access password')
         }
     }
+    // if(offlineStatus === "loading"){
+    //     return <div>loading...</div>
+    // }
+    // if(offlineStatus === "error"){
+    //     return <div>An error occurred</div>
+    // }
 
     return (
         <form

@@ -9,13 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AccountRouteImport } from './routes/_account'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as DashboardRouteImport } from './routes/_dashboard'
+import { Route as OfflineAuthRouteImport } from './routes/_offline-auth'
+import { Route as AccountRecoverRouteImport } from './routes/_account/recover'
+import { Route as AccountSetRecoveryQuestionsRouteImport } from './routes/_account/set-recovery-questions'
 import { Route as AuthLocalAccessRouteImport } from './routes/_auth/local-access'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
-import { Route as AuthVerifyAccessRouteImport } from './routes/_auth/verify-access'
 import { Route as DashboardIndexRouteImport } from './routes/_dashboard/index'
+import { Route as OfflineAuthVerifyAccessRouteImport } from './routes/_offline-auth/verify-access'
 import { Route as DashboardDashboardIndexRouteImport } from './routes/_dashboard/dashboard/index'
 import { Route as DashboardExpensesIndexRouteImport } from './routes/_dashboard/expenses/index'
 import { Route as DashboardExpensesAddRouteImport } from './routes/_dashboard/expenses/add'
@@ -35,6 +39,10 @@ import { Route as DashboardProductsBrandViewIdRouteImport } from './routes/_dash
 import { Route as DashboardProductsCategoryEditIdRouteImport } from './routes/_dashboard/products/category/edit/$id'
 import { Route as DashboardProductsCategoryViewIdRouteImport } from './routes/_dashboard/products/category/view/$id'
 
+const AccountRoute = AccountRouteImport.update({
+  id: '/_account',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
   getParentRoute: () => rootRouteImport,
@@ -43,6 +51,21 @@ const DashboardRoute = DashboardRouteImport.update({
   id: '/_dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OfflineAuthRoute = OfflineAuthRouteImport.update({
+  id: '/_offline-auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountRecoverRoute = AccountRecoverRouteImport.update({
+  id: '/recover',
+  path: '/recover',
+  getParentRoute: () => AccountRoute,
+} as any)
+const AccountSetRecoveryQuestionsRoute =
+  AccountSetRecoveryQuestionsRouteImport.update({
+    id: '/set-recovery-questions',
+    path: '/set-recovery-questions',
+    getParentRoute: () => AccountRoute,
+  } as any)
 const AuthLocalAccessRoute = AuthLocalAccessRouteImport.update({
   id: '/local-access',
   path: '/local-access',
@@ -58,15 +81,15 @@ const AuthRegisterRoute = AuthRegisterRouteImport.update({
   path: '/register',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthVerifyAccessRoute = AuthVerifyAccessRouteImport.update({
-  id: '/verify-access',
-  path: '/verify-access',
-  getParentRoute: () => AuthRoute,
-} as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => DashboardRoute,
+} as any)
+const OfflineAuthVerifyAccessRoute = OfflineAuthVerifyAccessRouteImport.update({
+  id: '/verify-access',
+  path: '/verify-access',
+  getParentRoute: () => OfflineAuthRoute,
 } as any)
 const DashboardDashboardIndexRoute = DashboardDashboardIndexRouteImport.update({
   id: '/dashboard/',
@@ -169,10 +192,12 @@ const DashboardProductsCategoryViewIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof DashboardIndexRoute
+  '/recover': typeof AccountRecoverRoute
+  '/set-recovery-questions': typeof AccountSetRecoveryQuestionsRoute
   '/local-access': typeof AuthLocalAccessRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
-  '/verify-access': typeof AuthVerifyAccessRoute
+  '/verify-access': typeof OfflineAuthVerifyAccessRoute
   '/expenses/add': typeof DashboardExpensesAddRoute
   '/products/add': typeof DashboardProductsAddRoute
   '/dashboard/': typeof DashboardDashboardIndexRoute
@@ -194,10 +219,12 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof DashboardIndexRoute
+  '/recover': typeof AccountRecoverRoute
+  '/set-recovery-questions': typeof AccountSetRecoveryQuestionsRoute
   '/local-access': typeof AuthLocalAccessRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
-  '/verify-access': typeof AuthVerifyAccessRoute
+  '/verify-access': typeof OfflineAuthVerifyAccessRoute
   '/expenses/add': typeof DashboardExpensesAddRoute
   '/products/add': typeof DashboardProductsAddRoute
   '/dashboard': typeof DashboardDashboardIndexRoute
@@ -219,12 +246,16 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/_account': typeof AccountRouteWithChildren
   '/_auth': typeof AuthRouteWithChildren
   '/_dashboard': typeof DashboardRouteWithChildren
+  '/_offline-auth': typeof OfflineAuthRouteWithChildren
+  '/_account/recover': typeof AccountRecoverRoute
+  '/_account/set-recovery-questions': typeof AccountSetRecoveryQuestionsRoute
   '/_auth/local-access': typeof AuthLocalAccessRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
-  '/_auth/verify-access': typeof AuthVerifyAccessRoute
+  '/_offline-auth/verify-access': typeof OfflineAuthVerifyAccessRoute
   '/_dashboard/': typeof DashboardIndexRoute
   '/_dashboard/expenses/add': typeof DashboardExpensesAddRoute
   '/_dashboard/products/add': typeof DashboardProductsAddRoute
@@ -249,6 +280,8 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/recover'
+    | '/set-recovery-questions'
     | '/local-access'
     | '/login'
     | '/register'
@@ -274,6 +307,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/recover'
+    | '/set-recovery-questions'
     | '/local-access'
     | '/login'
     | '/register'
@@ -298,12 +333,16 @@ export interface FileRouteTypes {
     | '/products/category/view/$id'
   id:
     | '__root__'
+    | '/_account'
     | '/_auth'
     | '/_dashboard'
+    | '/_offline-auth'
+    | '/_account/recover'
+    | '/_account/set-recovery-questions'
     | '/_auth/local-access'
     | '/_auth/login'
     | '/_auth/register'
-    | '/_auth/verify-access'
+    | '/_offline-auth/verify-access'
     | '/_dashboard/'
     | '/_dashboard/expenses/add'
     | '/_dashboard/products/add'
@@ -326,12 +365,21 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  AccountRoute: typeof AccountRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
   DashboardRoute: typeof DashboardRouteWithChildren
+  OfflineAuthRoute: typeof OfflineAuthRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_account': {
+      id: '/_account'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_auth': {
       id: '/_auth'
       path: ''
@@ -345,6 +393,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_offline-auth': {
+      id: '/_offline-auth'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof OfflineAuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_account/recover': {
+      id: '/_account/recover'
+      path: '/recover'
+      fullPath: '/recover'
+      preLoaderRoute: typeof AccountRecoverRouteImport
+      parentRoute: typeof AccountRoute
+    }
+    '/_account/set-recovery-questions': {
+      id: '/_account/set-recovery-questions'
+      path: '/set-recovery-questions'
+      fullPath: '/set-recovery-questions'
+      preLoaderRoute: typeof AccountSetRecoveryQuestionsRouteImport
+      parentRoute: typeof AccountRoute
     }
     '/_auth/local-access': {
       id: '/_auth/local-access'
@@ -367,19 +436,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRegisterRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_auth/verify-access': {
-      id: '/_auth/verify-access'
-      path: '/verify-access'
-      fullPath: '/verify-access'
-      preLoaderRoute: typeof AuthVerifyAccessRouteImport
-      parentRoute: typeof AuthRoute
-    }
     '/_dashboard/': {
       id: '/_dashboard/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
+    }
+    '/_offline-auth/verify-access': {
+      id: '/_offline-auth/verify-access'
+      path: '/verify-access'
+      fullPath: '/verify-access'
+      preLoaderRoute: typeof OfflineAuthVerifyAccessRouteImport
+      parentRoute: typeof OfflineAuthRoute
     }
     '/_dashboard/dashboard/': {
       id: '/_dashboard/dashboard/'
@@ -510,18 +579,29 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AccountRouteChildren {
+  AccountRecoverRoute: typeof AccountRecoverRoute
+  AccountSetRecoveryQuestionsRoute: typeof AccountSetRecoveryQuestionsRoute
+}
+
+const AccountRouteChildren: AccountRouteChildren = {
+  AccountRecoverRoute: AccountRecoverRoute,
+  AccountSetRecoveryQuestionsRoute: AccountSetRecoveryQuestionsRoute,
+}
+
+const AccountRouteWithChildren =
+  AccountRoute._addFileChildren(AccountRouteChildren)
+
 interface AuthRouteChildren {
   AuthLocalAccessRoute: typeof AuthLocalAccessRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
-  AuthVerifyAccessRoute: typeof AuthVerifyAccessRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthLocalAccessRoute: AuthLocalAccessRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,
-  AuthVerifyAccessRoute: AuthVerifyAccessRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
@@ -574,9 +654,23 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
   DashboardRouteChildren,
 )
 
+interface OfflineAuthRouteChildren {
+  OfflineAuthVerifyAccessRoute: typeof OfflineAuthVerifyAccessRoute
+}
+
+const OfflineAuthRouteChildren: OfflineAuthRouteChildren = {
+  OfflineAuthVerifyAccessRoute: OfflineAuthVerifyAccessRoute,
+}
+
+const OfflineAuthRouteWithChildren = OfflineAuthRoute._addFileChildren(
+  OfflineAuthRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
+  AccountRoute: AccountRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
   DashboardRoute: DashboardRouteWithChildren,
+  OfflineAuthRoute: OfflineAuthRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

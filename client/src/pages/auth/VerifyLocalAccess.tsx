@@ -1,9 +1,48 @@
-import { useAuth } from '@/app/providers/AuthProvider'
+import { useOnlineStatus } from '@/app/providers/OnlineProvider'
+import LoadingSection from '@/components/shared/LoadingSection'
 import OfflinePasswordVerificationForm from '@/features/auth/components/OfflinePasswordVerificationForm'
-import { Link } from '@tanstack/react-router'
+import {
+    useIsSessionRefreshRequired,
+    useUserHasLocalAccess,
+} from '@/features/auth/hooks'
+import { Link, Navigate } from '@tanstack/react-router'
+import toast from 'react-hot-toast'
 
 const VerifyLocalAccess = () => {
-    const { status } = useAuth()
+    const { isOnline, isApiAvailable } = useOnlineStatus()
+
+    //  return boolen
+    const sessionValidityQuery = useIsSessionRefreshRequired()
+    // return boolean
+    const offlineAvailabilityQuery = useUserHasLocalAccess()
+
+    if (
+        offlineAvailabilityQuery?.isLoading ||
+        sessionValidityQuery?.isLoading
+    ) {
+        return <LoadingSection />
+    }
+
+    if (!offlineAvailabilityQuery?.data) {
+        toast.error(
+            'Oops! It seems you have not set offline password. Login first then we will guide you',
+            {
+                id: 'LOCAL_ACCESS_NOT_FOUND',
+                duration: 5000,
+            }
+        )
+        return <Navigate to="/login" />
+    }
+
+    if (sessionValidityQuery?.data) {
+        toast.error(
+            'Oops! Your session has expired or is corrupt. Please verify using your offline password to regain access to pos',
+            {
+                id: 'LOCAL_SESSION_EXPIRED',
+                duration: 5000
+            }
+        )
+    }
 
     return (
         <div className="min-h-screen w-full flex flex-col space-y-6 items-center justify-center">
@@ -18,7 +57,7 @@ const VerifyLocalAccess = () => {
 
             <OfflinePasswordVerificationForm />
 
-            {status == 'loggedin' && (
+            {isApiAvailable && isOnline && (
                 <span className="text-sm">
                     Need to use another account?{' '}
                     <Link

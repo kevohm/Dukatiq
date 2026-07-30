@@ -12,11 +12,7 @@ router.get(
     requireAuth,
     authController.me
 )
-router.post(
-    '/local-access',
-    requireAuth,
-    authController.createLocalAccess
-)
+
 router.post('/refresh', requireAuth, authController.refresh)
 
 export default router

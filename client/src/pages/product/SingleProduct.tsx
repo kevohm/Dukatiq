@@ -10,12 +10,13 @@ import { Button } from '../../components/ui/Button'
 import { Badge } from '../../components/ui/Badge'
 
 const SingleProduct = () => {
-    const { id } = useParams({ from: "/_dashboard/products/brand/view/$id" })
+    const { id } = useParams({ from: "/_dashboard/products/view/$id" })
     const productQuery = useProduct(id)
     // console.log(productQuery?.data)
     if (productQuery?.isLoading) {
         return <LoadingSection title="Fetching products" />
     }
+
     return (
         <AppBodyWrapper>
             <Topbar

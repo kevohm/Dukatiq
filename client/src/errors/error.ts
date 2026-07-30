@@ -1,4 +1,3 @@
-
 import { AxiosError, isAxiosError } from 'axios'
 
 export interface ApiError {
@@ -9,13 +8,19 @@ export interface ApiError {
 
 export type ErrorResponse = AxiosError<ApiError>
 
-export function parseError(error: unknown): ApiError {
+export function parseError(error: unknown, isOffline: boolean): ApiError {
     if (isAxiosError(error)) {
+        console.error({
+            message: error.response?.data?.message ?? error.message,
+            status: error.response?.status,
+            errors: error.response?.data?.errors,
+        })
+        const message = isOffline
+            ? 'You seem to be offline'
+            : (error.response?.data?.message ?? error.message)
+
         return {
-            message:
-                error.response?.data?.message ??
-                error.message ??
-                'An unexpected error occurred.',
+            message: message ?? 'An unexpected error occurred.',
             status: error.response?.status,
             errors: error.response?.data?.errors,
         }

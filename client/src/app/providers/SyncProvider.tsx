@@ -29,6 +29,13 @@ export function SyncProvider({ children }: { children: ReactNode }) {
     // 1. Memoize syncNow so it doesn't re-create when `status` changes
     const syncNow = useCallback(async () => {
         if (!canSync) {
+            console.log(`
+                ..................................................
+                ...................|----------------|.............
+                ...................| PAUSED SYNCING |.............
+                ...................|----------------|.............
+                ..................................................
+                `)
             setStatus('offline')
             return
         }
@@ -51,7 +58,7 @@ export function SyncProvider({ children }: { children: ReactNode }) {
         } else {
             setStatus('offline')
         }
-    }, [canSync, syncNow])
+    }, [canSync])
 
     return (
         <SyncContext.Provider value={{ status, lastSyncedAt, syncNow }}>

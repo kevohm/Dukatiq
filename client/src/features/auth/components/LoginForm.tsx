@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {  useState } from 'react'
 import { Loader } from 'lucide-react'
 
 import { TextInput } from '../../../components/ui/TextInput'
@@ -10,10 +10,12 @@ import type { ILoginPayload } from '../types'
 import toast from 'react-hot-toast'
 import { useNavigate } from '@tanstack/react-router'
 import { useAuth } from '@/app/providers/AuthProvider'
+import { localAccessService } from '@/data/service'
 
 const LoginForm = () => {
     const { mutateAsync, isPending } = useLogin()
-    const { getCurrentUser } = useAuth()
+    const { getCurrentUser} = useAuth()
+
     const navigate = useNavigate()
 
     const [errors, setErrors] = useState<Record<string, string>>({})
@@ -60,10 +62,20 @@ const LoginForm = () => {
         e.preventDefault()
 
         try {
+            // set active offline user
             await mutateAsync(body)
             await getCurrentUser()
-            toast.success('Login successfull. Redirecting..')
-            navigate({ to: '/local-access' })
+
+            const hasLocalAccess = await localAccessService.checkForUserLocalAccess()
+            // const isSessionExpired = await localSessionService.hasSessionExpired()
+            
+            toast.success('Login successfull. Redirecting...')
+            navigate({
+                to:
+                    hasLocalAccess 
+                        ? '/'
+                        : '/local-access',
+            })
         } catch (error) {
             const apiErr = error as ApiError
             const err = apiErr?.errors
@@ -75,7 +87,17 @@ const LoginForm = () => {
             }
         }
     }
-
+    // const getData = async () => {
+    //     const user = await userService.getActiveUser()
+    //     console.log(user)
+    //     if (user?.id) {
+    //         const session = await localSessionService.getSession(user?.id)
+    //         console.log(session)
+    //     }
+    // }
+    // useEffect(() => {
+    //     getData()
+    // }, [])
     return (
         <form
             onSubmit={handleSubmit}

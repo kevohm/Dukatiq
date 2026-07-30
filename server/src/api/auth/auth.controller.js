@@ -7,7 +7,6 @@ import { cookieConfigs, setCookie } from '../../utils/cookie/cookie.js'
 import { COOKIE_KEYS } from '../../utils/cookie/cookie.keys.js'
 import { AuthService } from './auth.service.js'
 import { StatusCodes } from 'http-status-codes'
-import { RecoveryService } from './recovery/recovery.service.js'
 import { db } from '../../config/database.js'
 
 function getRefreshToken(req) {
@@ -24,7 +23,7 @@ function getRefreshToken(req) {
 }
 
 export const login = async (req, res, next) => {
-    try {
+    
         const response = await AuthService.login({
             ...req.body,
             user_agent: req.headers['user-agent'],
@@ -42,9 +41,7 @@ export const login = async (req, res, next) => {
             data: response?.data?.user,
             message: response.message,
         })
-    } catch (err) {
-        res.status(401).json({ message: err.message })
-    }
+  
 }
 
 export const signup = async (req, res) => {
@@ -56,18 +53,7 @@ export const signup = async (req, res) => {
     })
 }
 
-export const createLocalAccess = async (req, res) => {
-    const response = await db.transaction(async(tx)=>{
-        const userId = req.user?.id
-        return await RecoveryService.setLocalAccess(userId, req.body, tx)
-    })
 
-    res.status(response.status).json({
-        success: response.success,
-        data: response.data,
-        message: response.message,
-    })
-}
 
 export const me = async (req, res, next) => {
     res.status(StatusCodes.OK).json({

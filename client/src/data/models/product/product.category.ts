@@ -19,6 +19,7 @@ export const productCategories = {
             name: {
                 type: 'string',
                 maxLength: 100,
+               
             },
         },
 

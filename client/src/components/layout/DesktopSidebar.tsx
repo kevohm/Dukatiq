@@ -3,13 +3,14 @@ import { useState } from 'react'
 import ThemeTrigger from '../theme/ThemeTrigger'
 import SidebarNav from './SidebarNav'
 import { mainNav, secondaryNav } from './navigation'
-import { useAuth } from '@/app/providers/AuthProvider'
+import LogoutButton from '../shared/LogoutButton'
+import useActiveUser from '@/hooks/useActiveUser'
 
 export default function DesktopSidebar() {
     const [compact, setCompact] = useState(false)
 
-      const {user, lastLoginAt} = useAuth()
-      console.log(user, lastLoginAt)
+    const { user } = useActiveUser()
+
     return (
         <aside
             className={
@@ -20,7 +21,7 @@ export default function DesktopSidebar() {
         >
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                    {!compact && <h1 className="text-lg font-bold">Dukatiq</h1>}
+                    {!compact && <h1 className="text-xl font-bold text-brand-hover">Dukatiq</h1>}
 
                     <button
                         type="button"
@@ -36,14 +37,20 @@ export default function DesktopSidebar() {
                 </div>
 
                 {!compact && (
-                    <div className="rounded-xl border p-3">
-                        <p className="font-medium">{user?.full_name}</p>
-                        {
-                            lastLoginAt &&
-                        <p className="text-xs text-muted-foreground">
-                            Last logged in at ({(new Date(lastLoginAt))?.toLocaleString()})
+                    <div className="rounded-xl border border-slate-500/20 p-3">
+                        <p className="font-semibold text-sm capitalize ">
+                            {user?.full_name}
                         </p>
-                        }
+                        {user?.lastLoginAt && (
+                            <div className="flex flex-col space-y-1 text-xs text-muted">
+                                <p>Last logged in at</p>
+                                <p>
+                                    {new Date(
+                                        user?.lastLoginAt
+                                    )?.toLocaleString()}
+                                </p>
+                            </div>
+                        )}
                     </div>
                 )}
 
@@ -56,6 +63,7 @@ export default function DesktopSidebar() {
 
             <div className="flex items-center justify-between border-t pt-3">
                 <ThemeTrigger />
+                <LogoutButton />
                 {/* {!compact && (
                     <span className="text-xs text-muted-foreground">
                         POS v1.0

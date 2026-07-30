@@ -2,6 +2,7 @@ import { X } from 'lucide-react'
 import ThemeTrigger from '../theme/ThemeTrigger'
 import SidebarNav from './SidebarNav'
 import { secondaryNav } from './navigation'
+import LogoutButton from '../shared/LogoutButton'
 
 type MobileDrawerProps = {
     open: boolean
@@ -39,8 +40,10 @@ export default function MobileDrawer({ open, onClose }: MobileDrawerProps) {
 
                 <SidebarNav items={secondaryNav} />
 
-                <div className="mt-6 border-t pt-4">
+                <div className="mt-6 flex items-center justify-between border-t pt-4">
                     <ThemeTrigger />
+                    <LogoutButton/>
+                    
                 </div>
             </div>
         </div>

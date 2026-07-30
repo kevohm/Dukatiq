@@ -17,6 +17,7 @@ import toast from 'react-hot-toast'
 
 const Sales = () => {
     const { data: products = [], isLoading, isError } = useProducts()
+    console.log(products)
     const { mutate: createSale, isPending } = useCreateSale()
     const {
         items: cartItems,

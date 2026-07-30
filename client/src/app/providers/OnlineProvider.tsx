@@ -22,12 +22,16 @@ export const OnlineProvider = ({ children }: { children: React.ReactNode }) => {
         try {
             await apiClient.get('/health')
             setIsApiAvailable(true)
-        } catch {
+        } catch (error: any) {
+            if (error?.message?.includes('You seem to be offline')) {
+                setIsOnline(false)
+            }
             setIsApiAvailable(false)
         }
     }
 
     useEffect(() => {
+        // console.log(isApiAvailable, isOnline)
         if (!isOnline) {
             setIsApiAvailable(false)
             return

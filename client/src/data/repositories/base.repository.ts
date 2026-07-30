@@ -75,6 +75,9 @@ export class BaseRepository<T extends BaseDocument> {
         return doc
     }
 
+    bulkUpsert(docs: T[]) {
+        return this.collection.bulkUpsert(docs)
+    }
     findAll() {
         return this.collection
             .find()

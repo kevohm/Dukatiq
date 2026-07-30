@@ -1,7 +1,7 @@
 import { getDatabase } from '../db'
 
 import { ProductRepository } from './catalog/product.repository'
-import { InventoryRepository } from './inventory.repository'
+import { InventoryRepository } from './inventory/inventory.repository'
 import { SaleRepository } from './sale/sale.repository'
 import { ProductUnitRepository } from './catalog/product.unit.repository'
 import { UnitRepository } from './catalog/unit.repository'
@@ -10,9 +10,9 @@ import { BrandRepository } from './catalog/product.brand.repository'
 import { SaleItemRepository } from './sale/sale.item.repository'
 import { ExpenseRepository } from './expense/expense.repository'
 import { ExpenseCategoryRepository } from './expense/expense.category.repository'
-import { UserRepository } from './user.repository'
-import { LocalAccessRepository } from './local.access.repository'
-import { LocalSessionRepository } from './local.session.repository'
+import { UserRepository } from './sessions/user.repository'
+import { LocalAccessRepository } from './sessions/local.access.repository'
+import { LocalSessionRepository } from './sessions/local.session.repository'
 
 export async function getRepositories() {
     const db = await getDatabase()

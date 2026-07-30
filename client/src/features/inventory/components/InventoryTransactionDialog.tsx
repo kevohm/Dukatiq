@@ -91,8 +91,8 @@ export function InventoryTransactionDialog() {
             }
             toast.success('Inventory movement recorded.')
             handleOpenChange(false)
-        } catch(err) {
-            console.log(err)
+        } catch {
+            // console.log(err)
             toast.error('Unable to record the inventory movement.')
         }
     }

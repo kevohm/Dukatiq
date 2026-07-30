@@ -1,8 +1,11 @@
 import { useEffect, useRef } from 'react'
-import { toast } from 'react-hot-toast'
 import { useOnlineStatus } from '../../app/providers/OnlineProvider'
+import toast, { type ToastPosition } from 'react-hot-toast'
 
-const TOAST_ID = 'network-status'
+const opts = {
+    duration: 5000,
+    position: 'bottom-right' as ToastPosition,
+}
 
 export function NetworkStatusToast() {
     const { isOnline, isApiAvailable } = useOnlineStatus()
@@ -26,9 +29,8 @@ export function NetworkStatusToast() {
         // Internet lost
         if (!isOnline && previous.current.isOnline) {
             toast.error("You're offline.", {
-                id: TOAST_ID,
-                duration: 3000,
-                position: 'bottom-left',
+                id: 'INTERNET-CONNECTION-LOST',
+                ...opts
             })
         }
         // API became unavailable
@@ -38,17 +40,15 @@ export function NetworkStatusToast() {
             previous.current.isApiAvailable
         ) {
             toast.error('Cannot connect to the server.', {
-                id: TOAST_ID,
-                duration: 3000,
-                position: 'bottom-left',
+                id: 'API-CONNECTION-LOST',
+                ...opts,
             })
         }
         // Only notify when recovering from an actual issue
         else if (isOnline && isApiAvailable && (wasOffline || wasApiDown)) {
             toast.success('Connection restored.', {
-                id: TOAST_ID,
-                duration: 3000,
-                position:"bottom-left"
+                id: 'CONNECTED-RESTORED',
+                ...opts,
             })
         }
 

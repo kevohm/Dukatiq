@@ -1,13 +1,17 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { isAxiosError } from 'axios'
 import { authApi } from './api'
-import { localAccessService, localSessionService } from '@/data/service'
+import {
+    localAccessService,
+    localSessionService,
+    userService,
+} from '@/data/service'
 
 const AUTH_KEY = ['auth']
 
-/* -----------------------------
-   LOGIN
-------------------------------*/
+/**
+ * It logs user in and creates record of user for offline use and also creates a session linked to that user record.
+ * @returns {@type UseMutationResult<User, Error, ILoginPayload, unknown>}
+ */
 export function useLogin() {
     // const qc = useQueryClient()
 
@@ -18,20 +22,13 @@ export function useLogin() {
         // },
 
         onSuccess: async (response) => {
-            const data = response
             try {
-                await localSessionService.createSession({
-                    user_id: data?.id,
+                await userService.createOrFind({
+                    ...response,
+                    is_active: true,
                 })
             } catch (err) {
                 console.error(err)
-            }
-        },
-        onError: (error) => {
-            if (isAxiosError(error)) {
-                return error.response?.data
-            } else {
-                return error
             }
         },
     })
@@ -43,13 +40,6 @@ export function useLogin() {
 export function useSignup() {
     return useMutation({
         mutationFn: authApi.signup,
-        onError: (error) => {
-            if (isAxiosError(error)) {
-                return error.response?.data
-            } else {
-                return error
-            }
-        },
     })
 }
 /* -----------------------------
@@ -73,13 +63,6 @@ export function useLogout() {
         onSuccess: () => {
             qc.invalidateQueries({ queryKey: AUTH_KEY })
         },
-        onError: (error) => {
-            if (isAxiosError(error)) {
-                return error.response?.data
-            } else {
-                return error
-            }
-        },
     })
 }
 
@@ -94,36 +77,35 @@ export function useRefresh() {
         onSuccess: () => {
             qc.invalidateQueries({ queryKey: AUTH_KEY })
         },
-        onError: (error) => {
-            if (isAxiosError(error)) {
-                return error.response?.data
-            } else {
-                return error
-            }
-        },
     })
 }
+
+/*--------------------------------
+
+    OFFLINE FUNCTIONALITY
+
+ --------------------------------*/
+
+const OFFLINE_KEY = 'OFFLINE'
 
 export function useSetOfflinePassword() {
     const qc = useQueryClient()
 
     return useMutation({
-        mutationFn: authApi.localAccess,
+        mutationFn: localAccessService.setLocalAccess,
         onSuccess: async () => {
             // const data = response.data
 
             qc.invalidateQueries({
-                queryKey: AUTH_KEY,
+                queryKey: [OFFLINE_KEY, 'local-access', 'create'],
             })
         },
-        onError: (error) => {
-            console.log(error)
-            if (isAxiosError(error)) {
-                return error.response?.data
-            } else {
-                return error
-            }
-        },
+    })
+}
+
+export function useSetRecoveryQeustions() {
+    return useMutation({
+        mutationFn: authApi.localAccess,
     })
 }
 
@@ -132,25 +114,41 @@ export function useVerifyOfflinePassword() {
 
     return useMutation({
         mutationFn: localAccessService.verifyLocalAccess,
-        onSuccess: async () => {
+        onSuccess: async (_) => {
             // const data = response
-            
+            // console.log(reponse)
+
             // No need we do not extend time unless on login
             // try {
             //     await localSessionService.touchSession(data?.user_id)
             // } catch {}
 
             qc.invalidateQueries({
-                queryKey: AUTH_KEY,
+                queryKey: [OFFLINE_KEY, 'local-access', 'verify'],
             })
         },
-        onError: (error) => {
-            console.log(error)
-            if (isAxiosError(error)) {
-                return error.response?.data
-            } else {
-                return error
-            }
-        },
+    })
+}
+
+export function useUserHasLocalAccess() {
+    return useQuery({
+        queryFn: ()=>localAccessService.checkForUserLocalAccess(),
+        queryKey: [OFFLINE_KEY, 'local-access', 'status'],
+    })
+}
+
+export function useIsSessionRefreshRequired() {
+    return useQuery({
+        queryFn: ()=>localSessionService.hasSessionExpired(),
+        queryKey: [OFFLINE_KEY, 'local-session', 'status'],
+    })
+}
+
+
+
+export function useGetActiveUser() {
+    return useQuery({
+        queryFn: userService.getActiveUser,
+        queryKey: [OFFLINE_KEY, 'user', "status"],
     })
 }

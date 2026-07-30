@@ -71,7 +71,7 @@ export class AuthService {
         })
 
         const accessToken = signAccessToken(user)
-
+        
         return {
             status: StatusCodes.OK,
             success: true,

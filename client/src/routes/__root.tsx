@@ -1,7 +1,7 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router'
 import NotFound from '../errors/NotFound'
 import { Providers } from '@/app/providers/Providers'
-import { NetworkStatusToast } from '@/components/shared/NetworkStatusToast'
+import RootWrapper from '@/app/wrappers/RootWrapper'
 
 export const Route = createRootRoute({
     component: RouteComponent,
@@ -9,10 +9,15 @@ export const Route = createRootRoute({
 })
 
 function RouteComponent() {
+
+ 
     return (
         <Providers>
-            <NetworkStatusToast />
-            <Outlet />
+            <RootWrapper>
+                <Outlet/>
+            </RootWrapper>
         </Providers>
     )
 }
+
+

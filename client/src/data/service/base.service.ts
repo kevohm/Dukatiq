@@ -1,3 +1,4 @@
+
 export class BaseService<
     TRepository extends {
         findAll(): Promise<unknown[]>

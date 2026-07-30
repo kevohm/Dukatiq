@@ -17,14 +17,29 @@ export const badgeColors = {
     gray: 'bg-gray-bg text-gray-text',
 } as const
 
+
 export type BadgeColor = keyof typeof badgeColors;
+
+
+export const badgeSizes = {
+    default: 'px-2.5 py-1 text-xs',
+    sm: 'text-sm',
+    lg: 'text-base',
+} as const
+
+export type BadgeSize = keyof typeof badgeSizes
+
 
 type BadgeProps = {
     children: ReactNode
     color?: BadgeColor
     className?: string
     icon?: ReactNode
+    size?:BadgeSize
 }
+
+
+
 
 
 /**
@@ -35,14 +50,16 @@ type BadgeProps = {
 export function Badge({
     children,
     color = 'gray',
+    size = "default",
     className,
     icon,
 }: BadgeProps) {
     return (
         <span
             className={cn(
-                'inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-medium',
+                'inline-flex items-center gap-1 rounded-md px-2.5 py-1  font-medium',
                 badgeColors[color],
+                badgeSizes[size],
                 className
             )}
         >

@@ -1,4 +1,3 @@
-
 import {
     Boxes,
     Package,
@@ -6,14 +5,12 @@ import {
     DollarSign,
     Warehouse,
     Layers,
-    
     ImageIcon,
 } from 'lucide-react'
 import { Badge } from '../../../components/ui/Badge'
-import { Card } from '../../../components/ui/Card'
+import { Card, CardContent, CardHeader } from '../../../components/ui/Card'
 import type { Product } from '../types'
 import { FileImage } from '../../file/components/FileImage'
-
 
 interface Props {
     product: Product
@@ -26,137 +23,158 @@ export default function ProductView({ product }: Props) {
 
     return (
         <div className="space-y-8">
-       
-
             {/* Stats */}
             <div className="grid gap-4 md:grid-cols-4">
                 <Card>
-                    <DollarSign className="w-5 h-5 mb-3 text-brand" />
-                    <p className="text-sm text-muted">Selling Price</p>
-                    <h2 className="text-2xl font-semibold">
-                        KSh {product.selling_price}
-                    </h2>
+                    <CardContent>
+                        <DollarSign className="w-5 h-5 mb-3 text-brand" />
+                        <p className="text-sm text-muted">Selling Price</p>
+                        <h2 className="text-2xl font-semibold">
+                            KSh {product.selling_price}
+                        </h2>
+                    </CardContent>
                 </Card>
 
                 <Card>
-                    <DollarSign className="w-5 h-5 mb-3 text-brand" />
-                    <p className="text-sm text-muted">Cost Price</p>
-                    <h2 className="text-2xl font-semibold">
-                        KSh {product.cost_price}
-                    </h2>
+                    <CardContent>
+                        <DollarSign className="w-5 h-5 mb-3 text-brand" />
+                        <p className="text-sm text-muted">Cost Price</p>
+                        <h2 className="text-2xl font-semibold">
+                            KSh {product.cost_price}
+                        </h2>
+                    </CardContent>
                 </Card>
 
                 <Card>
-                    <Warehouse className="w-5 h-5 mb-3 text-brand" />
-                    <p className="text-sm text-muted">Stock</p>
+                    <CardContent>
+                        <Warehouse className="w-5 h-5 mb-3 text-brand" />
+                        <p className="text-sm text-muted">Stock</p>
 
-                    <h2
-                        className={`text-2xl font-semibold ${
-                            lowStock ? 'text-red-600' : 'text-green-600'
-                        }`}
-                    >
-                        {product.stock_quantity}
-                    </h2>
+                        <h2
+                            className={`text-2xl font-semibold ${
+                                lowStock ? 'text-red-600' : 'text-green-600'
+                            }`}
+                        >
+                            {product.stock_quantity}
+                        </h2>
+                    </CardContent>
                 </Card>
 
                 <Card>
-                    <Boxes className="w-5 h-5 mb-3 text-brand" />
-                    <p className="text-sm text-muted">Profit / Unit</p>
+                    <CardContent>
+                        <Boxes className="w-5 h-5 mb-3 text-brand" />
+                        <p className="text-sm text-muted">Profit / Unit</p>
 
-                    <h2 className="text-2xl font-semibold">KSh {profit}</h2>
+                        <h2 className="text-2xl font-semibold">KSh {profit}</h2>
+                    </CardContent>
                 </Card>
             </div>
 
             <div className="grid lg:grid-cols-3 gap-6">
                 {/* Image */}
                 <Card className="flex items-center justify-center min-h-72">
-                    {product.image_key ? (
-                        <FileImage
-                            fileKey={product.image_key}
-                            alt={product.name}
-                            className="object-contain max-h-64"
-                            fallback={<span className="text-muted">Loading product image...</span>}
-                        />
-                    ) : product.image_url ? (
-                        <img
-                            src={product.image_url}
-                            alt={product.name}
-                            className="object-contain max-h-64"
-                        />
-                    ) : (
-                        <div className="flex flex-col items-center text-muted">
-                            <ImageIcon className="w-12 h-12 mb-3" />
-                            No product image
-                        </div>
-                    )}
+                    <CardContent>
+                        {product.image_key ? (
+                            <FileImage
+                                fileKey={product.image_key}
+                                alt={product.name}
+                                className="object-contain max-h-64"
+                                fallback={
+                                    <span className="text-muted">
+                                        Loading product image...
+                                    </span>
+                                }
+                            />
+                        ) : product.image_url ? (
+                            <img
+                                src={product.image_url}
+                                alt={product.name}
+                                className="object-contain max-h-64"
+                            />
+                        ) : (
+                            <div className="flex flex-col items-center text-muted">
+                                <ImageIcon className="w-12 h-12 mb-3" />
+                                No product image
+                            </div>
+                        )}
+                    </CardContent>
                 </Card>
 
                 {/* Details */}
                 <Card className="lg:col-span-2">
-                    <h2 className="text-lg font-semibold mb-6">
-                        Product Details
-                    </h2>
+                    <CardHeader>
+                        <h2 className="text-lg font-semibold">
+                            Product Details
+                        </h2>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="grid md:grid-cols-2 gap-6">
+                            <Detail
+                                icon={<Tag className="w-4 h-4" />}
+                                label="Category"
+                                value={product.category.name}
+                            />
 
-                    <div className="grid md:grid-cols-2 gap-6">
-                        <Detail
-                            icon={<Tag className="w-4 h-4" />}
-                            label="Category"
-                            value={product.category.name}
-                        />
+                            <Detail
+                                icon={<Package className="w-4 h-4" />}
+                                label="Brand"
+                                value={product.brand.name}
+                            />
 
-                        <Detail
-                            icon={<Package className="w-4 h-4" />}
-                            label="Brand"
-                            value={product.brand.name}
-                        />
+                            <Detail
+                                icon={<Warehouse className="w-4 h-4" />}
+                                label="Current Stock"
+                                value={product.stock_quantity}
+                            />
 
-                        <Detail
-                            icon={<Warehouse className="w-4 h-4" />}
-                            label="Current Stock"
-                            value={product.stock_quantity}
-                        />
+                            <Detail
+                                icon={<Layers className="w-4 h-4" />}
+                                label="Low Stock Alert"
+                                value={product.low_stock_threshold}
+                            />
 
-                        <Detail
-                            icon={<Layers className="w-4 h-4" />}
-                            label="Low Stock Alert"
-                            value={product.low_stock_threshold}
-                        />
-
-                        <Detail
-                            icon={<Boxes className="w-4 h-4" />}
-                            label="Base Unit"
-                            value={baseUnit?.unit.name ?? '-'}
-                        />
-                    </div>
+                            <Detail
+                                icon={<Boxes className="w-4 h-4" />}
+                                label="Base Unit"
+                                value={baseUnit?.unit.name ?? '-'}
+                            />
+                        </div>
+                    </CardContent>
                 </Card>
             </div>
 
             {/* Units */}
             <Card>
-                <h2 className="text-lg font-semibold mb-5">Inventory Units</h2>
+                <CardHeader>
+                    <h2 className="text-lg font-semibold">
+                        Inventory Units
+                    </h2>
+                </CardHeader>
 
-                <div className="space-y-3">
-                    {product.productUnits.map((unit) => (
-                        <div
-                            key={unit.id}
-                            className="flex justify-between items-center rounded-lg border border-border p-4"
-                        >
-                            <div>
-                                <div className="font-medium">
-                                    {unit.unit.name}
+                <CardContent>
+                    <div className="space-y-5">
+                        {product.productUnits.map((unit) => (
+                            <div
+                                key={unit.id}
+                                className="flex justify-between items-center rounded-lg border border-border p-4"
+                            >
+                                <div>
+                                    <div className="font-medium">
+                                        {unit.unit.name}
+                                    </div>
+
+                                    <div className="text-sm text-muted">
+                                        Conversion: {unit.conversion_factor}
+                                    </div>
                                 </div>
 
-                                <div className="text-sm text-muted">
-                                    Conversion: {unit.conversion_factor}
-                                </div>
+                                {unit.is_base_unit && (
+                                    <Badge color="green">Base Unit</Badge>
+                                )}
                             </div>
-
-                            {unit.is_base_unit && (
-                                <Badge color="green">Base Unit</Badge>
-                            )}
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                </CardContent>
             </Card>
         </div>
     )

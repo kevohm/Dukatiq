@@ -1,8 +1,8 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import { cn } from '../../lib/cn'
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-    variant?: 'primary' | 'secondary' | 'ghost'
+export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+    variant?: 'primary' | 'secondary' | 'ghost' | 'danger'
     icon?: ReactNode
 }
 
@@ -12,6 +12,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 const variants = {
     primary: 'bg-brand text-white hover:bg-brand-hover',
     secondary: 'bg-surface text-heading border border-border hover:bg-hover',
+    danger: 'bg-danger text-white border border-red-500 hover:bg-red-600',
     ghost: 'text-muted hover:bg-hover',
 }
 

@@ -3,20 +3,20 @@ import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode'
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie'
 import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv'
 
-import { users } from '../models/user'
+import { users } from '../models/sessions/user'
 import { products } from '../models/product/product'
 import { productUnits } from '../models/product/product.unit'
 import { sales } from '../models/sale/sales'
 import { saleItems } from '../models/sale/sale.items'
-import { inventory } from '../models/inventory'
+import { inventory } from '../models/inventory/inventory'
 import type { BusinessCollections, BusinessDatabase } from './types'
 import { productCategories } from '../models/product/product.category'
 import { brands } from '../models/product/product.brand'
 import { units } from '../models/product/unit'
 import { expenses } from '../models/expense/expense'
 import { expenseCategories } from '../models/expense/expense.category'
-import { localAccess } from '../models/local-access'
-import { localSessions } from '../models/local-session'
+import { localAccess } from '../models/sessions/local-access'
+import { localSessions } from '../models/sessions/local-session'
 
 addRxPlugin(RxDBDevModePlugin)
 
@@ -37,7 +37,7 @@ export const collections = {
     expenses,
     expenseCategories,
     localAccess,
-    localSessions
+    localSessions,
 } as const
 
 let dbPromise: Promise<BusinessDatabase> | null = null
@@ -51,7 +51,6 @@ export function getDatabase(): Promise<BusinessDatabase> {
         const db = await createRxDatabase<BusinessCollections>({
             name: 'businessdb',
             storage,
-        
         })
 
         await db.addCollections(collections)
