@@ -11,7 +11,7 @@
         "client:add": "npm install --workspace client",
         "server:add": "npm install --workspace server",
 
-        "build": "npm run build --workspaces",
+        "build": "npm run build --workspace client",
         "lint": "npm run lint --workspaces",
         "typecheck": "npm run typecheck --workspaces",
         "test": "npm run test --workspaces",
