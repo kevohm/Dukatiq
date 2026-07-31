@@ -9,12 +9,12 @@ import { cn } from '../../lib/cn'
  * new bg/text class pairs inline in a feature component.
  */
 export const badgeColors = {
-    green: 'bg-green-bg text-green-text',
-    blue: 'bg-blue-bg text-blue-text',
-    orange: 'bg-orange-bg text-orange-text',
-    purple: 'bg-purple-bg text-purple-text',
-    red: 'bg-red-bg text-red-text',
-    gray: 'bg-gray-bg text-gray-text',
+    green: 'bg-green-bg  text-green-text dark:bg-green-bg/5 dark:border dark:border-green-bg/10',
+    blue: 'bg-blue-bg text-blue-text dark:bg-blue-bg/5 dark:border dark:border-blue-bg/10',
+    orange: 'bg-orange-bg  text-orange-text dark:bg-orange-bg/5 dark:border dark:border-orange-bg/10',
+    purple: 'bg-purple-bg text-purple-text dark:bg-purple-bg/5 dark:border dark:border-purple-bg/10',
+    red: 'bg-red-bg text-red-text dark:bg-red-bg/5 dark:border dark:border-red-bg/10',
+    gray: 'bg-gray-bg text-gray-text dark:bg-gray-bg/5 dark:border dark:border-gray-bg/10',
 } as const
 
 

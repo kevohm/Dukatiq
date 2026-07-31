@@ -41,8 +41,10 @@ const StatsCard = ({
                 <PercentageChange change={change} />
             </div>
 
-            <p className="text-xl font-bold">{value}</p>
-            <span className="text-sm text-slate-500">{label}</span>
+            <p className="text-xl font-bold dark:text-slate-500">{value}</p>
+            <span className="text-sm text-slate-500 dark:text-slate-500">
+                {label}
+            </span>
         </div>
     )
 }

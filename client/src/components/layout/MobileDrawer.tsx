@@ -3,6 +3,7 @@ import ThemeTrigger from '../theme/ThemeTrigger'
 import SidebarNav from './SidebarNav'
 import { secondaryNav } from './navigation'
 import LogoutButton from '../shared/LogoutButton'
+import { Button } from '../ui/Button'
 
 type MobileDrawerProps = {
     open: boolean
@@ -18,7 +19,7 @@ export default function MobileDrawer({ open, onClose }: MobileDrawerProps) {
             onClick={onClose}
         >
             <div
-                className="absolute bg-white bottom-0 left-0 right-0 rounded-t-2xl bg-background p-5"
+                className="absolute bg-white  dark:text-slate-500  dark:bg-slate-950 bottom-0 left-0 right-0 rounded-t-2xl p-5"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="mb-5 flex items-center justify-between">
@@ -29,18 +30,18 @@ export default function MobileDrawer({ open, onClose }: MobileDrawerProps) {
                         </p>
                     </div>
 
-                    <button
+                    <Button
                         type="button"
                         onClick={onClose}
-                        className="rounded-md p-2 hover:bg-accent"
+                        variant='ghost'
                     >
                         <X size={18} />
-                    </button>
+                    </Button>
                 </div>
 
                 <SidebarNav items={secondaryNav} />
 
-                <div className="mt-6 flex items-center justify-between border-t pt-4">
+                <div className="mt-6 flex items-center justify-between border-t dark:border-slate-900 pt-4">
                     <ThemeTrigger />
                     <LogoutButton/>
                     

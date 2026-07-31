@@ -20,10 +20,12 @@ const UnitPicker: React.FC<props> = ({ productId, onChange }) => {
                 setUnitId(event.target.value)
                 onChange?.(event.target.value)
             }}
-            options={data?.map((unit) => ({
-                value: unit?.unit?.id ?? '',
-                label: unit?.unit?.name ?? 'Unit',
-            }))}
+            options={
+                data?.map((unit) => ({
+                    value: unit?.unit?.id ?? "",
+                    label: unit?.unit?.name ?? 'Unit',
+                })) 
+            }
             disabled={!productId}
         />
     )

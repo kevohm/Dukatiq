@@ -19,7 +19,7 @@ export function ProductStepFooter({
     const isReviewStep = stepIndex === stepCount - 1
 
     return (
-        <div className="flex items-center justify-between border-t border-border pt-4">
+        <div className="flex items-center justify-between border-t border-border dark:border-slate-900 pt-4">
             <Button
                 variant="secondary"
                 type="button"

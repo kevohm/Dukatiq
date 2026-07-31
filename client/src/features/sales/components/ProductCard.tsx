@@ -11,13 +11,15 @@ type ProductCardProps = {
 
 export function ProductCard({ product, onAddToCart }: ProductCardProps) {
     return (
-        <div className="flex flex-col justify-between rounded-xl border border-border p-3 bg-surface">
+        <div className="flex flex-col justify-between rounded-xl border border-border dark:border-slate-900 p-3 bg-surface dark:bg-slate-950">
             {/* Top Row: Product Info & Base Price */}
             <div className="flex items-start justify-between gap-3">
                 <div>
-                    <p className="font-semibold text-heading">{product.name}</p>
+                    <p className="font-semibold text-heading dark:text-slate-400 capitalize">
+                        {product.name}
+                    </p>
                     <div className="flex flex-wrap gap-2.5">
-                        <Badge color="gray" >
+                        <Badge color="gray">
                             {product.category?.name ?? 'Uncategorized'}
                         </Badge>
                         <Badge color="orange">
@@ -26,10 +28,10 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
                     </div>
                 </div>
                 <div className="text-right">
-                    <p className="font-semibold text-heading">
+                    <p className="font-semibold text-heading dark:text-slate-400">
                         {formatCurrency(product.selling_price)}
                     </p>
-                    <p className="text-sm text-muted">
+                    <p className="text-sm text-muted dark:text-slate-500">
                         Stock {product.stock_quantity}
                     </p>
                 </div>
@@ -44,7 +46,7 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
                                 key={productUnit?.id}
                                 variant="secondary"
                                 type="button"
-                                className="text-xs px-2.5 w-max py-1 h-auto justify-center border border-border hover:bg-hover hover:text-heading"
+                                className="cursor-pointer text-xs px-2.5 w-max py-1 h-auto justify-center border border-border dark:border-slate-900 hover:bg-hover hover:text-heading"
                                 onClick={() =>
                                     onAddToCart({
                                         id: product?.id,

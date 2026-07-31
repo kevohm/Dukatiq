@@ -28,7 +28,7 @@ export default function SidebarNav({
                                 : 'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                             active
                                 ? 'bg-brand/10 text-brand'
-                                : 'text-gray-600 hover:bg-gray-100'
+                                : 'text-gray-600 dark:hover:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800'
                         )}
                     >
                         <Icon size={18} />

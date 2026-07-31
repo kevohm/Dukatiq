@@ -58,6 +58,7 @@ export function InventoryTransactionDialog() {
     }
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+ 
         event.preventDefault()
         const numericQuantity = Number(quantity)
         if (
@@ -77,6 +78,7 @@ export function InventoryTransactionDialog() {
             unit_id: unitId,
             quantity: numericQuantity,
         }
+
 
         // console.log(payload)
 
@@ -106,10 +108,10 @@ export function InventoryTransactionDialog() {
             </Dialog.Trigger>
             <Dialog.Portal>
                 <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
-                <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-border bg-surface p-5 shadow-2xl">
+                <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-border bg-surface p-5 shadow-2xl dark:bg-slate-950 dark:border-slate-900">
                     <div className="flex items-start justify-between gap-4">
                         <div>
-                            <Dialog.Title className="text-lg font-semibold text-heading">
+                            <Dialog.Title className="text-lg font-semibold text-heading dark:text-slate-500">
                                 Record inventory movement
                             </Dialog.Title>
                             <Dialog.Description className="mt-1 text-sm text-muted">
@@ -191,7 +193,7 @@ export function InventoryTransactionDialog() {
                         /> */}
                         {selectedProduct?.id && (
                             <UnitPicker
-                                productId={selectedProduct?.id}
+                                productId={productId}
                                 onChange={(unitId) => {
                                     setUnitId(unitId)
                                 }}

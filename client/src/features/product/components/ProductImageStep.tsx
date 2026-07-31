@@ -30,7 +30,7 @@ export function ProductImageStep({
                     <img
                         src={previewUrl}
                         alt="Selected product"
-                        className="h-48 w-48 rounded-xl border border-border object-cover"
+                        className="h-48 w-48 rounded-xl border border-border dark:border-slate-900 object-cover"
                     />
                     <Button
                         type="button"
@@ -44,7 +44,7 @@ export function ProductImageStep({
                     </Button>
                 </div>
             ) : (
-                <label className="flex min-h-48 cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-border bg-surface px-4 text-center hover:bg-hover">
+                <label className="flex min-h-48 cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-border dark:border-slate-900 bg-surface dark:bg-slate-950 px-4 text-center hover:bg-hover dark:hover:bg-slate-900">
                     <ImagePlus className="mb-2 h-7 w-7 text-muted" />
                     <span className="font-medium text-heading">Choose an image</span>
                     <span className="mt-1 text-sm text-muted">PNG, JPEG, or WebP - max 5 MB</span>

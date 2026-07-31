@@ -57,7 +57,7 @@ export function ProductSearch({
 
 function SearchState({ children }: { children: ReactNode }) {
     return (
-        <div className="rounded-xl border border-dashed border-border p-4 text-sm text-muted md:col-span-2">
+        <div className="rounded-xl border border-dashed border-border dark:border-slate-900 p-4 text-sm text-muted dark:text-slate-500 md:col-span-2">
             {children}
         </div>
     )

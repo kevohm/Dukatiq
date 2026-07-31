@@ -52,13 +52,13 @@ export function DataTableToolbar({
           <div className="relative min-w-[220px] max-w-xs flex-1">
             <Search
               size={16}
-              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted"
+              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted dark:text-slate-500"
             />
             <input
               value={search.value}
               onChange={(e) => search.onChange(e.target.value)}
               placeholder={search.placeholder ?? "Search"}
-              className="w-full rounded-lg border border-border bg-surface py-2 pl-9 pr-3 text-sm text-heading placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-brand/30"
+              className="w-full rounded-lg border border-border dark:border-slate-900 bg-surface dark:bg-slate-950 py-2 pl-9 pr-3 text-sm text-heading dark:text-slate-500 placeholder:text-muted dark:placeholder:text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand/30"
             />
           </div>
         )}

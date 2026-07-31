@@ -1,10 +1,10 @@
 import { useId, useState, type InputHTMLAttributes } from 'react'
 import { Eye, EyeOff, type LucideIcon } from 'lucide-react'
 import { controlBase, controlBorder, Field, type BaseFieldProps } from './Field'
+import { cn } from '@/lib/cn'
 
 export interface TextInputProps
-    extends
-        BaseFieldProps,
+    extends BaseFieldProps,
         Omit<InputHTMLAttributes<HTMLInputElement>, 'id' | 'className'> {
     leadingIcon?: LucideIcon
     containerClassName?: string
@@ -45,9 +45,12 @@ export function TextInput({
                     id={inputId}
                     type={resolvedType}
                     aria-invalid={!!error}
-                    className={`${controlBase} ${controlBorder(error)} h-10 ${
-                        LeadingIcon ? 'pl-9' : 'pl-3'
-                    } ${isPassword ? 'pr-9' : 'pr-3'} ${className}`}
+                    className={cn(
+                        `${controlBase} ${controlBorder(error)} h-10 ${
+                            LeadingIcon ? 'pl-9' : 'pl-3'
+                        } ${isPassword ? 'pr-9' : 'pr-3'} `,
+                        className
+                    )}
                     {...props}
                 />
                 {isPassword && (

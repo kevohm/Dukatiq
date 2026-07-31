@@ -36,6 +36,7 @@ export function SalesTrendCard() {
                         <Line
                             dataKey="value"
                             stroke="var(--color-brand)"
+                     
                             strokeWidth={3}
                         />
                     </LineChart>

@@ -30,14 +30,14 @@ export function Checkbox({
                     <input
                         id={inputId}
                         type="checkbox"
-                        className={`peer h-[18px] w-[18px] shrink-0 appearance-none rounded-md border border-border bg-surface transition-colors duration-150 checked:border-brand checked:bg-brand focus-visible:ring-2 focus-visible:ring-brand/25 ${className}`}
+                        className={`peer h-[18px] w-[18px] shrink-0 appearance-none rounded-md border border-border dark:border-slate-900 bg-surface dark:bg-slate-950 transition-colors duration-150 checked:border-brand checked:bg-brand focus-visible:ring-2 focus-visible:ring-brand/25 ${className}`}
                         {...props}
                     />
                     <Check className="pointer-events-none absolute h-3 w-3 text-white opacity-0 peer-checked:opacity-100" />
                 </span>
                 <span className="text-sm text-heading">{label}</span>
             </label>
-            {hint && <p className="pl-[26px] text-xs text-muted">{hint}</p>}
+            {hint && <p className="pl-[26px] text-xs text-muted dark:text-slate-500">{hint}</p>}
         </div>
     )
 }

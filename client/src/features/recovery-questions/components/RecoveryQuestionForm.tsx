@@ -64,15 +64,7 @@ const RecoveryQuestionForm = () => {
         },
     ])
 
-    useEffect(() => {
-        if (user) {
-            setBody((prev) => ({
-                ...prev,
-                full_name: user.full_name,
-                email: user.email,
-            }))
-        }
-    }, [user])
+
 
     const answerRecoveryQuestion = (index: number, value: string) => {
         setBody((prev) =>
@@ -180,7 +172,7 @@ const RecoveryQuestionForm = () => {
                 w-full
             "
         >
-            {body.map((item, index) => {
+            {body?.length && body.map((item, index) => {
                 return (
                     <React.Fragment key={index}>
                         <Select

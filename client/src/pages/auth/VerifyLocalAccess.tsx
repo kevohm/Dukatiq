@@ -1,5 +1,6 @@
 import { useOnlineStatus } from '@/app/providers/OnlineProvider'
 import LoadingSection from '@/components/shared/LoadingSection'
+import AuthWrapper from '@/features/auth/components/AuthWrapper'
 import OfflinePasswordVerificationForm from '@/features/auth/components/OfflinePasswordVerificationForm'
 import {
     useIsSessionRefreshRequired,
@@ -45,11 +46,13 @@ const VerifyLocalAccess = () => {
     }
 
     return (
-        <div className="min-h-screen w-full flex flex-col space-y-6 items-center justify-center">
+        <AuthWrapper>
             <div className="text-center space-y-2">
-                <h2 className="text-2xl font-bold">Verify Local Access</h2>
+                <h2 className="text-2xl font-bold dark:text-slate-300">
+                    Verify Local Access
+                </h2>
 
-                <p className="text-sm text-gray-500 max-w-md">
+                <p className="text-sm text-gray-500 dark:text-slate-500 max-w-md">
                     Enter your local password to access Dukatiq without an
                     internet connection.
                 </p>
@@ -58,7 +61,7 @@ const VerifyLocalAccess = () => {
             <OfflinePasswordVerificationForm />
 
             {isApiAvailable && isOnline && (
-                <span className="text-sm">
+                <span className="text-sm dark:text-slate-500">
                     Need to use another account?{' '}
                     <Link
                         to="/login"
@@ -68,7 +71,7 @@ const VerifyLocalAccess = () => {
                     </Link>
                 </span>
             )}
-        </div>
+        </AuthWrapper>
     )
 }
 

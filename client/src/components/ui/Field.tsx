@@ -38,7 +38,7 @@ export function Field({
             {label && (
                 <label
                     htmlFor={id}
-                    className="text-sm capitalize font-medium text--heading"
+                    className="text-sm capitalize font-medium text-heading dark:text-slate-400"
                 >
                     {label}
                     {required && <span className="text-danger"> *</span>}
@@ -51,7 +51,7 @@ export function Field({
                     className={
                         error
                             ? 'flex items-center gap-1 text-xs text-danger'
-                            : 'text-xs text-muted'
+                            : 'text-xs text-muted dark:text-slate-500'
                     }
                 >
                     {error && <AlertCircle className="h-3.5 w-3.5 shrink-0" />}
@@ -64,14 +64,14 @@ export function Field({
 
 // Base classes shared by every "box" style control (text input, search, select, textarea).
 export const controlBase =
-    'w-full rounded-lg border bg-surface text-sm text-heading ' +
+    'w-full rounded-lg border bg-surface dark:bg-slate-950 text-sm text-heading dark:text-slate-500 ' +
     'placeholder:text-muted outline-none transition-colors duration-150 ' +
-    'disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-hover'
+    'disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-hover '
 
 export const controlBorder = (error?: string | boolean) =>
     error
-        ? 'border-danger/40 focus:border-danger focus:ring-2 focus:ring-danger/15'
-        : 'border-border focus:border-brand focus:ring-2 focus:ring-brand/15'
+        ? 'border-danger/30  focus:border-danger focus:ring-1 focus:ring-danger/10'
+        : 'border-border dark:border-slate-800 focus:border-brand dark:focus:border-slate-700 focus:ring-2 dark:focus:ring-1 dark:focus-ring-slate-700 focus:ring-brand/15'
 
 // Fields shared by every labeled control (Field's props, minus the ones each
 // component supplies itself: id and children).

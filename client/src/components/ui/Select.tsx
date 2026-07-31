@@ -67,7 +67,7 @@ export function Select({
                     ) : (
                         <>
                             {placeholder && (
-                                <option value="" disabled>
+                                <option value="" selected disabled>
                                     {placeholder}
                                 </option>
                             )}
@@ -81,7 +81,7 @@ export function Select({
                     )}
                 </select>
 
-                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted dark:text-slate-500" />
             </div>
         </Field>
     )

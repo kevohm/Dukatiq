@@ -1,15 +1,18 @@
 
+import AuthWrapper from '@/features/auth/components/AuthWrapper'
 import RecoveryQuestionForm from '@/features/recovery-questions/components/RecoveryQuestionForm'
 import { Link } from '@tanstack/react-router'
 
 const AccountRecovery = () => {
 
     return (
-        <div className="min-h-screen w-full flex flex-col space-y-6 items-center justify-center">
+        <AuthWrapper>
             <div className="text-center space-y-2">
-                <h2 className="text-2xl font-bold">Recover your account</h2>
+                <h2 className="text-2xl font-bold dark:text-slate-300">
+                    Recover your account
+                </h2>
 
-                <p className="text-sm text-gray-500 max-w-md">
+                <p className="text-sm text-gray-500 max-w-md dark:text-slate-500">
                     Answer the following recovery questions to recover your
                     account.
                 </p>
@@ -17,7 +20,7 @@ const AccountRecovery = () => {
 
             <RecoveryQuestionForm />
 
-            <span className="text-sm">
+            <span className="text-sm dark:text-slate-500">
                 Do you remember your account details?{' '}
                 <Link
                     to="/login"
@@ -26,7 +29,7 @@ const AccountRecovery = () => {
                     Login
                 </Link>
             </span>
-        </div>
+        </AuthWrapper>
     )
 }
 

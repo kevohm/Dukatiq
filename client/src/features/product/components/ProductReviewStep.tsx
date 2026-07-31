@@ -86,7 +86,7 @@ export function ProductReviewStep({ body }: Props) {
                                 className="flex items-center justify-between py-3"
                             >
                                 <div>
-                                    <p className="font-medium">
+                                    <p className="font-medium dark:text-slate-500">
                                         {unit.unit_name}
                                     </p>
 
@@ -97,7 +97,7 @@ export function ProductReviewStep({ body }: Props) {
                                     )}
                                 </div>
 
-                                <span className="text-muted">
+                                <span className="text-muted dark:text-slate-500">
                                     ×{unit.conversion_factor}
                                 </span>
                             </div>
@@ -106,10 +106,12 @@ export function ProductReviewStep({ body }: Props) {
                 </CardContent>
             </Card>
 
-            <div className="rounded-xl border border-brand/20 bg-brand/5 p-4">
-                <h3 className="font-medium">Ready to create this product?</h3>
+            <div className="rounded-xl border border-brand/20  bg-brand/5 p-4">
+                <h3 className="font-medium dark:text-slate-300">
+                    Ready to create this product?
+                </h3>
 
-                <p className="mt-1 text-sm text-muted">
+                <p className="mt-1 text-sm text-muted dark:text-slate-500">
                     Review the information above. Click
                     <strong> Create Product </strong>
                     to save it.
@@ -122,11 +124,11 @@ export function ProductReviewStep({ body }: Props) {
 function Info({ label, value }: { label: string; value: React.ReactNode }) {
     return (
         <div>
-            <p className="text-xs uppercase tracking-wide text-muted">
+            <p className="text-xs uppercase tracking-wide text-muted dark:text-slate-300">
                 {label}
             </p>
 
-            <p className="font-medium">{value}</p>
+            <p className="font-medium dark:text-slate-500">{value}</p>
         </div>
     )
 }

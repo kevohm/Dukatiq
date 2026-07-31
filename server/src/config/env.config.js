@@ -1,13 +1,18 @@
-import dotenv from "dotenv"
+import dotenv from 'dotenv'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-const fileName =  process.env.NODE_ENV === "production" ? ".env" : process.env.NODE_ENV === "test" ?".env.test" :".env.development";
+const fileName =
+    process.env.NODE_ENV === 'production'
+        ? '.env'
+        : process.env.NODE_ENV === 'test'
+        ? '.env.test'
+        : '.env.development'
 
 dotenv.config({
     path: path.resolve(process.cwd(), fileName),
     override: true,
-    debug:false,
+    debug: false,
 })
 
 /**
@@ -95,7 +100,7 @@ export const b2Config = {
         secretAccessKey: requiredEnv('B2_APP_KEY'),
     },
     defaultFolder: getEnv('B2_DEFAULT_FOLDER', 'files'),
-    
+
     signedUrl: {
         expiresIn: Number(getEnv('B2_SIGNED_URL_EXPIRES', 3600)), // seconds
     },

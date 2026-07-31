@@ -36,7 +36,7 @@ type AddProductStepperProps = {
 
 export function AddProductStepper({ stepIndex }: AddProductStepperProps) {
     return (
-        <div className="sticky top-18 rounded-xl border border-border bg-surface p-4 ">
+        <div className="sticky top-18 rounded-xl border border-border dark:border-slate-900 bg-surface dark:bg-slate-950 p-4 ">
             <div className="flex items-center ">
                 {steps.map((step, index) => {
                     const Icon = step.icon
@@ -57,7 +57,7 @@ export function AddProductStepper({ stepIndex }: AddProductStepperProps) {
                                             ? 'border-brand bg-brand text-white'
                                             : active
                                               ? 'border-brand bg-brand/10 text-brand'
-                                              : 'border-border bg-background text-muted',
+                                              : 'border-border dark:border-slate-700 bg-background text-muted dark:text-slate-500',
                                     ].join(' ')}
                                 >
                                     {complete ? (
@@ -71,8 +71,8 @@ export function AddProductStepper({ stepIndex }: AddProductStepperProps) {
                                     className={[
                                         'mt-1 text-xs',
                                         active
-                                            ? 'font-medium text-heading'
-                                            : 'text-muted',
+                                            ? 'font-medium text-heading dark:text-slate-400'
+                                            : 'text-muted dark:text-slate-500',
                                     ].join(' ')}
                                 >
                                     {step.label}
@@ -83,7 +83,7 @@ export function AddProductStepper({ stepIndex }: AddProductStepperProps) {
                                 <div
                                     className={[
                                         'mx-2 mb-5 h-px flex-1 rounded-full',
-                                        complete ? 'bg-brand' : 'bg-border',
+                                        complete ? 'bg-brand' : 'bg-border dark:bg-slate-900',
                                     ].join(' ')}
                                 />
                             )}

@@ -5,11 +5,13 @@ import { Toaster } from 'react-hot-toast'
 import { SyncProvider } from './SyncProvider'
 import { AuthProvider } from './AuthProvider'
 import { OfflineAuthProvider } from './OfflineAuthProvider'
+import ThemeProvider from './ThemeProvider'
 
 const queryClient = new QueryClient()
 
 export const Providers = ({ children }: { children: ReactNode }) => {
     return (
+        <ThemeProvider>
         <QueryClientProvider client={queryClient}>
             <Toaster />
             <OnlineProvider>
@@ -20,5 +22,6 @@ export const Providers = ({ children }: { children: ReactNode }) => {
                 </OfflineAuthProvider>
             </OnlineProvider>
         </QueryClientProvider>
+        </ThemeProvider>
     )
 }

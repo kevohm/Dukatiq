@@ -27,7 +27,7 @@ const StatsSection = () => {
                 {Array.from({ length: 4 }).map((_, i) => (
                     <div
                         key={i}
-                        className="h-36 animate-pulse rounded-2xl border border-border bg-surface"
+                        className="h-36 animate-pulse rounded-2xl border border-border dark:border-slate-800 bg-surface dark:bg-slate-900"
                     />
                 ))}
             </div>

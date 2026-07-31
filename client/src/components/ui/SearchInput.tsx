@@ -33,7 +33,7 @@ export function SearchInput({
     return (
         <Field id={inputId} label={label} hint={hint}>
             <div className="relative">
-                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted dark:text-gray-500" />
                 <input
                     id={inputId}
                     type="search"

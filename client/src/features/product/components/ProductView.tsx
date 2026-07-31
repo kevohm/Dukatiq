@@ -22,7 +22,7 @@ export default function ProductView({ product }: Props) {
     const baseUnit = product.productUnits.find((u) => u.is_base_unit)
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-8 dark:text-slate-500">
             {/* Stats */}
             <div className="grid gap-4 md:grid-cols-4">
                 <Card>
@@ -146,9 +146,7 @@ export default function ProductView({ product }: Props) {
             {/* Units */}
             <Card>
                 <CardHeader>
-                    <h2 className="text-lg font-semibold">
-                        Inventory Units
-                    </h2>
+                    <h2 className="text-lg font-semibold">Inventory Units</h2>
                 </CardHeader>
 
                 <CardContent>
@@ -156,10 +154,10 @@ export default function ProductView({ product }: Props) {
                         {product.productUnits.map((unit) => (
                             <div
                                 key={unit.id}
-                                className="flex justify-between items-center rounded-lg border border-border p-4"
+                                className="flex justify-between items-center rounded-lg border border-border p-4 dark:border-slate-900"
                             >
                                 <div>
-                                    <div className="font-medium">
+                                    <div className="font-medium dark:text-slate-500">
                                         {unit.unit.name}
                                     </div>
 

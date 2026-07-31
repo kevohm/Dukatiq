@@ -31,13 +31,13 @@ export function ExpenseTrendCard() {
 
             <CardContent className="h-72">
                 {isLoading ? (
-                    <div className="h-full animate-pulse rounded-xl bg-muted" />
+                    <div className="h-full animate-pulse rounded-xl bg-muted dark:bg-slate-900" />
                 ) : isError ? (
-                    <div className="flex h-full items-center justify-center text-sm text-muted">
+                    <div className="flex h-full items-center justify-center text-sm text-muted dark:text-slate-500">
                         Failed to load expense data.
                     </div>
                 ) : !hasData ? (
-                    <div className="flex h-full items-center justify-center text-sm text-muted">
+                    <div className="flex h-full items-center justify-center text-sm text-muted dark:text-slate-500">
                         No expense data available.
                     </div>
                 ) : (

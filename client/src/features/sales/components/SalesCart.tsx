@@ -71,10 +71,10 @@ export function SalesCartDrawer({
         >
             <Dialog.Portal>
                 <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40 xl:hidden" />
-                <Dialog.Content className="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-surface shadow-2xl xl:hidden">
-                    <div className="flex items-center justify-between border-b border-border px-4 py-3">
+                <Dialog.Content className="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-surface dark:bg-slate-950 shadow-2xl xl:hidden">
+                    <div className="flex items-center justify-between border-b border-border dark:border-slate-900 px-4 py-3">
                         <div>
-                            <Dialog.Title className="text-base font-semibold tracking-tight text-heading">
+                            <Dialog.Title className="text-base font-semibold tracking-tight text-heading dark:text-slate-500">
                                 Cart
                             </Dialog.Title>
                             <Dialog.Description className="mt-0 text-xs text-muted">
@@ -128,7 +128,7 @@ function CartContent({
     return (
         <div className="space-y-4">
             {cartItems.length === 0 ? (
-                <div className="rounded-xl border border-dashed border-border p-3 text-sm text-muted text-center">
+                <div className="rounded-xl border border-dashed border-border dark:border-slate-900 p-3 text-sm text-muted dark:text-slate-500 text-center">
                     Select a product to start a sale.
                 </div>
             ) : (
@@ -148,13 +148,13 @@ function CartContent({
                         return (
                             <div
                                 key={`${item.product.id}-${item.unit_id}`}
-                                className="rounded-xl border border-border p-3 bg-card space-y-2.5"
+                                className="rounded-xl border border-border dark:border-slate-900 p-3 bg-card space-y-2.5"
                             >
                                 {/* Header: Name, Unit Badge, and Remove Action */}
                                 <div className="flex items-start justify-between gap-3">
                                     <div className="space-y-0.5">
                                         <div className="flex items-center gap-2 flex-wrap">
-                                            <p className="font-medium text-heading">
+                                            <p className="font-medium text-heading dark:text-slate-500">
                                                 {item.product.name}
                                             </p>
                                             <Badge
@@ -168,7 +168,7 @@ function CartContent({
                                                 {item.product.unit_name}
                                             </Badge>
                                         </div>
-                                        <p className="text-xs text-muted">
+                                        <p className="text-xs text-muted dark:text-slate-500">
                                             {formatCurrency(unitPrice)} per{' '}
                                             {item.product.unit_name}
                                         </p>
@@ -182,7 +182,7 @@ function CartContent({
                                                 item.unit_id
                                             )
                                         }
-                                        className="text-muted hover:text-danger p-1 transition-colors"
+                                        className="text-muted dark:text-slate-500 hover:text-danger p-1 transition-colors"
                                         aria-label="Remove item"
                                     >
                                         <Trash2 size={16} />
@@ -190,9 +190,9 @@ function CartContent({
                                 </div>
 
                                 {/* Footer/Controls: Quantity Toggles, Stock Status, and Subtotal */}
-                                <div className="flex items-center justify-between gap-3 pt-1 border-t border-border/40">
+                                <div className="flex items-center justify-between gap-3 pt-1 border-t border-border/40 dark:border-slate-900">
                                     <div className="space-y-1">
-                                        <div className="flex w-min  items-center rounded-lg border border-border bg-background">
+                                        <div className="flex w-min  items-center rounded-lg border border-border dark:border-slate-900 bg-background dark:bg-slate-950">
                                             <button
                                                 type="button"
                                                 onClick={() =>
@@ -204,7 +204,7 @@ function CartContent({
                                                             ?.conversion_factor
                                                     )
                                                 }
-                                                className="p-1.5 text-muted hover:text-heading transition-colors"
+                                                className="p-1.5 text-muted hover:text-heading dark:text-slate-500 dark:hover:text-slate-400 transition-colors"
                                                 aria-label="Decrease quantity"
                                                 disabled={item.quantity <= 1}
                                             >
@@ -224,7 +224,7 @@ function CartContent({
                                                             ?.conversion_factor
                                                     )
                                                 }
-                                                className="p-1.5  text-muted hover:text-heading transition-colors"
+                                                className="p-1.5  text-muted dark:text-slate-500 dark:hover:text-slate-400 hover:text-heading transition-colors"
                                                 aria-label="Increase quantity"
                                                 disabled={
                                                     item.quantity >=
@@ -237,7 +237,11 @@ function CartContent({
 
                                         {/* Stock Availability Indicator */}
                                         <p
-                                            className={`text-xs ${isLowStock ? 'text-warning font-medium' : 'text-muted'}`}
+                                            className={`text-xs ${
+                                                isLowStock
+                                                    ? 'text-warning font-medium'
+                                                    : 'text-muted dark:text-slate-500'
+                                            }`}
                                         >
                                             Stock: {availableStock}{' '}
                                             {item.product.unit_name} available
@@ -245,7 +249,7 @@ function CartContent({
                                     </div>
 
                                     <div className="text-right">
-                                        <p className="font-semibold text-heading">
+                                        <p className="font-semibold text-heading dark:text-slate-500">
                                             {formatCurrency(itemSubtotal)}
                                         </p>
                                     </div>
@@ -269,12 +273,12 @@ function CartContent({
                     options={paymentOptions}
                 />
 
-                <div className="flex items-center justify-between gap-3 bg-surface p-3 rounded-xl border border-border">
+                <div className="flex items-center justify-between gap-3 bg-surface dark:bg-slate-950 p-3 rounded-xl border border-border dark:border-slate-900">
                     <div>
-                        <p className="text-xs uppercase tracking-wider font-medium text-muted">
+                        <p className="text-xs uppercase tracking-wider font-medium text-muted dark:text-slate-500">
                             Total Amount
                         </p>
-                        <p className="text-2xl font-bold text-heading">
+                        <p className="text-2xl font-bold text-heading dark:text-slate-500">
                             {formatCurrency(total)}
                         </p>
                     </div>

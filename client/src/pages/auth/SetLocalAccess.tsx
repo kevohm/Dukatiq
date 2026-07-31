@@ -1,5 +1,6 @@
 import { useAuth } from '@/app/providers/AuthProvider'
 import LoadingSection from '@/components/shared/LoadingSection'
+import AuthWrapper from '@/features/auth/components/AuthWrapper'
 import OfflinePasswordForm from '@/features/auth/components/OfflinePasswordForm'
 import { Link, Navigate } from '@tanstack/react-router'
 import toast from 'react-hot-toast'
@@ -22,11 +23,13 @@ const SetLocalAccess = () => {
     }
 
     return (
-        <div className="min-h-screen w-full flex flex-col space-y-6 items-center justify-center">
+        <AuthWrapper>
             <div className="text-center space-y-2">
-                <h2 className="text-2xl font-bold">Enable Local Access</h2>
+                <h2 className="text-2xl font-bold dark:text-slate-300">
+                    Enable Local Access
+                </h2>
 
-                <p className="text-sm text-gray-500 max-w-md">
+                <p className="text-sm text-gray-500 max-w-md dark:text-slate-500">
                     Create a password to access Dukatiq when you don't have an
                     internet connection.
                 </p>
@@ -34,7 +37,7 @@ const SetLocalAccess = () => {
 
             <OfflinePasswordForm />
 
-            <span className="text-sm">
+            <span className="text-sm dark:text-slate-500">
                 Use a different account?{' '}
                 <Link
                     to="/login"
@@ -43,7 +46,7 @@ const SetLocalAccess = () => {
                     Login
                 </Link>
             </span>
-        </div>
+        </AuthWrapper>
     )
 }
 

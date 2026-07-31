@@ -31,7 +31,7 @@ export function ProductUnitsStep({
     const units = body.units ?? []
 
     return (
-        <div className="space-y-4 rounded-xl border border-border bg-surface p-4">
+        <div className="space-y-4 rounded-xl border border-border dark:border-slate-900 bg-surface dark:bg-slate-950 p-4">
             <div className="grid grid-cols-[2fr_1fr_auto] gap-3 text-sm font-medium text-muted">
                 <span>Unit</span>
                 <span>Conversion</span>

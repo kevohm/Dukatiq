@@ -23,12 +23,12 @@ export function LowStockCard() {
                         {Array.from({ length: 5 }).map((_, i) => (
                             <div
                                 key={i}
-                                className="h-12 animate-pulse rounded-lg bg-muted"
+                                className="h-12 animate-pulse rounded-lg bg-muted dark:bg-slate-900"
                             />
                         ))}
                     </div>
                 ) : data.length === 0 ? (
-                    <div className="py-10 text-center text-sm text-muted">
+                    <div className="py-10 text-center text-sm text-muted dark:text-slate-500">
                         All products are sufficiently stocked.
                     </div>
                 ) : (
@@ -36,7 +36,7 @@ export function LowStockCard() {
                         {data.map((product) => (
                             <div
                                 key={product.id}
-                                className="flex items-center justify-between rounded-lg border border-border p-3"
+                                className="flex items-center justify-between rounded-lg border border-border dark:border-slate-900 p-3"
                             >
                                 <div className="flex items-center gap-3">
                                     {product.image_url ? (
@@ -56,7 +56,7 @@ export function LowStockCard() {
                                             {product.name}
                                         </p>
 
-                                        <p className="text-xs text-muted">
+                                        <p className="text-xs text-muted dark:text-slate-500">
                                             {[
                                                 product.brand?.name,
                                                 product.category?.name,

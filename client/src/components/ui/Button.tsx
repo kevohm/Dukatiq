@@ -10,10 +10,10 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 
 const variants = {
-    primary: 'bg-brand text-white hover:bg-brand-hover',
-    secondary: 'bg-surface text-heading border border-border hover:bg-hover',
+    primary: 'bg-brand  dark:bg-blue-900 text-white hover:bg-brand-hover dark:hover:bg-',
+    secondary: 'bg-surface dark:bg-slate-950  text-heading dark:text-white border border-border  dark:border-slate-800 dark:hover:bg-slate-900 hover:bg-hover',
     danger: 'bg-danger text-white border border-red-500 hover:bg-red-600',
-    ghost: 'text-muted hover:bg-hover',
+    ghost: 'text-muted dark:text-slate-500 hover:bg-hover dark:hover:bg-slate-900',
 }
 
 export function Button({

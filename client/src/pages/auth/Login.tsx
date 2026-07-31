@@ -1,13 +1,14 @@
 
 import { useAuth } from '@/app/providers/AuthProvider'
+import AuthWrapper from '@/features/auth/components/AuthWrapper'
 import LoginForm from '@/features/auth/components/LoginForm'
 import { Link } from '@tanstack/react-router'
 
 const Login = () => { 
   const {status} = useAuth()
   return (
-      <div className="min-h-screen w-full flex flex-col space-y-6 items-center justify-center">
-          <h2 className="text-2xl font-bold ">Login</h2>
+      <AuthWrapper>
+          <h2 className="text-2xl font-bold dark:text-slate-300">Login</h2>
           <LoginForm />
           {status === 'offline' ? (
               <span className="text-sm ">
@@ -15,12 +16,13 @@ const Login = () => {
                   <Link
                       to="/verify-access"
                       className="text-brand hover:underline font-semibold"
+                      reloadDocument
                   >
                       login
                   </Link>
               </span>
           ) : (
-              <span className="text-sm ">
+              <span className="text-sm dark:text-slate-300">
                   Don't have an account{' '}
                   <Link
                       to="/register"
@@ -30,7 +32,7 @@ const Login = () => {
                   </Link>
               </span>
           )}
-      </div>
+      </AuthWrapper>
   )
 }
 

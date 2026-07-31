@@ -283,10 +283,12 @@ const AddProductForm = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-lg font-semibold text-heading">
+                    <h2 className="text-lg font-semibold text-heading dark:text-slate-300">
                         Create Product ({stepIndex + 1} of {steps.length})
                     </h2>
-                    <p className="text-sm text-muted">{currentStep}</p>
+                    <p className="text-sm text-muted dark:text-slate-500">
+                        {currentStep}
+                    </p>
                 </div>
                 <BackButton
                     label="Cancel"
@@ -335,7 +337,6 @@ const AddProductForm = () => {
             {stepIndex === 4 && <ProductReviewStep body={body} />}
 
             <ProductStepFooter
-          
                 stepIndex={stepIndex}
                 stepCount={steps.length}
                 isPending={isPending || isUploadingImage || isDeletingImage}
