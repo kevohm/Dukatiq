@@ -52,7 +52,7 @@ export function LowStockCard() {
                                     )}
 
                                     <div>
-                                        <p className="font-medium">
+                                        <p className="font-medium dark:text-slate-500">
                                             {product.name}
                                         </p>
 

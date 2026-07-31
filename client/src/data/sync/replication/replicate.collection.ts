@@ -1,33 +1,43 @@
 import { replicateRxCollection } from 'rxdb/plugins/replication'
-import type { RxCollection } from 'rxdb'
+import type { RxCollection, RxReplicationWriteToMasterRow } from 'rxdb'
 import { syncApi } from '../api'
 import { baseConfig } from '../config'
 
-interface ReplicationConfig {
+interface ReplicationConfig<T> {
     collection: RxCollection
     name: string
+    beforePush?: (
+        docs: RxReplicationWriteToMasterRow<T>[]
+    ) => Promise<RxReplicationWriteToMasterRow<T>[]>
 }
 
-export function replicateCollection({ collection, name }: ReplicationConfig) {
-    return replicateRxCollection({
+export function replicateCollection<T=unknown, CheckpointType=unknown>({
+    collection,
+    name,
+    beforePush,
+}: ReplicationConfig<T>) {
+    return replicateRxCollection<T, CheckpointType>({
         collection,
 
         replicationIdentifier: `catalog/${name}`,
         ...baseConfig,
 
-        deletedField:"is_deleted",
+        deletedField: 'is_deleted',
 
         push: {
             batchSize: 50,
 
-            handler(docs) {
-                return syncApi.push(name, docs)
+            async handler(docs) {
+                let transformed = docs
+                if (beforePush) {
+                    transformed = await beforePush(docs)
+                }
+                return syncApi.push(name, transformed)
             },
 
             modifier(doc) {
                 return doc
             },
-            
         },
 
         pull: {

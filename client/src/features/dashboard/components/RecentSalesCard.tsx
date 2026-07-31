@@ -56,12 +56,12 @@ export function RecentSalesCard() {
                                         className="flex w-full items-center justify-between p-4 text-left transition-colors hover:bg-muted/5"
                                     >
                                         <div>
-                                            <p className="font-semibold">
+                                            <p className="font-semibold dark:text-slate-500 ">
                                                 KSh{' '}
                                                 {sale.total_amount.toLocaleString()}
                                             </p>
 
-                                            <p className="mt-1 text-xs text-muted capitalize">
+                                            <p className="mt-1 text-xs text-muted dark:text-slate-500 capitalize">
                                                 {sale.payment_method} •{' '}
                                                 {sale.items.length} item
                                                 {sale.items.length !== 1 && 's'}
@@ -95,7 +95,7 @@ export function RecentSalesCard() {
                                     </button>
 
                                     {expanded && (
-                                        <div className="border-t border-border  p-4">
+                                        <div className="border-t border-border dark:border-slate-900 p-4">
                                             <div className="space-y-3">
                                                 {sale.items.map((item) => (
                                                     <div
@@ -103,21 +103,21 @@ export function RecentSalesCard() {
                                                         className="flex items-center justify-between"
                                                     >
                                                         <div>
-                                                            <p className="font-medium">
+                                                            <p className="font-medium dark:text-slate-500 ">
                                                                 {
                                                                     item.product
                                                                         .name
                                                                 }
                                                             </p>
 
-                                                            <p className="text-xs text-muted">
+                                                            <p className="text-xs text-muted dark:text-slate-500 ">
                                                                 Qty:{' '}
                                                                 {item.quantity}
                                                             </p>
                                                         </div>
 
                                                         <div className="text-right">
-                                                            <p className="font-medium">
+                                                            <p className="font-medium dark:text-slate-500 ">
                                                                 KSh{' '}
                                                                 {(
                                                                     item.quantity *

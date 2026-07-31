@@ -1,6 +1,8 @@
 
 import { CatalogSyncService } from './replication/catalog/catalog.sync.service.js'
 import { InventorySyncService } from './replication/inventory/inventory.service.js'
+import { SaleSyncService } from './replication/sale/sale.service.js'
+import { SaleItemSyncService } from './replication/sale/saleItem/sale.item.service.js'
 import { SyncCollections } from './sync.collections.js'
 
 export class SyncService {
@@ -13,7 +15,11 @@ export class SyncService {
             case SyncCollections.PRODUCTUNIT:
                 return CatalogSyncService.pull(collection, checkpoint, limit)
             case SyncCollections.INVENTORY:
-                return InventorySyncService.pull(checkpoint,limit)
+                return InventorySyncService.pull(checkpoint, limit)
+            case SyncCollections.SALE:
+                return SaleSyncService.pull(checkpoint, limit)
+            case SyncCollections.SALEITEM:
+                return SaleItemSyncService.pull(checkpoint, limit)
 
             default:
                 throw new Error('Unknown collection')
@@ -30,7 +36,10 @@ export class SyncService {
                 return CatalogSyncService.push(collection, docs)
             case SyncCollections.INVENTORY:
                 return InventorySyncService.push(docs)
-
+            case SyncCollections.SALE:
+                return SaleSyncService.push(docs)
+            case SyncCollections.SALEITEM:
+                return SaleItemSyncService.push(docs)
             default:
                 throw new Error('Unknown collection')
         }

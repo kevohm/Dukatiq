@@ -31,13 +31,13 @@ export function SalesTrendCard() {
                     <LineChart data={data ?? []}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="label" />
-                        <YAxis />
+                        <YAxis  />
                         <Tooltip />
                         <Line
                             dataKey="value"
                             stroke="var(--color-brand)"
-                     
                             strokeWidth={3}
+                            
                         />
                     </LineChart>
                 </ResponsiveContainer>
