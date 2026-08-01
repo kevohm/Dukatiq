@@ -14,23 +14,39 @@ export type CreateSalePayload = {
 
 export type Sale = {
     id: string
-    payment_method: SalePaymentMethod
-    totals: {
-        total_amount: number
-        total_profit: number
-    }
     created_at: string
     updated_at: string
-    items: Array<{
-        id: string
-        product_id: string
-        unit_id: string
-        quantity: number
-        selling_price: number
-        cost_price: number
-        profit: number
-    }>
+    total_amount: number
+    total_profit: number
+    payment_method: SalePaymentMethod
+    saleItems: SaleItem[]
 }
+
+
+type SaleItem = {
+    id: string
+    created_at: string
+    updated_at: string
+    quantity: number
+    selling_price: number
+    cost_price: number
+    profit: number
+    sale_id: string
+    product_id: string
+    unit_id: string
+    unit: {
+        id: string
+        name: string
+    }
+    product: {
+        id: string
+        name: string
+        image_url: string | null
+        image_key: string | null
+    }
+}
+
+
 
 export type soldProduct = {
     id: string

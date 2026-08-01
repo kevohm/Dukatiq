@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
-import Sales from '../../pages/Sales'
-import { CartProvider } from '../../app/providers/CartProvider'
+import { CartProvider } from '@/app/providers/CartProvider'
+import Pos from '@/pages/pos/Pos'
 
 export const Route = createFileRoute('/_dashboard/')({
     component: RouteComponent,
@@ -9,7 +9,7 @@ export const Route = createFileRoute('/_dashboard/')({
 function RouteComponent() {
     return (
         <CartProvider>
-            <Sales />
+            <Pos />
         </CartProvider>
     )
 }

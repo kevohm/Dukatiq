@@ -26,6 +26,7 @@ import { Route as DashboardExpensesAddRouteImport } from './routes/_dashboard/ex
 import { Route as DashboardInventoryIndexRouteImport } from './routes/_dashboard/inventory/index'
 import { Route as DashboardProductsIndexRouteImport } from './routes/_dashboard/products/index'
 import { Route as DashboardProductsAddRouteImport } from './routes/_dashboard/products/add'
+import { Route as DashboardSalesIndexRouteImport } from './routes/_dashboard/sales/index'
 import { Route as DashboardExpensesEditIdRouteImport } from './routes/_dashboard/expenses/edit/$id'
 import { Route as DashboardExpensesViewIdRouteImport } from './routes/_dashboard/expenses/view/$id'
 import { Route as DashboardProductsBrandIndexRouteImport } from './routes/_dashboard/products/brand/index'
@@ -34,6 +35,7 @@ import { Route as DashboardProductsCategoryIndexRouteImport } from './routes/_da
 import { Route as DashboardProductsCategoryAddRouteImport } from './routes/_dashboard/products/category/add'
 import { Route as DashboardProductsEditIdRouteImport } from './routes/_dashboard/products/edit/$id'
 import { Route as DashboardProductsViewIdRouteImport } from './routes/_dashboard/products/view/$id'
+import { Route as DashboardSalesViewIdRouteImport } from './routes/_dashboard/sales/view/$id'
 import { Route as DashboardProductsBrandEditIdRouteImport } from './routes/_dashboard/products/brand/edit/$id'
 import { Route as DashboardProductsBrandViewIdRouteImport } from './routes/_dashboard/products/brand/view/$id'
 import { Route as DashboardProductsCategoryEditIdRouteImport } from './routes/_dashboard/products/category/edit/$id'
@@ -121,6 +123,11 @@ const DashboardProductsAddRoute = DashboardProductsAddRouteImport.update({
   path: '/products/add',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardSalesIndexRoute = DashboardSalesIndexRouteImport.update({
+  id: '/sales/',
+  path: '/sales/',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardExpensesEditIdRoute = DashboardExpensesEditIdRouteImport.update({
   id: '/expenses/edit/$id',
   path: '/expenses/edit/$id',
@@ -165,6 +172,11 @@ const DashboardProductsViewIdRoute = DashboardProductsViewIdRouteImport.update({
   path: '/products/view/$id',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardSalesViewIdRoute = DashboardSalesViewIdRouteImport.update({
+  id: '/sales/view/$id',
+  path: '/sales/view/$id',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardProductsBrandEditIdRoute =
   DashboardProductsBrandEditIdRouteImport.update({
     id: '/products/brand/edit/$id',
@@ -204,12 +216,14 @@ export interface FileRoutesByFullPath {
   '/expenses/': typeof DashboardExpensesIndexRoute
   '/inventory/': typeof DashboardInventoryIndexRoute
   '/products/': typeof DashboardProductsIndexRoute
+  '/sales/': typeof DashboardSalesIndexRoute
   '/expenses/edit/$id': typeof DashboardExpensesEditIdRoute
   '/expenses/view/$id': typeof DashboardExpensesViewIdRoute
   '/products/brand/add': typeof DashboardProductsBrandAddRoute
   '/products/category/add': typeof DashboardProductsCategoryAddRoute
   '/products/edit/$id': typeof DashboardProductsEditIdRoute
   '/products/view/$id': typeof DashboardProductsViewIdRoute
+  '/sales/view/$id': typeof DashboardSalesViewIdRoute
   '/products/brand/': typeof DashboardProductsBrandIndexRoute
   '/products/category/': typeof DashboardProductsCategoryIndexRoute
   '/products/brand/edit/$id': typeof DashboardProductsBrandEditIdRoute
@@ -231,12 +245,14 @@ export interface FileRoutesByTo {
   '/expenses': typeof DashboardExpensesIndexRoute
   '/inventory': typeof DashboardInventoryIndexRoute
   '/products': typeof DashboardProductsIndexRoute
+  '/sales': typeof DashboardSalesIndexRoute
   '/expenses/edit/$id': typeof DashboardExpensesEditIdRoute
   '/expenses/view/$id': typeof DashboardExpensesViewIdRoute
   '/products/brand/add': typeof DashboardProductsBrandAddRoute
   '/products/category/add': typeof DashboardProductsCategoryAddRoute
   '/products/edit/$id': typeof DashboardProductsEditIdRoute
   '/products/view/$id': typeof DashboardProductsViewIdRoute
+  '/sales/view/$id': typeof DashboardSalesViewIdRoute
   '/products/brand': typeof DashboardProductsBrandIndexRoute
   '/products/category': typeof DashboardProductsCategoryIndexRoute
   '/products/brand/edit/$id': typeof DashboardProductsBrandEditIdRoute
@@ -263,12 +279,14 @@ export interface FileRoutesById {
   '/_dashboard/expenses/': typeof DashboardExpensesIndexRoute
   '/_dashboard/inventory/': typeof DashboardInventoryIndexRoute
   '/_dashboard/products/': typeof DashboardProductsIndexRoute
+  '/_dashboard/sales/': typeof DashboardSalesIndexRoute
   '/_dashboard/expenses/edit/$id': typeof DashboardExpensesEditIdRoute
   '/_dashboard/expenses/view/$id': typeof DashboardExpensesViewIdRoute
   '/_dashboard/products/brand/add': typeof DashboardProductsBrandAddRoute
   '/_dashboard/products/category/add': typeof DashboardProductsCategoryAddRoute
   '/_dashboard/products/edit/$id': typeof DashboardProductsEditIdRoute
   '/_dashboard/products/view/$id': typeof DashboardProductsViewIdRoute
+  '/_dashboard/sales/view/$id': typeof DashboardSalesViewIdRoute
   '/_dashboard/products/brand/': typeof DashboardProductsBrandIndexRoute
   '/_dashboard/products/category/': typeof DashboardProductsCategoryIndexRoute
   '/_dashboard/products/brand/edit/$id': typeof DashboardProductsBrandEditIdRoute
@@ -292,12 +310,14 @@ export interface FileRouteTypes {
     | '/expenses/'
     | '/inventory/'
     | '/products/'
+    | '/sales/'
     | '/expenses/edit/$id'
     | '/expenses/view/$id'
     | '/products/brand/add'
     | '/products/category/add'
     | '/products/edit/$id'
     | '/products/view/$id'
+    | '/sales/view/$id'
     | '/products/brand/'
     | '/products/category/'
     | '/products/brand/edit/$id'
@@ -319,12 +339,14 @@ export interface FileRouteTypes {
     | '/expenses'
     | '/inventory'
     | '/products'
+    | '/sales'
     | '/expenses/edit/$id'
     | '/expenses/view/$id'
     | '/products/brand/add'
     | '/products/category/add'
     | '/products/edit/$id'
     | '/products/view/$id'
+    | '/sales/view/$id'
     | '/products/brand'
     | '/products/category'
     | '/products/brand/edit/$id'
@@ -350,12 +372,14 @@ export interface FileRouteTypes {
     | '/_dashboard/expenses/'
     | '/_dashboard/inventory/'
     | '/_dashboard/products/'
+    | '/_dashboard/sales/'
     | '/_dashboard/expenses/edit/$id'
     | '/_dashboard/expenses/view/$id'
     | '/_dashboard/products/brand/add'
     | '/_dashboard/products/category/add'
     | '/_dashboard/products/edit/$id'
     | '/_dashboard/products/view/$id'
+    | '/_dashboard/sales/view/$id'
     | '/_dashboard/products/brand/'
     | '/_dashboard/products/category/'
     | '/_dashboard/products/brand/edit/$id'
@@ -492,6 +516,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardProductsAddRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/_dashboard/sales/': {
+      id: '/_dashboard/sales/'
+      path: '/sales'
+      fullPath: '/sales/'
+      preLoaderRoute: typeof DashboardSalesIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/_dashboard/expenses/edit/$id': {
       id: '/_dashboard/expenses/edit/$id'
       path: '/expenses/edit/$id'
@@ -546,6 +577,13 @@ declare module '@tanstack/react-router' {
       path: '/products/view/$id'
       fullPath: '/products/view/$id'
       preLoaderRoute: typeof DashboardProductsViewIdRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/sales/view/$id': {
+      id: '/_dashboard/sales/view/$id'
+      path: '/sales/view/$id'
+      fullPath: '/sales/view/$id'
+      preLoaderRoute: typeof DashboardSalesViewIdRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/_dashboard/products/brand/edit/$id': {
@@ -614,12 +652,14 @@ interface DashboardRouteChildren {
   DashboardExpensesIndexRoute: typeof DashboardExpensesIndexRoute
   DashboardInventoryIndexRoute: typeof DashboardInventoryIndexRoute
   DashboardProductsIndexRoute: typeof DashboardProductsIndexRoute
+  DashboardSalesIndexRoute: typeof DashboardSalesIndexRoute
   DashboardExpensesEditIdRoute: typeof DashboardExpensesEditIdRoute
   DashboardExpensesViewIdRoute: typeof DashboardExpensesViewIdRoute
   DashboardProductsBrandAddRoute: typeof DashboardProductsBrandAddRoute
   DashboardProductsCategoryAddRoute: typeof DashboardProductsCategoryAddRoute
   DashboardProductsEditIdRoute: typeof DashboardProductsEditIdRoute
   DashboardProductsViewIdRoute: typeof DashboardProductsViewIdRoute
+  DashboardSalesViewIdRoute: typeof DashboardSalesViewIdRoute
   DashboardProductsBrandIndexRoute: typeof DashboardProductsBrandIndexRoute
   DashboardProductsCategoryIndexRoute: typeof DashboardProductsCategoryIndexRoute
   DashboardProductsBrandEditIdRoute: typeof DashboardProductsBrandEditIdRoute
@@ -636,12 +676,14 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardExpensesIndexRoute: DashboardExpensesIndexRoute,
   DashboardInventoryIndexRoute: DashboardInventoryIndexRoute,
   DashboardProductsIndexRoute: DashboardProductsIndexRoute,
+  DashboardSalesIndexRoute: DashboardSalesIndexRoute,
   DashboardExpensesEditIdRoute: DashboardExpensesEditIdRoute,
   DashboardExpensesViewIdRoute: DashboardExpensesViewIdRoute,
   DashboardProductsBrandAddRoute: DashboardProductsBrandAddRoute,
   DashboardProductsCategoryAddRoute: DashboardProductsCategoryAddRoute,
   DashboardProductsEditIdRoute: DashboardProductsEditIdRoute,
   DashboardProductsViewIdRoute: DashboardProductsViewIdRoute,
+  DashboardSalesViewIdRoute: DashboardSalesViewIdRoute,
   DashboardProductsBrandIndexRoute: DashboardProductsBrandIndexRoute,
   DashboardProductsCategoryIndexRoute: DashboardProductsCategoryIndexRoute,
   DashboardProductsBrandEditIdRoute: DashboardProductsBrandEditIdRoute,

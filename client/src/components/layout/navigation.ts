@@ -1,5 +1,6 @@
 import {
     Boxes,
+    BriefcaseBusiness,
     LayoutDashboard,
     Package,
     Settings,
@@ -10,8 +11,13 @@ import type { NavItem } from './types'
 
 export const mainNav: NavItem[] = [
     {
-        name: 'Sales',
+        name: 'Pos',
         path: '/',
+        icon: BriefcaseBusiness,
+    },
+    {
+        name: 'Sales',
+        path: '/sales',
         icon: ShoppingCart,
     },
     {

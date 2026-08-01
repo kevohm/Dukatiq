@@ -1,21 +1,21 @@
 import { useMemo, useState } from 'react'
 import { ShoppingCart } from 'lucide-react'
-import AppBodyWrapper from '../components/layout/AppBodyWrapper'
-import { Topbar } from '../components/layout/Topbar'
-import { Button } from '../components/ui/Button'
-import { useProducts } from '../features/product/hooks'
-import { useCreateSale } from '../features/sales/hooks'
-import { ProductSearch } from '../features/sales/components/ProductSearch'
+import AppBodyWrapper from '@/components/layout/AppBodyWrapper'
+import { Topbar } from '@/components/layout/Topbar'
+import { Button } from '@/components/ui/Button'
+import { useProducts } from '@/features/product/hooks'
+import { useCreateSale } from '@/features/sales/hooks'
+import { ProductSearch } from '@/features/sales/components/ProductSearch'
 import {
     SalesCart,
     SalesCartDrawer,
-} from '../features/sales/components/SalesCart'
-import { useCart } from '../app/providers/CartProvider'
-import { formatCurrency } from '../utils/currency'
-import type { soldProduct } from '../features/sales/types'
+} from '@/features/sales/components/SalesCart'
+import { useCart } from '@/app/providers/CartProvider'
+import { formatCurrency } from '@/utils/currency'
+import type { soldProduct } from '@/features/sales/types'
 import toast from 'react-hot-toast'
 
-const Sales = () => {
+const Pos = () => {
     const { data: products = [], isLoading, isError } = useProducts()
     console.log(products)
     const { mutate: createSale, isPending } = useCreateSale()
@@ -142,7 +142,7 @@ const Sales = () => {
             <div className="px-4 pb-6">
                 <div className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
                     <ProductSearch
-                    //@ts-ignore
+                        //@ts-ignore
                         products={filteredProducts}
                         search={search}
                         isLoading={isLoading}
@@ -176,4 +176,4 @@ const Sales = () => {
     )
 }
 
-export default Sales
+export default Pos
