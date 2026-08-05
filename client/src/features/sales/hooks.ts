@@ -20,10 +20,10 @@ export function useCreateSale() {
 
 
 
-export function useGetSales() {
+export function useGetSales(query={}) {
     return useQuery({
-        queryFn: saleService.getAll,
-        queryKey: [SALE_KEY, "all"]
+        queryFn: ()=>saleService.getAll(query),
+        queryKey: [SALE_KEY, "all", query]
     })
 }
 

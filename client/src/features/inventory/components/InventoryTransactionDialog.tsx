@@ -25,8 +25,8 @@ export function InventoryTransactionDialog() {
     const [productId, setProductId] = useState('')
     const [unitId, setUnitId] = useState('')
     const [quantity, setQuantity] = useState('')
-    const { data: products = [], isLoading: isLoadingProducts } = useProducts()
-
+    const { data:productData, isLoading: isLoadingProducts } = useProducts()
+    const products = productData?.data ?? []
     const stockIn = useStockIn()
     const stockOut = useStockOut()
     const adjustStock = useAdjustStock()

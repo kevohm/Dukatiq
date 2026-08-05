@@ -7,9 +7,10 @@ import {
     type InventoryCreateInternaPayload,
 } from '@/features/inventory/types'
 import { inventoryService } from '../inventory/inventory.service'
+import type { PaginationQuery } from '@/data/repositories/base.repository'
 
 export class SaleService {
-    async getAll() {
+    async getAll(query:PaginationQuery = {}) {
         const {
             saleRepository,
             saleItemRepository,
@@ -17,10 +18,16 @@ export class SaleService {
             productRepository,
         } = await getRepositories()
 
-        const sales = await saleRepository.findAll()
-
+        const saleData = await saleRepository.findAll({
+            mangoQuery: {},
+            query: {
+                limit: query?.limit,
+                page: query?.page,
+            },
+        })
+        const sales = saleData?.data
         if (!sales.length) {
-            return []
+            return saleData
         }
 
         // Fetch sale items
@@ -77,10 +84,15 @@ export class SaleService {
             saleItemMap.set(saleItem?.sale_id, current)
         }
 
-        return sales.map((sale) => ({
+        const results = sales.map((sale) => ({
             ...sale,
             saleItems: saleItemMap.get(sale?.id) ?? [],
         }))
+
+        return {
+            ...saleData,
+            data: results,
+        }
     }
     async getById(id?: string) {
         const { saleRepository } = await getRepositories()
@@ -104,6 +116,7 @@ export class SaleService {
 
         const items = []
         let inventoryUpdate: InventoryCreateInternaPayload[] = []
+
         for (const item of payload?.items) {
             const product = await productRepository.findOrThrow(item.product_id)
 
@@ -115,6 +128,10 @@ export class SaleService {
             const quantity = item.quantity * productUnit?.conversion_factor
             const profit =
                 (product?.selling_price - product?.cost_price) * quantity
+
+            if (product?.stock_quantity < quantity) {
+                continue
+            }
 
             totalAmount += product.selling_price * quantity
             totalProfit += profit
@@ -128,6 +145,10 @@ export class SaleService {
                 cost_price: product.cost_price,
                 profit,
             })
+        }
+
+        if (items?.length === 0) {
+            throw new Error('Insufficient stock')
         }
 
         const sale = await saleRepository.create({

@@ -13,6 +13,15 @@ export interface ProductDoc extends BaseDoc {
     image_key: string | null
 }
 
+
+export type ProductQuery = {
+    search?: string
+    category_id?: string
+    brand_id?: string
+    limit?: number
+    page?: number
+}
+
 export const products = {
     schema: {
         version: 0,

@@ -27,12 +27,7 @@ type SaleItem = {
     id: string
     created_at: string
     updated_at: string
-    quantity: number
-    selling_price: number
-    cost_price: number
-    profit: number
-    sale_id: string
-    product_id: string
+   
     unit_id: string
     unit: {
         id: string
@@ -60,9 +55,22 @@ export type soldProduct = {
     unit_name: string
 }
 
-export type CartItem = {
-    product: soldProduct
+export interface CartItem {
     product_id: string
-    unit_id: string
+    name: string
+    cost_price: number
+    selling_price: number
+    stock_quantity: number
     quantity: number
+    conversion_factor: number
+    is_base_unit: boolean
+    unit_id: string
+    unit_name: string
+}
+
+export interface Cart {
+    id: string
+    total_cost: number
+    total_amount: number
+    items: CartItem[]
 }

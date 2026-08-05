@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { CartProvider } from '@/app/providers/CartProvider'
+import { CartProvider } from '@/app/providers/CartProvider/CartProvider'
 import Pos from '@/pages/pos/Pos'
 
 export const Route = createFileRoute('/_dashboard/')({

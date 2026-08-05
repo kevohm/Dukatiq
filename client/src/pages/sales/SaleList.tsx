@@ -6,23 +6,29 @@ import { Topbar } from '@/components/layout/Topbar'
 import { Button } from '@/components/ui/Button'
 import { saleColumns } from '@/features/sales/columns'
 import { useGetSales } from '@/features/sales/hooks'
-import type { Sale } from '@/features/sales/types'
 import { Upload } from 'lucide-react'
 import { useState } from 'react'
 
 const SaleList = () => {
-    const { data = [], isLoading, error } = useGetSales()
-
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(10)
+    const {
+        data: saleData,
+        isLoading,
+        error,
+    } = useGetSales({
+        page,
+        limit: pageSize,
+    })
+    const data = saleData?.data ?? []
 
     if (isLoading) return <div className="p-6">Loading sales...</div>
 
-    const start = (page - 1) * pageSize
-    const end = start + pageSize
-    const paginated = data.slice(start, end)
+    const totalPages = saleData?.total_pages ?? 0
+    const total = saleData?.total ?? 0
 
-    const totalPages = Math.ceil(data.length / pageSize)
+    const rangeStart = saleData?.rangeStart ?? 0
+    const rangeEnd = saleData?.rangeEnd ?? 0
 
     async function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0]
@@ -78,7 +84,7 @@ const SaleList = () => {
             <div className="flex-1 overflow-y-auto px-6">
                 <DataTable
                     columns={saleColumns}
-                    data={paginated as Sale[]}
+                    data={data}
                     getRowId={(row) => row.id}
                 />
             </div>
@@ -89,9 +95,9 @@ const SaleList = () => {
                     setPageSize(size)
                     setPage(1)
                 }}
-                rangeStart={data.length === 0 ? 0 : start + 1}
-                rangeEnd={Math.min(end, data.length)}
-                total={data.length}
+                rangeStart={rangeStart}
+                rangeEnd={rangeEnd}
+                total={total}
                 onPrev={() => setPage((p) => Math.max(1, p - 1))}
                 onNext={() => setPage((p) => Math.min(totalPages, p + 1))}
                 canPrev={page > 1}

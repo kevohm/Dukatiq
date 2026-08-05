@@ -12,6 +12,7 @@ import dayjs from 'dayjs'
 import { signAccessToken } from '../../utils/auth/jwt.js'
 import { AuthSerializer } from './auth.serializer.js'
 import { db } from '../../config/database.js'
+import { config } from '../../config/env.config.js'
 
 export class AuthService {
     static async signup(body) {
@@ -65,13 +66,15 @@ export class AuthService {
         const rt = await AuthRepository.saveRefreshToken({
             user_id: user.id,
             token_hash: tokenHash,
-            expires_at: dayjs().add(7, 'days').toDate(),
+            expires_at: dayjs()
+                .add(parseInt(config.auth.refreshToken.duration), 'days')
+                .toDate(),
             user_agent: body?.user_agent,
             ip: body?.ip,
         })
 
         const accessToken = signAccessToken(user)
-        
+
         return {
             status: StatusCodes.OK,
             success: true,
@@ -89,7 +92,9 @@ export class AuthService {
         transaction = null
     ) {
         if (!transaction) {
-            return db.transaction((tx) => this.refresh({ id, old_token, user_agent, ip }, tx))
+            return db.transaction((tx) =>
+                this.refresh({ id, old_token, user_agent, ip }, tx)
+            )
         }
         const token = await AuthRepository.findActiveTokenById(id, transaction)
         if (!token) {

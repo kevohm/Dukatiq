@@ -1,7 +1,7 @@
 import { X } from 'lucide-react'
 import ThemeTrigger from '../theme/ThemeTrigger'
 import SidebarNav from './SidebarNav'
-import { secondaryNav } from './navigation'
+import { mainNav, secondaryNav } from './navigation'
 import LogoutButton from '../shared/LogoutButton'
 import { Button } from '../ui/Button'
 
@@ -30,21 +30,16 @@ export default function MobileDrawer({ open, onClose }: MobileDrawerProps) {
                         </p>
                     </div>
 
-                    <Button
-                        type="button"
-                        onClick={onClose}
-                        variant='ghost'
-                    >
+                    <Button type="button" onClick={onClose} variant="ghost">
                         <X size={18} />
                     </Button>
                 </div>
-
-                <SidebarNav items={secondaryNav} />
+                {/* ensures no path is left out  */}
+                <SidebarNav items={[...mainNav.slice(4), ...secondaryNav]} />
 
                 <div className="mt-6 flex items-center justify-between border-t dark:border-slate-900 pt-4">
                     <ThemeTrigger />
-                    <LogoutButton/>
-                    
+                    <LogoutButton />
                 </div>
             </div>
         </div>

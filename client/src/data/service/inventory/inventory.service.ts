@@ -55,10 +55,14 @@ export class InventoryService {
         const { inventoryRepository, productRepository, unitRepository } =
             await getRepositories()
 
-        const inventory = await inventoryRepository.findAll()
+        const inventoryData = await inventoryRepository.findAll()
+        const inventory = inventoryData?.data
 
         if (!inventory.length) {
-            return []
+            return {
+                ...inventoryData,
+                data:[],
+            }
         }
 
         const productIds = [
@@ -76,12 +80,15 @@ export class InventoryService {
         )
 
         const unitMap = new Map(units.map((unit) => [unit.id, unit]))
-
-        return inventory.map((item) => ({
+        const results = inventory.map((item) => ({
             ...item,
             product: productMap.get(item.product_id),
             unit: unitMap.get(item.unit_id),
         }))
+        return {
+            ...inventoryData,
+            data: results,
+        }
     }
 
     async getById(id?: string) {
@@ -184,7 +191,7 @@ export class InventoryService {
             adjustment_type: InventoryAdjustmentType
         }
     ) {
-        console.log(payload)
+        // console.log(payload)
         const { productRepository } = await getRepositories()
 
         const productUnit = await productUnitService.getByProductAndUnit(

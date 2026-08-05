@@ -23,11 +23,7 @@ interface CardHeaderProps extends HTMLAttributes<HTMLDivElement> {
     children: ReactNode
 }
 
-export function CardHeader({
-    children,
-    className,
-    ...props
-}: CardHeaderProps) {
+export function CardHeader({ children, className, ...props }: CardHeaderProps) {
     return (
         <div
             className={cn(
@@ -45,26 +41,18 @@ interface CardTitleProps extends HTMLAttributes<HTMLHeadingElement> {
     children: ReactNode
 }
 
-export function CardTitle({
-    children,
-    className,
-    ...props
-}: CardTitleProps) {
+export function CardTitle({ children, className, ...props }: CardTitleProps) {
     return (
-        <h2
-            className={cn(
-                'text-lg font-semibold tracking-tight',
-                className
-            )}
+        <div
+            className={cn('text-lg font-semibold tracking-tight', className)}
             {...props}
         >
             {children}
-        </h2>
+        </div>
     )
 }
 
-interface CardDescriptionProps
-    extends HTMLAttributes<HTMLParagraphElement> {
+interface CardDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {
     children: ReactNode
 }
 
@@ -74,7 +62,7 @@ export function CardDescription({
     ...props
 }: CardDescriptionProps) {
     return (
-        <p
+        <div
             className={cn(
                 'mt-1 text-sm text-muted dark:text-slate-500',
                 className
@@ -82,7 +70,7 @@ export function CardDescription({
             {...props}
         >
             {children}
-        </p>
+        </div>
     )
 }
 
@@ -96,10 +84,7 @@ export function CardContent({
     ...props
 }: CardContentProps) {
     return (
-        <div
-            className={cn('p-6', className)}
-            {...props}
-        >
+        <div className={cn('p-6', className)} {...props}>
             {children}
         </div>
     )
@@ -109,11 +94,7 @@ interface CardFooterProps extends HTMLAttributes<HTMLDivElement> {
     children: ReactNode
 }
 
-export function CardFooter({
-    children,
-    className,
-    ...props
-}: CardFooterProps) {
+export function CardFooter({ children, className, ...props }: CardFooterProps) {
     return (
         <div
             className={cn(

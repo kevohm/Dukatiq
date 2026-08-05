@@ -50,13 +50,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 setUser(null)
                 setStatus('error')
             }
-            if (error?.status === 401) {
+            if (error?.status === 403) {
+                
                 try {
-                    await api.postRaw('/auth/logout')
+                    await api.postRaw('/auth/refresh')
                 } catch {
-                    // Ignore API logout failures offline
+                    // Ignore API logout failures offlines
                 }
-                return
+            }
+
+            if(error?.status === 401){
+                  try {
+                      await api.postRaw('/auth/logout')
+                  } catch {
+                      // Ignore API logout failures offline
+                  }
             }
         }
     }

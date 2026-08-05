@@ -79,7 +79,7 @@ export function ProductReviewStep({ body }: Props) {
                 </CardHeader>
 
                 <CardContent>
-                    <div className="divide-y">
+                    <div className="divide-y  dark:divide-slate-900">
                         {body.units?.map((unit) => (
                             <div
                                 key={unit.unit_name}

@@ -5,6 +5,9 @@ import type { Product } from '../../../features/product/types'
 
 import { ProductCard } from './ProductCard'
 import type { soldProduct } from '../types'
+import { useProductCategories } from '@/features/product/category/hooks'
+import { useProductBrand } from '@/features/product/brand/hooks'
+import { Select } from '@/components/ui/Select'
 
 type ProductSearchProps = {
     products: Product[]
@@ -24,14 +27,34 @@ export function ProductSearch({
     onSearchChange,
     onAddToCart,
 }: ProductSearchProps) {
+    const categoryQuery = useProductCategories()
+    const brandQuery = useProductBrand()
     return (
         <section className="space-y-3">
-            <TextInput
-                placeholder="Search products"
-                value={search}
-                onChange={(event) => onSearchChange(event.target.value)}
-                leadingIcon={Search}
-            />
+            <div className="flex gap-2.5">
+                <div className="flex-1">
+                    <TextInput
+                        placeholder="Search products"
+                        value={search}
+                        onChange={(event) =>
+                            onSearchChange(event.target.value)
+                        }
+                        leadingIcon={Search}
+                    />
+                </div>
+                <Select
+                    name="category"
+                    placeholder="select category"
+                    loading={categoryQuery?.isLoading}
+                    options={[]}
+                />
+                <Select
+                    name="brand"
+                    placeholder="brand category"
+                    loading={brandQuery?.isLoading}
+                    options={[]}
+                />
+            </div>
 
             <div className="mt-2 grid gap-2 md:grid-cols-2">
                 {isLoading && <SearchState>Loading products...</SearchState>}
@@ -47,13 +70,16 @@ export function ProductSearch({
                 {!isLoading &&
                     !isError &&
                     products.map((product) => (
-                        <ProductCard product={product} onAddToCart={onAddToCart} />
+                        <ProductCard
+                            key={product?.id}
+                            product={product}
+                            onAddToCart={onAddToCart}
+                        />
                     ))}
             </div>
         </section>
     )
 }
-
 
 function SearchState({ children }: { children: ReactNode }) {
     return (

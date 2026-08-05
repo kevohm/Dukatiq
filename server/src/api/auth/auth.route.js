@@ -13,6 +13,6 @@ router.get(
     authController.me
 )
 
-router.post('/refresh', requireAuth, authController.refresh)
+router.post('/refresh', authController.refresh)
 
 export default router

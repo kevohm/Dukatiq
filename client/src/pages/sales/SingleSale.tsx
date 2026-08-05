@@ -1,5 +1,4 @@
 import { Topbar } from '@/components/layout/Topbar'
-import { Badge } from '@/components/ui/Badge'
 import SaleView from '@/features/sales/components/SaleView'
 import { useGetSale } from '@/features/sales/hooks'
 import type { Sale } from '@/features/sales/types'
@@ -12,7 +11,7 @@ const SingleSale = () => {
     if (isLoading) return <div className="p-6">Loading sale...</div>
     if (isError)
         return <div className="p-6 text-red-500">Failed to load sale</div>
-    console.log(data)
+    // console.log(data)
     return (
         <div>
             <Topbar

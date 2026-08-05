@@ -1,9 +1,15 @@
-import type { RxCollection } from 'rxdb'
+import { isNumberSet } from '@/utils/number'
+import type { MangoQuery, RxCollection } from 'rxdb'
 
 export interface BaseDocument {
     id: string
     created_at: string
     updated_at: string
+}
+
+export interface PaginationQuery {
+    page?: number
+    limit?: number
 }
 
 export class BaseRepository<T extends BaseDocument> {
@@ -78,11 +84,80 @@ export class BaseRepository<T extends BaseDocument> {
     bulkUpsert(docs: T[]) {
         return this.collection.bulkUpsert(docs)
     }
-    findAll() {
-        return this.collection
-            .find()
+    async findAll({
+        mangoQuery,
+        query,
+    }: {
+        mangoQuery?: MangoQuery<T>
+        query: { page?: number; limit?: number }
+    }) {
+        let limit = mangoQuery?.limit
+        let skip = mangoQuery?.skip
+
+        if (mangoQuery && mangoQuery?.selector) {
+            mangoQuery['selector'] = { ...mangoQuery?.selector }
+            if (query?.page && query?.limit) {
+                limit = query?.limit
+                skip = (query?.page - 1) * query?.limit
+                mangoQuery['limit'] = query.limit
+                mangoQuery['skip'] = (query?.page - 1) * query?.limit
+            }
+        }
+
+        const docs = await this.collection
+            .find(mangoQuery)
             .exec()
-            .then((docs) => docs.map((doc) => doc.toJSON()))
+            .then((docs) => docs.map((doc) => doc?.toJSON()))
+
+        let pagination: {
+            total?: number
+            limit?: number
+            skip?: number
+            page?: number
+            total_pages?: number
+            rangeStart?: number
+            rangeEnd?: number
+        } = {
+            total: 0,
+            limit: limit,
+            skip: skip,
+            page: undefined,
+            total_pages: undefined,
+            rangeStart: undefined,
+            rangeEnd: undefined,
+        }
+
+        const count = await this.collection
+            .count({
+                selector: mangoQuery?.selector,
+            })
+            .exec()
+
+        /**
+         *  limit = 1
+         *  page = 1
+         *  skip = limit * (page - 1)
+         *  page = (skip / limit) + 1
+         *  count =
+         *  pages = 10 / limit
+         */
+
+        if (isNumberSet(limit) && isNumberSet(skip) && limit > 0) {
+            pagination = {
+                total: count,
+                limit: limit,
+                skip: skip,
+                page: Number(skip / limit + 1),
+                total_pages: Math.max(1, Math.trunc(count / limit)),
+                rangeStart: count === 0 ? 0 : skip + 1,
+                rangeEnd: Math.min(skip + limit, count),
+            }
+        }
+
+        return {
+            data: docs,
+            ...pagination,
+        }
     }
 
     findById(id: string) {

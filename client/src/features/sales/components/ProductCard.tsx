@@ -46,8 +46,13 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
                                 key={productUnit?.id}
                                 variant="secondary"
                                 type="button"
+                                disabled={
+                                    product?.stock_quantity <
+                                    productUnit?.conversion_factor
+                                }
                                 className="cursor-pointer text-xs px-2.5 w-max py-1 h-auto justify-center border border-border dark:border-slate-900 hover:bg-hover hover:text-heading"
-                                onClick={() =>
+                                onClick={(e) => {
+                                    e.preventDefault()
                                     onAddToCart({
                                         id: product?.id,
                                         name: product?.name,
@@ -60,7 +65,7 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
                                         unit_name: productUnit?.unit?.name,
                                         unit_id: productUnit?.unit?.id,
                                     })
-                                }
+                                }}
                             >
                                 + {productUnit.unit?.name ?? 'Unit'}
                             </Button>

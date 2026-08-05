@@ -90,6 +90,16 @@ export const serverConfig = {
     name: getEnv(process.env.APP_NAME, 'Dukatiq'),
 }
 
+export const authConfig = {
+    accessToken: {
+        secret: requiredEnv('ACCESS_TOKEN_SECRET'),
+        duration: requiredEnv('ACCESS_TOKEN_DURATION'),
+    },
+    refreshToken: {
+        duration: getEnv('REFRESH_TOKEN_DURATION', 7),
+    },
+}
+
 export const b2Config = {
     endpoint: requiredEnv('B2_ENDPOINT'),
     region: requiredEnv('B2_REGION'),
@@ -116,4 +126,5 @@ export const config = {
     cookie: cookieConfig,
     server: serverConfig,
     b2: b2Config,
+    auth:authConfig,
 }

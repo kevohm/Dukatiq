@@ -1,15 +1,11 @@
 import {
     Boxes,
-    Package,
-    Tag,
+
     DollarSign,
     Warehouse,
-    Layers,
-    ImageIcon,
+
 } from 'lucide-react'
-import { Badge } from '../../../components/ui/Badge'
 import { Card, CardContent, CardHeader } from '../../../components/ui/Card'
-import { FileImage } from '../../file/components/FileImage'
 import type { Sale } from '../types'
 import { formatCurrency } from '@/utils/currency'
 
@@ -18,7 +14,6 @@ interface Props {
 }
 
 export default function SaleView({  sale }: Props) {
-    const product = {}
 
     return (
         <div className="space-y-8 dark:text-slate-500">
@@ -120,27 +115,6 @@ export default function SaleView({  sale }: Props) {
                     </div>
                 </CardContent>
             </Card>
-        </div>
-    )
-}
-
-function Detail({
-    icon,
-    label,
-    value,
-}: {
-    icon: React.ReactNode
-    label: string
-    value: React.ReactNode
-}) {
-    return (
-        <div className="flex gap-3">
-            <div className="mt-1 text-muted">{icon}</div>
-
-            <div>
-                <p className="text-sm text-muted">{label}</p>
-                <p className="font-medium">{value}</p>
-            </div>
         </div>
     )
 }

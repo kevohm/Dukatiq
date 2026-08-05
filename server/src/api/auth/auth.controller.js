@@ -11,6 +11,7 @@ import { db } from '../../config/database.js'
 
 function getRefreshToken(req) {
     let payload = req.signedCookies?.[COOKIE_KEYS.refreshToken]
+    // console.log(payload)
     if (!payload) {
         throw new AppError({
             message: 'Invalid refresh token',
@@ -19,7 +20,10 @@ function getRefreshToken(req) {
         })
     }
 
-    return payload?.split(':')
+    const result = payload?.split(':')
+    // console.log(payload, result)
+
+    return result
 }
 
 export const login = async (req, res, next) => {

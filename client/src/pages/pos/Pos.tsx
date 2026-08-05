@@ -10,24 +10,31 @@ import {
     SalesCart,
     SalesCartDrawer,
 } from '@/features/sales/components/SalesCart'
-import { useCart } from '@/app/providers/CartProvider'
+import { useCart } from '@/app/providers/CartProvider/CartProvider'
 import { formatCurrency } from '@/utils/currency'
 import type { soldProduct } from '@/features/sales/types'
 import toast from 'react-hot-toast'
 
 const Pos = () => {
-    const { data: products = [], isLoading, isError } = useProducts()
-    console.log(products)
-    const { mutate: createSale, isPending } = useCreateSale()
     const {
-        items: cartItems,
+        data: productData = { data: [] },
+        isLoading,
+        isError,
+    } = useProducts()
+
+    const products = productData.data
+    // console.log(products)
+    const { mutate: createSale, isPending } = useCreateSale()
+    const { cartStore } = useCart()
+    const cartItems = cartStore?.carts[cartStore?.activeCartId]?.items ?? []
+    const {
         paymentMethod,
         total,
         setPaymentMethod,
         addItem,
         removeItem,
-        updateQuantity,
-        changeUnit,
+        increaseQuantity,
+        decreaseQuantity,
         clearCart,
         canAddUnitToCart,
     } = useCart()
@@ -63,14 +70,26 @@ const Pos = () => {
         return true
     }
 
-    const addToCart = (product: soldProduct) => {
+    const addToCart = (product: soldProduct, quantity = 1) => {
         const canBeAddedCart = checkIfCanAddToCart(
             product?.id,
-            1,
+            quantity,
             product?.conversion_factor
         )
         if (!canBeAddedCart) return
-        addItem(product)
+        // console.log('Adding to cart')
+        addItem({
+            conversion_factor: product?.conversion_factor,
+            quantity: quantity,
+            product_id: product?.id,
+            unit_id: product?.unit_id,
+            name: product?.name,
+            cost_price: product?.cost_price,
+            selling_price: product?.selling_price,
+            stock_quantity: product?.stock_quantity,
+            is_base_unit: product?.is_base_unit,
+            unit_name: product?.unit_name,
+        })
     }
 
     const updateCart = (
@@ -86,16 +105,18 @@ const Pos = () => {
                 conversionFactor
             )
             if (!canBeAddedCart) return
+            increaseQuantity({
+                product_id: productId,
+                unit_id: unitId,
+                quantity: Math.abs(delta),
+            })
+        } else {
+            decreaseQuantity({
+                product_id: productId,
+                unit_id: unitId,
+                quantity: Math.abs(delta),
+            })
         }
-        updateQuantity(productId, unitId, delta)
-    }
-
-    const updateUnit = (
-        productId: string,
-        unitId: string,
-        nextUnitId: string
-    ) => {
-        changeUnit(productId, unitId, nextUnitId)
     }
 
     const handleCompleteSale = () => {
@@ -104,7 +125,7 @@ const Pos = () => {
         createSale(
             {
                 items: cartItems.map((item) => ({
-                    product_id: item.product.id,
+                    product_id: item.product_id,
                     unit_id: item.unit_id,
                     quantity: item.quantity,
                 })),
@@ -126,7 +147,6 @@ const Pos = () => {
         isPending,
         onPaymentMethodChange: setPaymentMethod,
         onUpdateQuantity: updateCart,
-        onUpdateUnit: updateUnit,
         onRemoveItem: removeItem,
         onCompleteSale: handleCompleteSale,
         formatCurrency,

@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react'
-import {  Plus, Upload } from 'lucide-react'
+import { useState } from 'react'
+import { Plus, Upload } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 
 import { useProducts } from '../../features/product/hooks'
@@ -16,24 +16,25 @@ import { Topbar } from '../../components/layout/Topbar'
 import AppBodyWrapper from '../../components/layout/AppBodyWrapper'
 
 const ProductList = () => {
-    const { data = [], isLoading, error } = useProducts()
-
     const [search, setSearch] = useState('')
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(10)
+    const {
+        data: productData,
+        isLoading,
+        error,
+    } = useProducts({
+        search,
+        limit: pageSize,
+        page,
+    })
+    const products = productData?.data ?? []
+    
+    const totalPages = productData?.total_pages ?? 0
+    const total = productData?.total ?? 0
 
-    const filtered = useMemo(() => {
-        return data.filter((p) =>
-            p.name.toLowerCase().includes(search.toLowerCase())
-        )
-    }, [data, search])
-
-    const start = (page - 1) * pageSize
-    const end = start + pageSize
-    const paginated = filtered.slice(start, end)
-
-    const totalPages = Math.ceil(filtered.length / pageSize)
-
+    const rangeStart = productData?.rangeStart ?? 0
+    const rangeEnd = productData?.rangeEnd ?? 0
 
     async function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0]
@@ -87,7 +88,6 @@ const ProductList = () => {
                             <Button
                                 variant="secondary"
                                 icon={<Upload size={16} />}
-                              
                             >
                                 <span>Import</span>
                             </Button>
@@ -104,7 +104,7 @@ const ProductList = () => {
             <div className="flex-1 overflow-y-auto px-6">
                 <DataTable
                     columns={productColumns}
-                    data={paginated}
+                    data={products}
                     getRowId={(row) => row.id}
                 />
             </div>
@@ -115,9 +115,9 @@ const ProductList = () => {
                     setPageSize(size)
                     setPage(1)
                 }}
-                rangeStart={filtered.length === 0 ? 0 : start + 1}
-                rangeEnd={Math.min(end, filtered.length)}
-                total={filtered.length}
+                rangeStart={rangeStart}
+                rangeEnd={rangeEnd}
+                total={total}
                 onPrev={() => setPage((p) => Math.max(1, p - 1))}
                 onNext={() => setPage((p) => Math.min(totalPages, p + 1))}
                 canPrev={page > 1}

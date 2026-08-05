@@ -7,8 +7,7 @@ import { useDeleteProduct } from './hooks'
 import toast from 'react-hot-toast'
 import type { ProductDoc } from '@/data/models/product/product'
 
-import { useProductCategory } from './category/hooks'
-import { useProductBrand } from './brand/hooks'
+import type { Product } from './types'
 
 type ProductType = ProductDoc
 const DeleteButton = ({ id }: { id: string }) => {
@@ -32,35 +31,8 @@ const DeleteButton = ({ id }: { id: string }) => {
     )
 }
 
-function CategoryCell({ categoryId }: { categoryId: string }) {
-    const { data: category, isLoading } = useProductCategory(categoryId)
 
-    if (isLoading) {
-        return 'Loading...'
-    }
-
-    if (!category) {
-        return '—'
-    }
-
-    return <Badge>{category.name}</Badge>
-}
-
-function BrandCell({ brandId }: { brandId: string }) {
-    const { data: brand, isLoading } = useProductBrand(brandId)
-
-    if (isLoading) {
-        return 'Loading...'
-    }
-
-    if (!brand) {
-        return '—'
-    }
-
-    return <Badge>{brand.name}</Badge>
-}
-
-export const productColumns: ColumnDef<ProductType>[] = [
+export const productColumns: ColumnDef<Product>[] = [
     {
         id: 'name',
         header: 'Product',
@@ -76,14 +48,16 @@ export const productColumns: ColumnDef<ProductType>[] = [
         header: 'Category',
         sortable: true,
         // sortValue: (row: ProductType) => row.category?.name ?? '',
-        cell: (row: ProductType) => <CategoryCell categoryId={row?.category_id} />,
+        cell: (row: Product) => {
+            return <Badge>{row?.category?.name}</Badge>
+        },
     },
     {
         id: 'brand',
         header: 'Brand',
         sortable: true,
         // sortValue: (row: ProductType) => row.brand?.name ?? '',
-        cell: (row: ProductType) =><BrandCell brandId={row?.brand_id} />,
+        cell: (row: Product) =>  <Badge>{row?.category?.name}</Badge>,
     },
 
     {

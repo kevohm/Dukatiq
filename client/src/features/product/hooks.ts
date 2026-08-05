@@ -1,18 +1,20 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
-import type {  IProductUpdatePayload } from './types'
+import type { IProductUpdatePayload } from './types'
 import { isAxiosError } from 'axios'
 import { productService } from '@/data/service'
+import type { ProductQuery } from '@/data/models/product/product'
 
 const PRODUCT_KEY = ['products']
 
 /* -----------------------------
    GET ALL PRODUCTS
 ------------------------------*/
-export function useProducts() {
+export function useProducts(query: ProductQuery = {}) {
+
     return useQuery({
-        queryKey: PRODUCT_KEY,
-        queryFn: productService.getAll,
+        queryKey: [...PRODUCT_KEY, query],
+        queryFn: () => productService.getAll(query),
     })
 }
 

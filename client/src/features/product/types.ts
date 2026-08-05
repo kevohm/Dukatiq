@@ -37,8 +37,8 @@ export type Product = {
 
     category_id: string
     brand_id: string
-    category: ProductCategory
-    brand: ProductBrand
+    category: { id: string; name: string } | null
+    brand: { id: string; name: string } | null
 
     productUnits: ProductUnit[]
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, {  useState } from 'react'
 import { Loader } from 'lucide-react'
 
 import { TextInput } from '../../../components/ui/TextInput'
@@ -9,7 +9,6 @@ import toast from 'react-hot-toast'
 import { useNavigate } from '@tanstack/react-router'
 import { Select } from '@/components/ui/Select'
 import type {  IRecoveryQuestionsPayload } from '../types'
-import { useAuth } from '@/app/providers/AuthProvider'
 import { useSetRecoveryQeustions } from '../hooks'
 
 export const offlineSecurityQuestions = [
@@ -46,7 +45,6 @@ export const offlineSecurityQuestions = [
 const RecoveryQuestionForm = () => {
     const { mutateAsync, isPending } = useSetRecoveryQeustions()
     const navigate = useNavigate()
-    const { user } = useAuth()
 
     const [errors, setErrors] = useState<Record<string, string>>({})
 
