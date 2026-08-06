@@ -2,16 +2,14 @@ import { Eye} from 'lucide-react'
 import type { ColumnDef } from '@/components/data-table/types'
 import { Button } from '@/components/ui/Button'
 import { Link } from '@tanstack/react-router'
-
-
-import type { Sale } from './types'
 import { formatCurrency } from '@/utils/currency'
 import { Badge, type BadgeColor } from '@/components/ui/Badge'
 import { getBadgeColor } from '@/utils/badge'
 import { formatDate } from '@/utils/time'
+import type { SaleDoc } from '@/data/models/sale/sales'
 
 
-export const saleColumns: ColumnDef<Sale>[] = [
+export const saleColumns: ColumnDef<SaleDoc>[] = [
     {
         id: 'created_at',
         header: 'Date',
@@ -23,8 +21,8 @@ export const saleColumns: ColumnDef<Sale>[] = [
         id: 'amount',
         header: 'Total Amount',
         sortable: true,
-        sortValue: (row: Sale) => row.total_amount,
-        cell: (row: Sale) => (
+        sortValue: (row: SaleDoc) => row.total_amount,
+        cell: (row: SaleDoc) => (
             <span className="font-medium">
                 {formatCurrency(row?.total_amount)}
             </span>
@@ -35,8 +33,8 @@ export const saleColumns: ColumnDef<Sale>[] = [
         id: 'profit',
         header: 'Total Profit',
         sortable: true,
-        sortValue: (row: Sale) => row.total_profit ?? '',
-        cell: (row: Sale) => (
+        sortValue: (row: SaleDoc) => row.total_profit ?? '',
+        cell: (row: SaleDoc) => (
             <span
                 className={
                     row.total_profit > 0
@@ -53,8 +51,8 @@ export const saleColumns: ColumnDef<Sale>[] = [
         id: 'payment method',
         header: 'Payment Method',
         sortable: true,
-        sortValue: (row: Sale) => row.payment_method,
-        cell: (row: Sale) => {
+        sortValue: (row: SaleDoc) => row.payment_method,
+        cell: (row: SaleDoc) => {
             return (
                 <Badge color={getBadgeColor(row?.payment_method) as BadgeColor}>
                     {row.payment_method}
@@ -66,7 +64,7 @@ export const saleColumns: ColumnDef<Sale>[] = [
     {
         id: 'actions',
         header: 'Actions',
-        cell: (row: Sale) => {
+        cell: (row: SaleDoc) => {
             return (
                 <div className="flex gap-2.5">
                     <Link to="/sales/view/$id" params={{ id: row?.id }}>

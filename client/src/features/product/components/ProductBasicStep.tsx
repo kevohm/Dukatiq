@@ -31,6 +31,10 @@ export function ProductBasicStep({
                 error={errors.name}
                 onChange={onChange}
             />
+
+            
+
+            
             <TextInput
                 label="Category"
                 name="category"

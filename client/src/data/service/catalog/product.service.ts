@@ -20,34 +20,22 @@ export class ProductService {
         const mangoQuery: MangoQuery<ProductDoc> = {
             selector: {},
         }
-        const q = baseQueryBuilder(query, {
+        mangoQuery['selector']  = baseQueryBuilder(query, {
+            search: {
+                key: 'search',
+                value: 'name.$regex',
+            },
             filters: [
                 {
                     key: 'category_id',
-                    value: '$eq',
+                    value: 'category_id.$eq',
+                },
+                {
+                    key: 'brand_id',
+                    value: 'brand_id.$eq',
                 },
             ],
         })
-
-        console.log(q)
-        mangoQuery['selector'] = {}
-
-        if (query?.search) {
-            mangoQuery['selector']['name'] = {
-                $regex: `${query?.search}`,
-            }
-        }
-        if (query?.category_id) {
-            mangoQuery['selector']['category_id'] = {
-                $eq: query?.category_id,
-            }
-        }
-
-        if (query?.brand_id) {
-            mangoQuery['selector']['brand_id'] = {
-                $eq: query?.brand_id,
-            }
-        }
 
         const productData = await productRepository.findAll({
             mangoQuery,

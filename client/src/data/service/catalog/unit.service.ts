@@ -5,9 +5,9 @@ import type {
 } from '@/features/product/unit/types'
 
 export class UnitService {
-    async getAll() {
+    async getAll(query={}) {
         const { unitRepository } = await getRepositories()
-        return unitRepository.findAll()
+        return unitRepository.findAll(query)
     }
     async getById(id?: string) {
         const { unitRepository } = await getRepositories()

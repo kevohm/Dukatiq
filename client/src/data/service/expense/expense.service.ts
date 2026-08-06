@@ -1,18 +1,33 @@
+import type { PaginationQuery } from '@/data/repositories/base.repository'
 import { getRepositories } from '../../repositories'
 import type {
     IExpenseCreatePayload,
     IExpenseUpdatePayload,
 } from '@/features/expenses/types'
+import type { MangoQuery } from 'rxdb'
+import type { ExpenseDoc } from '@/data/models/expense/expense'
+import { baseQueryBuilder } from '@/utils/pagination'
 
 export class ExpenseService {
-    async getAll() {
+    async getAll(query: PaginationQuery = {}) {
         const { expenseCategoryRepository, expenseRepository } =
             await getRepositories()
+        const mangoQuery: MangoQuery<ExpenseDoc> = {
+            selector: {},
+        }
+        mangoQuery['selector'] = baseQueryBuilder(query)
+        const expenseData = await expenseRepository.findAll({
+            mangoQuery,
+            query: {
+                limit: query?.limit,
+                page: query?.page,
+            },
+        })
 
-        const expenses = await expenseRepository.findAll()
+        const expenses = expenseData?.data
 
         if (!expenses.length) {
-            return []
+            return { ...expenseData, data: [] }
         }
 
         // Fetch categories
@@ -22,19 +37,25 @@ export class ExpenseService {
             ),
         ]
 
-        const categories =
-            await expenseCategoryRepository.findByIds(categoryIds)
+        const categories = await expenseCategoryRepository.findByIds(
+            categoryIds
+        )
 
         const categoryMap = new Map(
             categories.map((category) => [category.id, category])
         )
 
-        return expenses.map((expense) => ({
+        const results = expenses.map((expense) => ({
             ...expense,
             category: expense.category_id
                 ? categoryMap.get(expense.category_id)
                 : null,
         }))
+
+        return {
+            ...expenseData,
+            data: results,
+        }
     }
     async getById(id?: string) {
         const { expenseRepository } = await getRepositories()
@@ -50,8 +71,9 @@ export class ExpenseService {
 
         const { category: categoryName, ...data } = payload
 
-        const category =
-            await expenseCategoryRepository.findOrCreate(categoryName)
+        const category = await expenseCategoryRepository.findOrCreate(
+            categoryName
+        )
 
         const product = await expenseRepository.create({
             ...data,

@@ -6,7 +6,9 @@ import type { Product } from '../../../features/product/types'
 import { ProductCard } from './ProductCard'
 import type { soldProduct } from '../types'
 import { useProductCategories } from '@/features/product/category/hooks'
-import { useProductBrand } from '@/features/product/brand/hooks'
+import {
+    useProductBrands,
+} from '@/features/product/brand/hooks'
 import { Select } from '@/components/ui/Select'
 
 type ProductSearchProps = {
@@ -28,7 +30,10 @@ export function ProductSearch({
     onAddToCart,
 }: ProductSearchProps) {
     const categoryQuery = useProductCategories()
-    const brandQuery = useProductBrand()
+    const brandQuery = useProductBrands()
+    const categories = categoryQuery?.data?.data
+    const brands = brandQuery?.data?.data
+
     return (
         <section className="space-y-3">
             <div className="flex gap-2.5">
@@ -36,23 +41,28 @@ export function ProductSearch({
                     <TextInput
                         placeholder="Search products"
                         value={search}
-                        onChange={(event) =>
-                            onSearchChange(event.target.value)
-                        }
+                        onChange={(event) => onSearchChange(event.target.value)}
                         leadingIcon={Search}
                     />
                 </div>
+               
                 <Select
                     name="category"
                     placeholder="select category"
                     loading={categoryQuery?.isLoading}
-                    options={[]}
+                    options={categories?.map((c:any) => ({
+                        value: c?.id,
+                        label: c?.name,
+                    }))}
                 />
                 <Select
                     name="brand"
                     placeholder="brand category"
                     loading={brandQuery?.isLoading}
-                    options={[]}
+                    options={brands?.map((c:any) => ({
+                        value: c?.id,
+                        label: c?.name,
+                    }))}
                 />
             </div>
 

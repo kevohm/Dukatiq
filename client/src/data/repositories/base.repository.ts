@@ -12,12 +12,29 @@ export interface PaginationQuery {
     limit?: number
 }
 
+export type IQuery<T> = {
+    mangoQuery?: MangoQuery<T>
+    query?: PaginationQuery | undefined
+}
+
+export type IFindAllReturnType<T> = {
+    total?: number
+    limit?: number
+    skip?: number
+    page?: number
+    total_pages?: number
+    rangeStart?: number
+    rangeEnd?: number
+    data: T[]
+}
+
 export class BaseRepository<T extends BaseDocument> {
     protected readonly collection: RxCollection<T>
 
     constructor(collection: RxCollection<T>) {
         this.collection = collection
     }
+
     protected generate() {
         const now = new Date().toISOString()
         return {
@@ -26,6 +43,7 @@ export class BaseRepository<T extends BaseDocument> {
             updated_at: now,
         }
     }
+    
     protected withAuditFields(
         data: Omit<T, 'created_at' | 'updated_at' | 'id'> &
             Partial<Pick<T, 'id'>>
@@ -87,10 +105,7 @@ export class BaseRepository<T extends BaseDocument> {
     async findAll({
         mangoQuery,
         query,
-    }: {
-        mangoQuery?: MangoQuery<T>
-        query: { page?: number; limit?: number }
-    }) {
+    }: IQuery<T>): Promise<IFindAllReturnType<T>> {
         let limit = mangoQuery?.limit
         let skip = mangoQuery?.skip
 
@@ -148,14 +163,14 @@ export class BaseRepository<T extends BaseDocument> {
                 limit: limit,
                 skip: skip,
                 page: Number(skip / limit + 1),
-                total_pages: Math.max(1, Math.trunc(count / limit)),
+                total_pages: Math.max(1, Math.ceil(count / limit)),
                 rangeStart: count === 0 ? 0 : skip + 1,
                 rangeEnd: Math.min(skip + limit, count),
             }
         }
 
         return {
-            data: docs,
+            data: docs as T[],
             ...pagination,
         }
     }

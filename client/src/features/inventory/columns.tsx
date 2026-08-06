@@ -1,6 +1,6 @@
 import type { ColumnDef } from '../../components/data-table/types'
 import { Badge, type BadgeColor } from '../../components/ui/Badge'
-import { InventoryAdjustmentTypeEnum, InventoryTypeEnum, type InventoryEvent } from './types'
+import { InventoryAdjustmentTypeEnum, InventoryTypeEnum, type Inventory, type InventoryEvent } from './types'
 
 const typeLabels = {
     stock_in: 'Stock in',
@@ -20,7 +20,7 @@ const formatDate = (value: string) =>
         timeStyle: 'short',
     }).format(new Date(value))
 
-export const inventoryColumns: ColumnDef<InventoryEvent>[] = [
+export const inventoryColumns: ColumnDef<Inventory>[] = [
     {
         id: 'created_at',
         header: 'Date',

@@ -6,14 +6,12 @@ import { Button } from '@/components/ui/Button'
 import { useProducts } from '@/features/product/hooks'
 import { useCreateSale } from '@/features/sales/hooks'
 import { ProductSearch } from '@/features/sales/components/ProductSearch'
-import {
-    SalesCart,
-    SalesCartDrawer,
-} from '@/features/sales/components/SalesCart'
+import { SalesCart } from '@/features/sales/components/cart/SalesCart'
 import { useCart } from '@/app/providers/CartProvider/CartProvider'
 import { formatCurrency } from '@/utils/currency'
 import type { soldProduct } from '@/features/sales/types'
 import toast from 'react-hot-toast'
+import { SalesCartDrawer } from '@/features/sales/components/cart/SalesCartDrawer'
 
 const Pos = () => {
     const {
@@ -25,6 +23,7 @@ const Pos = () => {
     const products = productData.data
     // console.log(products)
     const { mutate: createSale, isPending } = useCreateSale()
+
     const { cartStore } = useCart()
     const cartItems = cartStore?.carts[cartStore?.activeCartId]?.items ?? []
     const {
@@ -35,7 +34,8 @@ const Pos = () => {
         removeItem,
         increaseQuantity,
         decreaseQuantity,
-        clearCart,
+        changeRecentlySoldCartId,
+        handleSaleCompletion,
         canAddUnitToCart,
     } = useCart()
 
@@ -81,6 +81,7 @@ const Pos = () => {
         addItem({
             conversion_factor: product?.conversion_factor,
             quantity: quantity,
+            normalized_quantity: quantity * product?.conversion_factor,
             product_id: product?.id,
             unit_id: product?.unit_id,
             name: product?.name,
@@ -119,9 +120,12 @@ const Pos = () => {
         }
     }
 
-    const handleCompleteSale = () => {
+    const handleCompleteSale = (cartId: string) => {
         if (!cartItems.length) return
         // console.log(cartItems)
+        changeRecentlySoldCartId({
+            cart_id: cartId,
+        })
         createSale(
             {
                 items: cartItems.map((item) => ({
@@ -133,7 +137,7 @@ const Pos = () => {
             },
             {
                 onSuccess: () => {
-                    clearCart()
+                    handleSaleCompletion({ cart_id: cartId })
                     setIsCartOpen(false)
                 },
             }

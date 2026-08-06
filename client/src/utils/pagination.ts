@@ -1,27 +1,47 @@
 import type { MangoQuerySelector } from 'rxdb'
 
-type Filter = {
+type KeyValue = {
     key: string
     value: string
 }
 
-type QueryBuilderArgs = {
-    filters: Filter[]
+export type IQueryBuilderArgs = {
+    filters?: KeyValue[]
+    search?: KeyValue
 }
 
 export function baseQueryBuilder(
     query: any = {},
-    { filters = [] }: QueryBuilderArgs
+    { filters = [], search }: IQueryBuilderArgs = {}
 ) {
     const q: MangoQuerySelector<any> = {}
 
     if (filters?.length > 0) {
+        // {[]:{}}
+        // {[]:{}}
         for (const filter of filters) {
-            if (filter?.value?.includes(':')) {
-                const operator = filter?.value
-                query[filter?.key] = { [operator]: query[filter?.key] }
+            if (query[filter?.key]) {
+                if (filter?.value?.includes('.')) {
+                    console.log(filter.value.split('.'))
+                    const [field, operator] = filter.value.split('.')
+                    q[field] = { [operator]: query[filter?.key] }
+                } else {
+                    q[filter?.value] = query[filter?.key]
+                }
+            }
+        }
+    }
+
+    if (search) {
+        // {[]:{}}
+        // {[]:{}}
+        if (query[search?.key]) {
+            if (search?.value?.includes('.')) {
+                console.log(search.value.split('.'))
+                const [field, operator] = search.value.split('.')
+                q[field] = { [operator]: query[search?.key] }
             } else {
-                query[filter?.key] = query[filter?.key]
+                q[search?.value] = query[search?.key]
             }
         }
     }

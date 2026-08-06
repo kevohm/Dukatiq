@@ -44,28 +44,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             })
             setStatus('loggedin')
         } catch (error: any) {
-            if (error?.message === 'You seem to be offline') {
-                setStatus('offline')
-            } else {
-                setUser(null)
-                setStatus('error')
-            }
             if (error?.status === 403) {
-                
                 try {
                     await api.postRaw('/auth/refresh')
+                    const data = await api.getRaw<User>('/auth/me')
+                    const currentUser = data?.data ?? null
+                    const activeUser = await userService.getActiveUser()
+
+                    setUser({
+                        ...currentUser,
+                        lastLoginAt: activeUser ? activeUser?.updated_at : null,
+                    })
+                    setStatus('loggedin')
                 } catch {
+                     setUser(null)
+                     setStatus('error')
                     // Ignore API logout failures offlines
                 }
+            }else{
+                 if (error?.message === 'You seem to be offline') {
+                     setStatus('offline')
+                 } else {
+                     setUser(null)
+                     setStatus('error')
+                 }
+                 if (error?.status === 401) {
+                     try {
+                         await api.postRaw('/auth/logout')
+                     } catch {
+                         // Ignore API logout failures offline
+                     }
+                 }
             }
 
-            if(error?.status === 401){
-                  try {
-                      await api.postRaw('/auth/logout')
-                  } catch {
-                      // Ignore API logout failures offline
-                  }
-            }
         }
     }
 

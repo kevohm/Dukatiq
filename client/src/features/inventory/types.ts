@@ -27,6 +27,20 @@ export const InventoryTypeEnum = {
 export type InventoryType =
     (typeof InventoryTypeEnum)[keyof typeof InventoryTypeEnum]
 
+export type Inventory = {
+    id: string
+    type: InventoryType
+    quantity: number
+    normalized_quantity: number
+    adjustment_type: InventoryAdjustmentType | null
+    reference_type: InventoryReferenceType | null
+    reference_id: string | null
+    created_at: string
+    updated_at: string
+    product: Pick<Product, 'id' | 'name'> | null
+    unit: Pick<Unit, 'id' | 'name'> | null
+}
+
 export type InventoryEvent = {
     id: string
     type: InventoryType

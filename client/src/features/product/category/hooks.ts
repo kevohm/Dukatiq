@@ -8,10 +8,10 @@ const PRODUCT_CATEGORY_KEY = ['product-categories']
 /* -----------------------------
    GET ALL PRODUCT CATEGORIES
 ------------------------------*/
-export function useProductCategories() {
+export function useProductCategories(query={}) {
     return useQuery({
-        queryKey: PRODUCT_CATEGORY_KEY,
-        queryFn: productCategoryService.getAll,
+        queryKey: [...PRODUCT_CATEGORY_KEY, query],
+        queryFn: () => productCategoryService.getAll(query),
     })
 }
 

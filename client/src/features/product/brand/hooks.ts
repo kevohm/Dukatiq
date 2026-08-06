@@ -8,10 +8,10 @@ const PRODUCT_BRAND_KEY = ['product-brands']
 /* -----------------------------
    GET ALL PRODUCT BRANDS
 ------------------------------*/
-export function useProductBrands() {
+export function useProductBrands(query = {}) {
     return useQuery({
-        queryKey: PRODUCT_BRAND_KEY,
-        queryFn: brandService.getAll,
+        queryKey: [...PRODUCT_BRAND_KEY, query],
+        queryFn: () => brandService.getAll(query),
     })
 }
 

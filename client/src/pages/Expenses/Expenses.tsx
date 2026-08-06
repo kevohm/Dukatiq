@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import {  useState } from 'react'
 import { Plus } from 'lucide-react'
 
 import { DataTable } from '../../components/data-table/DataTable'
@@ -13,29 +13,21 @@ import { expenseColumns } from '../../features/expenses/columns'
 import { useExpenses } from '../../features/expenses/hooks'
 
 const Expense = () => {
-    const { data = [], isLoading, error } = useExpenses()
-
     const [search, setSearch] = useState('')
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(10)
+    const { data:expenseData, isLoading, error } = useExpenses({
+        limit:pageSize,
+        page,
+        search
+    })
+    const expenses = expenseData?.data ?? []
 
-    // -----------------------------
-    // FILTER
-    // -----------------------------
-    const filtered = useMemo(() => {
-        return data.filter((p) =>
-            p.name.toLowerCase().includes(search.toLowerCase())
-        )
-    }, [data, search])
+    const totalPages = expenseData?.total_pages ?? 0
+    const total = expenseData?.total ?? 0
 
-    // -----------------------------
-    // PAGINATION
-    // -----------------------------
-    const start = (page - 1) * pageSize
-    const end = start + pageSize
-    const paginated = filtered.slice(start, end)
-
-    const totalPages = Math.ceil(filtered.length / pageSize)
+    const rangeStart = expenseData?.rangeStart ?? 0
+    const rangeEnd = expenseData?.rangeEnd ?? 0
 
     if (isLoading) return <div className="p-6">Loading products...</div>
     if (error)
@@ -68,7 +60,7 @@ const Expense = () => {
                 <DataTable
                     columns={expenseColumns}
                     //@ts-ignore
-                    data={paginated}
+                    data={expenses}
                     getRowId={(row) => row.id}
                 />
             </div>
@@ -80,9 +72,9 @@ const Expense = () => {
                     setPageSize(size)
                     setPage(1)
                 }}
-                rangeStart={filtered.length === 0 ? 0 : start + 1}
-                rangeEnd={Math.min(end, filtered.length)}
-                total={filtered.length}
+                rangeStart={rangeStart}
+                rangeEnd={rangeEnd}
+                total={total}
                 onPrev={() => setPage((p) => Math.max(1, p - 1))}
                 onNext={() => setPage((p) => Math.min(totalPages, p + 1))}
                 canPrev={page > 1}

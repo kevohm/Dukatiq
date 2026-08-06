@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import {  useState } from 'react'
 import AppBodyWrapper from '../components/layout/AppBodyWrapper'
 import { Topbar } from '../components/layout/Topbar'
 import { DataTable } from '../components/data-table/DataTable'
@@ -9,31 +9,26 @@ import { InventoryTransactionDialog } from '../features/inventory/components/Inv
 import { useInventory } from '../features/inventory/hooks'
 
 const Inventory = () => {
-    const { data: inventoryData, isLoading, isError } = useInventory()
     const [search, setSearch] = useState('')
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(10)
+    const {
+        data: inventoryData,
+        isLoading,
+        isError,
+    } = useInventory({
+        page,
+        limit: pageSize,
+        search,
+    })
     const data = inventoryData?.data ?? []
 
-    const filtered = useMemo(() => {
-        const query = search.trim().toLowerCase()
-        if (!query) return data
-        return data.filter((event) =>
-            [
-                event.product?.name,
-                event.unit?.name,
-                event.type,
-                event.reference_type,
-            ]
-                .filter(Boolean)
-                .some((value) => value!.toLowerCase().includes(query))
-        )
-    }, [data, search])
+    const totalPages = inventoryData?.total_pages ?? 0
+    const total = inventoryData?.total ?? 0
 
-    const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
-    const currentPage = Math.min(page, totalPages)
-    const start = (currentPage - 1) * pageSize
-    const paginated = filtered.slice(start, start + pageSize)
+    const rangeStart = inventoryData?.rangeStart ?? 0
+    const rangeEnd = inventoryData?.rangeEnd ?? 0
+
 
     return (
         <AppBodyWrapper>
@@ -67,8 +62,7 @@ const Inventory = () => {
                 {!isLoading && !isError && (
                     <DataTable
                         columns={inventoryColumns}
-                        //@ts-ignore
-                        data={paginated}
+                        data={data}
                         getRowId={(row) => row.id}
                         selectable={false}
                     />
@@ -81,15 +75,15 @@ const Inventory = () => {
                         setPageSize(size)
                         setPage(1)
                     }}
-                    rangeStart={filtered.length ? start + 1 : 0}
-                    rangeEnd={Math.min(start + pageSize, filtered.length)}
-                    total={filtered.length}
+                    rangeStart={rangeStart}
+                    rangeEnd={rangeEnd}
+                    total={total}
                     onPrev={() => setPage((value) => Math.max(1, value - 1))}
                     onNext={() =>
                         setPage((value) => Math.min(totalPages, value + 1))
                     }
-                    canPrev={currentPage > 1}
-                    canNext={currentPage < totalPages}
+                    canPrev={page > 1}
+                    canNext={page < totalPages}
                 />
             )}
         </AppBodyWrapper>

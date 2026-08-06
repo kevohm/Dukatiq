@@ -11,7 +11,7 @@ const EXPENSE_CATEGORY_KEY = ['expense-categories']
 export function useExpenseCategories() {
     return useQuery({
         queryKey: EXPENSE_CATEGORY_KEY,
-        queryFn: expenseCategoryService.getAll,
+        queryFn: ()=>expenseCategoryService.getAll(),
     })
 }
 

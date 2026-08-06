@@ -7,10 +7,9 @@ import BackButton from '../../../components/shared/BackButton'
 import type { ApiError } from '../../../errors/error'
 import { Loader } from 'lucide-react'
 import LoadingSection from '../../../components/shared/LoadingSection'
-import { useProductCategories } from '../category/hooks'
-import { Select } from '../../../components/ui/Select'
-import { useProductBrands } from '../brand/hooks'
 import type { IProductUpdatePayload } from '../types'
+import BrandSelector from '../brand/components/BrandSelector'
+import CategorySelector from '../category/components/CategorySelector'
 
 interface props {
     id: string
@@ -18,8 +17,6 @@ interface props {
 const EditProductForm: React.FC<props> = ({ id }) => {
     const productQuery = useProduct(id)
     const { mutateAsync, isPending } = useUpdateProduct()
-    const productCategoryQuery = useProductCategories()
-    const productBrandQuery = useProductBrands()
 
     const navigate = useNavigate()
     const [errors, setErrors] = useState<Record<string, string>>({})
@@ -72,7 +69,7 @@ const EditProductForm: React.FC<props> = ({ id }) => {
     }
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, type } = e.target
-        const parsedValue = type === 'number' ? (Number(value) ?? 0) : value
+        const parsedValue = type === 'number' ? Number(value) ?? 0 : value
 
         changeBody({
             name,
@@ -97,35 +94,23 @@ const EditProductForm: React.FC<props> = ({ id }) => {
                 error={getError('name')}
                 onChange={handleChange}
             />
-            <Select
-                label="category"
-                name="category_id"
-                required
+            
+            <CategorySelector
                 value={body?.category_id}
-                disabled={productCategoryQuery?.isLoading}
-                onChange={(e) => changeBody(e.target)}
-                options={productCategoryQuery?.data?.map((c) => ({
-                    label: c?.name,
-                    value: c?.id,
-                }))}
+                onChange={(value) => changeBody({ name: 'category_id', value })}
             />
-            <Select
-                label="Brand"
-                name="brand_id"
-                required
+            <BrandSelector
                 value={body?.brand_id}
-                onChange={(e) => changeBody(e.target)}
-                disabled={productBrandQuery?.isLoading}
-                options={productBrandQuery?.data?.map((c) => ({
-                    label: c?.name,
-                    value: c?.id,
-                }))}
+                onChange={(value) =>
+                    changeBody({
+                        name: 'brand_id',
+                        value,
+                    })
+                }
             />
-
             <TextInput
                 label="selling price"
                 name="selling_price"
-
                 value={body?.selling_price}
                 error={getError('selling_price')}
                 type="number"
@@ -139,7 +124,6 @@ const EditProductForm: React.FC<props> = ({ id }) => {
                 error={getError('cost_price')}
                 onChange={handleChange}
             />
-
             <div className="flex items-center justify-between col-span-full">
                 <BackButton label="Cancel" />
                 <Button variant="primary" type="submit">

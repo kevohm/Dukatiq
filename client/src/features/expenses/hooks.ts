@@ -8,10 +8,10 @@ const EXPENSE_KEY = ['expenses']
 /* -----------------------------
    GET ALL EXPENSES
 ------------------------------*/
-export function useExpenses() {
+export function useExpenses(query={}) {
     return useQuery({
-        queryKey: EXPENSE_KEY,
-        queryFn: expenseService.getAll,
+        queryKey: [...EXPENSE_KEY, query],
+        queryFn: ()=>expenseService.getAll(query),
     })
 }
 

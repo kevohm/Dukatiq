@@ -12,7 +12,8 @@ export class BrandService extends BaseService<BrandRepository> {
     }
 
     async create(name: string) {
-        const repository = await this.getRepository()
-        return repository.findOrCreate(name)
+        const { brandRepository } = await getRepositories()
+        const repository = brandRepository
+        return repository.findOrCreate(name)?.then(d=>d.toJSON())
     }
 }

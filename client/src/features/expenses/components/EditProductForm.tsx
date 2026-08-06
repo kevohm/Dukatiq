@@ -124,7 +124,7 @@ const EditExpenseForm: React.FC<Props> = ({ id }) => {
                 value={body.category_id}
                 disabled={categoryQuery.isLoading}
                 onChange={(e) => changeBody(e.target)}
-                options={categoryQuery.data?.map((c) => ({
+                options={categoryQuery.data?.data?.map((c:any) => ({
                     label: c.name,
                     value: c.id,
                 }))}

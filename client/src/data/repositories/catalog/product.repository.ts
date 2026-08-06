@@ -3,6 +3,7 @@ import { BaseRepository } from '../base.repository'
 import { getRepositories } from '..'
 
 export class ProductRepository extends BaseRepository<ProductDoc> {
+    
     async findDetailed(id: string) {
         const product = await this.findOrThrow(id)
 

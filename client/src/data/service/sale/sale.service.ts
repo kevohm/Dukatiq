@@ -8,9 +8,12 @@ import {
 } from '@/features/inventory/types'
 import { inventoryService } from '../inventory/inventory.service'
 import type { PaginationQuery } from '@/data/repositories/base.repository'
+import { baseQueryBuilder } from '@/utils/pagination'
+import type { MangoQuery } from 'rxdb'
+import type { SaleDoc } from '@/data/models/sale/sales'
 
 export class SaleService {
-    async getAll(query:PaginationQuery = {}) {
+    async getAll(query: PaginationQuery = {}) {
         const {
             saleRepository,
             saleItemRepository,
@@ -18,8 +21,13 @@ export class SaleService {
             productRepository,
         } = await getRepositories()
 
+        const mangoQuery: MangoQuery<SaleDoc> = {
+            selector: {},
+        }
+        mangoQuery['selector'] = baseQueryBuilder(query)
+
         const saleData = await saleRepository.findAll({
-            mangoQuery: {},
+            mangoQuery,
             query: {
                 limit: query?.limit,
                 page: query?.page,

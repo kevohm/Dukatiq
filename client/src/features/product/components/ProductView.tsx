@@ -112,13 +112,13 @@ export default function ProductView({ product }: Props) {
                             <Detail
                                 icon={<Tag className="w-4 h-4" />}
                                 label="Category"
-                                value={product.category.name}
+                                value={product.category?.name}
                             />
 
                             <Detail
                                 icon={<Package className="w-4 h-4" />}
                                 label="Brand"
-                                value={product.brand.name}
+                                value={product.brand?.name}
                             />
 
                             <Detail

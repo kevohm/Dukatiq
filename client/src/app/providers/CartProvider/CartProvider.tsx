@@ -41,15 +41,24 @@ type CartContextType = {
     ) => void
 
     clearCart: () => void
+    adjustStockInCart: () => void
     canAddUnitToCart: (
         productId: string,
         quantity: number,
         conversionFactor?: number
     ) => boolean
 
+    changeRecentlySoldCartId: (
+        payload: Pick<ICartActionPayload, 'cart_id'>
+    ) => void
+
+    handleSaleCompletion: (payload: Pick<ICartActionPayload, 'cart_id'>) => void
+
     changeActiveCart: (payload: Pick<ICartActionPayload, 'cart_id'>) => void
     addNewCart: () => void
-    
+    resetRecentlySoldCartId: () => void
+    deleteCart: (payload: Pick<ICartActionPayload, 'cart_id'>) => void
+
     setPaymentMethod: Dispatch<SetStateAction<SalePaymentMethod>>
 
     items: CartItem[]
@@ -67,10 +76,19 @@ type Carts = Record<string, Cart>
 
 export type CartStore = {
     activeCartId: string
+    recentlySoldCartId: string
+    status: 'error' | 'loading' | 'idle'
+    message: string
     carts: Carts
 }
 
-const initialCart: CartStore = { activeCartId: '', carts: {} }
+const initialCart: CartStore = {
+    activeCartId: '',
+    recentlySoldCartId: '',
+    carts: {},
+    status: 'idle',
+    message: '',
+}
 
 const CARTS_KEY = 'carts'
 
@@ -107,10 +125,23 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         useState<SalePaymentMethod>('cash')
 
     useEffect(() => {
+        // console.log(cartStore)
         sessionStorage.setItem(CARTS_KEY, JSON.stringify(cartStore))
     }, [cartStore])
 
-    const currentCart = cartStore?.carts[cartStore?.activeCartId]
+    useEffect(() => {
+        if (!cartStore.recentlySoldCartId) return
+        const cart = cartStore.carts[cartStore.recentlySoldCartId]
+        if (!cart) {
+            dispatch({
+                type: cartActions.RESET_RECENTLY_SOLD_CART_ID,
+            })
+        }
+    }, [cartStore.recentlySoldCartId])
+
+    const currentCart = useMemo(() => {
+        return cartStore.carts[cartStore?.activeCartId]
+    }, [cartStore])
 
     const canAddUnitToCart = useCallback(
         (productId: string, quantity: number, conversionFactor = 1) => {
@@ -141,6 +172,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         },
         [currentCart]
     )
+
     const addItem = ({
         conversion_factor = 1,
         ...payload
@@ -225,11 +257,57 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         []
     )
 
+    const handleSaleCompletion = useCallback(
+        (payload: Pick<ICartActionPayload, 'cart_id'>) => {
+            dispatch({
+                type: cartActions.ON_SALE_COMPLETION,
+                ...payload,
+            })
+        },
+        []
+    )
+
+    const adjustStockInCart = useCallback(() => {
+        dispatch({
+            type: cartActions.ADJUST_CART_QUANTITY,
+        })
+    }, [])
+
+    const deleteCart = useCallback(
+        (payload: Pick<ICartActionPayload, 'cart_id'>) => {
+            dispatch({
+                type: cartActions.DELETE_NEW_CART,
+                ...payload,
+            })
+        },
+        []
+    )
+
     const clearCart = useCallback(() => {
         dispatch({
             type: cartActions.CLEAR_CART,
         })
     }, [])
+
+     const resetRecentlySoldCartId = useCallback(
+         () => {
+             dispatch({
+                 type: cartActions.RESET_RECENTLY_SOLD_CART_ID,
+             })
+         },
+         []
+     )
+
+
+    const changeRecentlySoldCartId = useCallback(
+        (payload: Pick<ICartActionPayload, 'cart_id'>) => {
+            dispatch({
+                type: cartActions.SET_RECENTLY_SOLD_CART_ID,
+                ...payload,
+            })
+        },
+        []
+    )
 
     const changeActiveCart = useCallback(
         (payload: Pick<ICartActionPayload, 'cart_id'>) => {
@@ -268,8 +346,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             increaseQuantity,
             decreaseQuantity,
             clearCart,
+            adjustStockInCart,
+            changeRecentlySoldCartId,
+            resetRecentlySoldCartId,
             changeActiveCart,
             addNewCart,
+            deleteCart,
+            handleSaleCompletion,
 
             items,
             paymentMethod,
@@ -290,8 +373,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             increaseQuantity,
             decreaseQuantity,
             clearCart,
+            changeRecentlySoldCartId,
+            resetRecentlySoldCartId,
+            adjustStockInCart,
             changeActiveCart,
             addNewCart,
+            deleteCart,
+            handleSaleCompletion,
 
             items,
             paymentMethod,

@@ -15,10 +15,10 @@ function useInventoryMutation<T>(mutationFn: (data: T) => Promise<unknown>) {
     })
 }
 
-export function useInventory() {
+export function useInventory(query={}) {
     return useQuery({
-        queryKey: INVENTORY_KEY,
-        queryFn: inventoryService.getAll,
+        queryKey: [...INVENTORY_KEY, query],
+        queryFn: ()=>inventoryService.getAll(query),
     })
 }
 

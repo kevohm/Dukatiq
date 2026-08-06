@@ -1,4 +1,3 @@
-import type { ProductCategory } from './category/types'
 
 export type ProductUnit = {
     id: string

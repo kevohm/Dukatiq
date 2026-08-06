@@ -53,9 +53,12 @@ const ProductList = () => {
 
     if (isLoading) return <div className="p-6">Loading products...</div>
 
-    if (error)
+    if (error){
+console.log(error)
         return <div className="p-6 text-red-500">Failed to load products</div>
+    }
 
+    
     return (
         <AppBodyWrapper>
             <Topbar

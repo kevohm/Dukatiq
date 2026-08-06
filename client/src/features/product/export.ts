@@ -9,8 +9,8 @@ export function mapProductForExport(product: Product) {
 
     return {
         Name: product.name,
-        Category: product.category.name,
-        Brand: product.brand.name,
+        Category: product.category?.name,
+        Brand: product.brand?.name,
 
         'Cost Price': product.cost_price,
         'Selling Price': product.selling_price,
@@ -32,9 +32,9 @@ export function mapProductForMigration(product: Product) {
         stock_quantity: product.stock_quantity,
         low_stock_threshold: product.low_stock_threshold,
 
-        category: product.category.name,
+        category: product.category?.name,
 
-        brand: product.brand.name,
+        brand: product.brand?.name,
 
         units: JSON.stringify(
             product.productUnits.map((item) => ({

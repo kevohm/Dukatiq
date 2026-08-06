@@ -1,12 +1,21 @@
 import {
     InventoryTypeEnum,
+    type Inventory,
     type InventoryAdjustmentType,
     type InventoryCreateInternaPayload,
     type InventoryCreatePayload,
+    type InventoryReferenceType,
     type InventoryType,
 } from '@/features/inventory/types'
 import { getRepositories } from '../../repositories'
 import { productUnitService } from '..'
+import type { MangoQuery } from 'rxdb'
+import type { InventoryDoc } from '@/data/models/inventory/inventory'
+import { baseQueryBuilder } from '@/utils/pagination'
+import type {
+    IFindAllReturnType,
+    PaginationQuery,
+} from '@/data/repositories/base.repository'
 
 function calculateStockChange({
     type,
@@ -51,17 +60,29 @@ export class InventoryService {
         reference_type: null,
         reference_id: null,
     }
-    async getAll() {
+    async getAll(
+        query: PaginationQuery = {}
+    ): Promise<IFindAllReturnType<Inventory>> {
         const { inventoryRepository, productRepository, unitRepository } =
             await getRepositories()
+        const mangoQuery: MangoQuery<InventoryDoc> = {
+            selector: {},
+        }
+        mangoQuery['selector'] = baseQueryBuilder(query)
+        const inventoryData = await inventoryRepository.findAll({
+            mangoQuery,
+            query: {
+                limit: query?.limit,
+                page: query?.page,
+            },
+        })
 
-        const inventoryData = await inventoryRepository.findAll()
         const inventory = inventoryData?.data
 
         if (!inventory.length) {
             return {
                 ...inventoryData,
-                data:[],
+                data: [],
             }
         }
 
@@ -80,11 +101,29 @@ export class InventoryService {
         )
 
         const unitMap = new Map(units.map((unit) => [unit.id, unit]))
-        const results = inventory.map((item) => ({
-            ...item,
-            product: productMap.get(item.product_id),
-            unit: unitMap.get(item.unit_id),
-        }))
+        const results = inventory.map((item) => {
+            const product = productMap.get(item.product_id)
+            const unit = unitMap.get(item.unit_id)
+            return {
+                ...item,
+                type: item.type as InventoryType,
+                adjustment_type:
+                    item?.adjustment_type as InventoryAdjustmentType,
+                reference_type: item.reference_type as InventoryReferenceType,
+                product: product
+                    ? {
+                          id: product?.id,
+                          name: product?.name,
+                      }
+                    : null,
+                unit: unit
+                    ? {
+                          id: unit?.id,
+                          name: unit?.name,
+                      }
+                    : null,
+            }
+        })
         return {
             ...inventoryData,
             data: results,

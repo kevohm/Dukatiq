@@ -20,6 +20,7 @@ const SaleList = () => {
         page,
         limit: pageSize,
     })
+    
     const data = saleData?.data ?? []
 
     if (isLoading) return <div className="p-6">Loading sales...</div>

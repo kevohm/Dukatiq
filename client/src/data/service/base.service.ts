@@ -1,12 +1,23 @@
+import type { MangoQuery } from 'rxdb'
+import type {
+    IFindAllReturnType,
+    PaginationQuery,
+} from '../repositories/base.repository'
+import { baseQueryBuilder, type IQueryBuilderArgs } from '@/utils/pagination'
+
+type IQuery = {
+    mangoQuery?: MangoQuery<any>
+    query: { page?: number; limit?: number }
+}
 
 export class BaseService<
     TRepository extends {
-        findAll(): Promise<unknown[]>
+        findAll(query: IQuery): Promise<IFindAllReturnType<unknown>>
         findOrThrow(id: string, message?: string): Promise<any>
         create(data: unknown): Promise<any>
         update(id: string, data: unknown): Promise<any>
         delete(id: string): Promise<any>
-    },
+    }
 > {
     protected getRepository: () => Promise<TRepository>
 
@@ -14,12 +25,22 @@ export class BaseService<
         this.getRepository = getRepo
     }
 
-    async getAll() {
+    async getAll(query: PaginationQuery={}, opts: IQueryBuilderArgs = {}) {
         const repository = await this.getRepository()
+        const mangoQuery: MangoQuery<any> = {
+            selector: {},
+        }
+        mangoQuery['selector'] = baseQueryBuilder(query, opts)
 
-        const docs = await repository.findAll()
+        const results = await repository.findAll({
+            mangoQuery,
+            query: {
+                limit: query?.limit,
+                page: query?.page,
+            },
+        })
 
-        return docs.map((doc: any) => (doc.toJSON ? doc.toJSON() : doc))
+        return results
     }
 
     async getById(id?: string, message?: string) {
