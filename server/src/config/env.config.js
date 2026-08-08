@@ -2,17 +2,18 @@ import dotenv from 'dotenv'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-const fileName =
-    process.env.NODE_ENV === 'production'
-        ? '.env'
-        : process.env.NODE_ENV === 'test'
-        ? '.env.test'
-        : '.env.development'
+const nodeEnv = process.env.NODE_ENV ?? 'development'
+
+if (!['development', 'test', 'production'].includes(nodeEnv)) {
+    throw new Error(`Invalid NODE_ENV: ${nodeEnv}`)
+}
+
+const fileName = nodeEnv === 'production' ? '.env' : `.env.${nodeEnv}`
+
 
 dotenv.config({
     path: path.resolve(process.cwd(), fileName),
     override: true,
-    debug: false,
 })
 
 /**
@@ -41,7 +42,7 @@ const requiredEnv = (key) => {
  * Core environment flags
  */
 
-const nodeEnv = getEnv('NODE_ENV', 'development')
+
 export const env = {
     isProd: nodeEnv === 'production',
     isDev: nodeEnv === 'development',

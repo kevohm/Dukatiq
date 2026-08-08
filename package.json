@@ -1,25 +1,11 @@
 {
+    "name":"@dukatiq",
     "private": true,
-    "workspaces": [
-        "client",
-        "server"
-    ],
     "scripts": {
-        "changeset": "changeset",
-        "version-packages": "changeset version",
-        "release": "changeset publish",
-        "client:add": "npm install --workspace client",
-        "server:add": "npm install --workspace server",
-
-        "build": "npm run build --workspace client",
-        "lint": "npm run lint --workspaces",
-        "typecheck": "npm run typecheck --workspaces",
-        "test": "npm run test --workspaces",
-        
+        "build":"npm run build --prefix client",
         "prepare": "husky"
     },
     "dependencies": {
-        "@changesets/cli": "^2.31.1",
         "husky": "^9.1.7"
     }
 }

@@ -1,20 +1,26 @@
 {
     "name": "@dukatiq/server",
+    "private":true,
     "version": "1.0.0",
     "type": "module",
     "description": "Backend API for Shop Profit Booster",
     "main": "src/server.js",
     "scripts": {
-        "start": "node src/server.js",
-        "dev": "nodemon src/server.js",
-        "db:generate": "drizzle-kit generate",
-        "db:migrate": "drizzle-kit migrate",
-        "db:pull": "drizzle-kit pull",
-        "db:studio": "drizzle-kit studio",
-        "db:reset": " drizzle-kit drop && drizzle-kit push",
-        "db:run": "docker compose --env-file .env.development -f docker-compose.yml -f docker-compose.dev.yml up dukatiq-postgres",
-        "test": "vitest",
-        "test:coverage": "vitest run --coverage"
+        "dev": "cross-env NODE_ENV=development nodemon src/server.js",
+        
+        "start": "cross-env NODE_ENV=production node src/server.js",
+        
+        
+        "db:generate": "cross-env NODE_ENV=development drizzle-kit generate",
+        "db:migrate": "cross-env NODE_ENV=production drizzle-kit migrate",
+        "db:pull": "cross-env NODE_ENV=development drizzle-kit pull",
+        "db:studio": "cross-env NODE_ENV=development drizzle-kit studio",
+        "db:reset": "cross-env NODE_ENV=development drizzle-kit drop && drizzle-kit push",
+        
+        "db:run": "cross-env NODE_ENV=development docker compose --env-file .env.development -f docker-compose.yml -f docker-compose.dev.yml up dukatiq-postgres",
+
+          "test": "cross-env NODE_ENV=test vitest",
+        "test:coverage": "cross-env NODE_ENV=test vitest run --coverage"
     },
     "keywords": [
         "shop",
@@ -48,6 +54,7 @@
     },
     "devDependencies": {
         "@vitest/coverage-v8": "^4.1.9",
+        "cross-env": "^10.1.0",
         "drizzle-kit": "^1.0.0-rc.4",
         "nodemon": "^3.1.14",
         "pino-pretty": "^13.1.3",
