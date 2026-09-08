@@ -1,38 +1,75 @@
-import { ExpenseCategory } from './expense.category.model.js'
+import { eq } from 'drizzle-orm'
+import { db } from '../../../config/database.js'
+import { expenseCategories } from '../../../db/schema.js'
+import { AppError, ERROR_CODES } from '../../../errors/app.error.js'
+import { StatusCodes } from 'http-status-codes'
 
 export class ExpenseCategoryRepository {
-    // Get all products
     static async getAll() {
-        return ExpenseCategory.findAll()
+        return db.select().from(expenseCategories)
     }
-
-    // Get product by ID
     static async getById(id) {
-        return await ExpenseCategory.findByPk(id)
+        const [row] = await db
+            .select()
+            .from(expenseCategories)
+            .where(eq(expenseCategories.id, id))
+        // if (!row)
+        //     throw new AppError({
+        //         message: 'Category not found',
+        //         code: ERROR_CODES.EXPENSE_CATEGORY.NOT_FOUND,
+        //         status: 404,
+        //         meta: { resource: 'expense_category', id },
+        //     })
+        return row ?? null
     }
-
-    static async getByName(name, transaction=null) {
-        return await ExpenseCategory.findOne({where:{name}, transaction})
+    static async getByName(name, client = db) {
+        const [row] = await client
+            .select()
+            .from(expenseCategories)
+            .where(eq(expenseCategories.name, name))
+        return row
     }
-    // Create new product
-    static async create(data, transaction = null) {
-        return await ExpenseCategory.create(data, { transaction })
-    }
-
-    static async findOrCreate(data, transaction = null) {
-        const category = await this.getByName(data?.name, transaction);
-        if (!category) {
-            return await this.create(data, transaction)
+    static async create(data, client = db) {
+        const cat = await this.getByName(data.name, client)
+        if (cat) {
+            throw new AppError({
+                message: 'Category name already exists',
+                code: ERROR_CODES.EXPENSE_CATEGORY.ALREADY_EXISTS,
+                status: StatusCodes.CONFLICT,
+                meta: { resource: 'expense_category', id: cat.id },
+            })
         }
-        return category
+        const [row] = await client
+            .insert(expenseCategories)
+            .values(data)
+            .returning()
+        return row
     }
-
-    // Update product
+    static async findOrCreate(data, client = db) {
+        return (
+            (await this.getByName(data.name, client)) ??
+            this.create(data, client)
+        )
+    }
     static async update(id, data) {
-        const product = await ExpenseCategory.update(data, { where: { id } })
-        return product
+        await db
+            .update(expenseCategories)
+            .set({ ...data, updated_at: new Date() })
+            .where(eq(expenseCategories.id, id))
+        return this.getById(id)
     }
     static async delete(id) {
-        return await ExpenseCategory.destroy({ where: { id } })
+        const row = await db
+            .delete(expenseCategories)
+            .where(eq(expenseCategories.id, id))
+            .returning({ id: expenseCategories.id })
+        if (!row.length)
+            throw new AppError({
+                message: 'Failed to delete category',
+                code: ERROR_CODES.EXPENSE_CATEGORY.DELETE_FAILED,
+                status: 500,
+                meta: { resource: 'expense_category', id },
+            })
+        return row[0]
     }
 }

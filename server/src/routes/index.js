@@ -1,21 +1,11 @@
 import express from 'express'
-import productRoutes from '../api/product/product.route.js'
-import productCategoryRoutes from '../api/product/category/product.category.route.js'
-import authRoutes from '../api/auth/auth.route.js'
-import expenseRoutes from '../api/expense/expense.route.js'
-import expenseCategoryRoutes from '../api/expense/category/expense.category.route.js'
-import fileRoutes from '../api/file/file.route.js'
+import {v1Router} from './v1.js'
+import {v2Router} from "./v2.js"
 
 const router = express.Router()
 
-router.use('/products', productRoutes)
-router.use('/product-category', productCategoryRoutes)
-router.use('/auth', authRoutes)
-router.use("/expense", expenseRoutes )
-router.use('/expense-category', expenseCategoryRoutes)
-router.use('/file', fileRoutes)
+router.use('/v1', v1Router)
 
+router.use('/v2', v2Router)
 
 export const appRouter = router
-
-

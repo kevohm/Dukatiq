@@ -1,6 +1,8 @@
 import { StatusCodes } from 'http-status-codes'
 import { ExpenseRepository } from './expense.repository.js'
 import { ExpenseValidator } from './expense.validator.js'
+import { AppError, ERROR_CODES } from '../../errors/app.error.js'
+import { db } from '../../config/database.js'
 
 export class ExpenseService {
     static async findMany() {
@@ -16,11 +18,12 @@ export class ExpenseService {
     static async findById(id) {
         const expense = await ExpenseRepository.getById(id)
         if (!expense) {
-            return {
-                status: StatusCodes.NOT_FOUND,
-                success: false,
+            throw new AppError({
                 message: 'Expense not found',
-            }
+                code: ERROR_CODES.EXPENSE.NOT_FOUND,
+                status: StatusCodes.NOT_FOUND,
+                meta: { resource: 'expense', id },
+            })
         }
         return {
             status: StatusCodes.OK,
@@ -29,10 +32,10 @@ export class ExpenseService {
             message: 'Expense found',
         }
     }
-    static async add(body, transaction = null) {
+    static async add(body) {
         const data = await ExpenseValidator.createSchema.parseAsync(body)
-
-        const expense = await ExpenseRepository.create(data, transaction)
+        
+        const expense = await ExpenseRepository.create(data)
 
         return {
             status: StatusCodes.CREATED,
@@ -48,11 +51,12 @@ export class ExpenseService {
 
         const result = await ExpenseRepository.update(id, data)
         if (result[0] === 0) {
-            return {
-                status: StatusCodes.INTERNAL_SERVER_ERROR,
-                success: false,
+            throw new AppError({
                 message: 'Failed to update expense',
-            }
+                code: ERROR_CODES.EXPENSE.UPDATE_FAILED,
+                status: StatusCodes.INTERNAL_SERVER_ERROR,
+                meta: { resource: 'expense', id },
+            })
         }
         return {
             status: StatusCodes.NO_CONTENT,

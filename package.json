@@ -1,0 +1,11 @@
+{
+    "name":"dukatiq",
+    "private": true,
+    "scripts": {
+        "build":"npm run build --prefix client",
+        "prepare": "husky"
+    },
+    "dependencies": {
+        "husky": "^9.1.7"
+    }
+}

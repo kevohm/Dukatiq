@@ -1,40 +1,82 @@
-import { QueryTypes } from 'sequelize'
-import { sequelize } from '../../config/database.js'
-import { Expense } from './expense.model.js'
+import { eq } from 'drizzle-orm'
+import { db } from '../../config/database.js'
+import { expenseCategories, expenses } from '../../db/schema.js'
 import { ExpenseCategoryRepository } from './category/expense.category.repository.js'
+import { AppError, ERROR_CODES } from '../../errors/app.error.js'
 
+const selectExpense = {
+    id: expenses.id,
+    created_at: expenses.created_at,
+    updated_at: expenses.updated_at,
+    name: expenses.name,
+    amount: expenses.amount,
+    category_id: expenses.category_id,
+    category: expenseCategories,
+}
 export class ExpenseRepository {
-    // Get all expenses
     static async getAll() {
-        return Expense.findAll()
+        return db
+            .select(selectExpense)
+            .from(expenses)
+            .leftJoin(
+                expenseCategories,
+                eq(expenses.category_id, expenseCategories.id)
+            )
     }
-
-    // Get expense by ID
     static async getById(id) {
-        return await Expense.findByPk(id)
+        const [row] = await db
+            .select(selectExpense)
+            .from(expenses)
+            .leftJoin(
+                expenseCategories,
+                eq(expenses.category_id, expenseCategories.id)
+            )
+            .where(eq(expenses.id, id))
+        if (!row)
+            throw new AppError({
+                message: 'Expense not found',
+                code: ERROR_CODES.EXPENSE.NOT_FOUND,
+                status: 404,
+                meta: { resource: 'expense', id },
+            })
+        return row
     }
-
-    // Create new expense
-    static async create(data, transaction = null) {
+    static async create(data, client = db) {
         const category = await ExpenseCategoryRepository.findOrCreate(
-            { name: data?.category },
-            transaction
+            { name: data.category },
+            client
         )
-        return await Expense.create(
-            {
-                ...data,
-                category_id: category.id,
-            },
-            { transaction }
-        )
+        const { category: _category, ...values } = data
+        const [row] = await client
+            .insert(expenses)
+            .values({ ...values, category_id: category.id })
+            .returning()
+        return row
     }
-
-    // Update expense
     static async update(id, data) {
-        const expense = await Expense.update(data, { where: { id } })
-        return expense
+        const values = { ...data, updated_at: new Date() }
+        if (data.category) {
+            const category = await ExpenseCategoryRepository.findOrCreate({
+                name: data.category,
+            })
+            values.category_id = category.id
+            delete values.category
+        }
+        await db.update(expenses).set(values).where(eq(expenses.id, id))
+        return this.getById(id)
     }
     static async delete(id) {
-        return await Expense.destroy({ where: { id } })
+        const row = await db
+            .delete(expenses)
+            .where(eq(expenses.id, id))
+            .returning({ id: expenses.id })
+        if (!row.length)
+            throw new AppError({
+                message: 'Failed to delete expense',
+                code: ERROR_CODES.EXPENSE.DELETE_FAILED,
+                status: 500,
+                meta: { resource: 'expense', id },
+            })
+        return row[0]
     }
 }

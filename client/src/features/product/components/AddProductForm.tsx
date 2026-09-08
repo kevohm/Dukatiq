@@ -1,0 +1,503 @@
+import { useState } from 'react'
+import { useNavigate } from '@tanstack/react-router'
+import BackButton from '../../../components/shared/BackButton'
+import type { ApiError } from '../../../errors/error'
+import { useCreateProduct } from '../hooks'
+import { useDeleteFile, useUploadFile } from '../../file/hooks'
+import type { IProductCreatePayload } from '../types'
+import { AddProductStepper } from './AddProductStepper'
+import { ProductBasicStep } from './ProductBasicStep'
+import { ProductPricingStep } from './ProductPricingStep'
+import { ProductStepFooter } from './ProductStepFooter'
+import { ProductUnitsStep } from './ProductUnitsStep'
+import { ProductReviewStep } from './ProductReviewStep'
+import { ProductImageStep } from './ProductImageStep'
+import { ProductVariantsStep } from './ProductVariantStep'
+
+const steps = [
+    'Basic info',
+    'Pricing',
+    'Variants',
+    'Units',
+    'Image',
+    'Review',
+] as const
+
+type ProductFormBody = IProductCreatePayload & {
+    description?: string
+    minimum_stock?: number
+    sku?: string
+    barcode?: string
+    units?: Array<{
+        unit_name: string
+        conversion_factor: number
+        is_base_unit: boolean
+    }>
+    variants?: Array<{
+        cost_price: number
+        selling_price: number
+        attributes: Record<string, string[]>
+    }>
+
+    image_url?: string
+    image_key?: string
+}
+
+const AddProductForm = () => {
+    const { mutateAsync, isPending } = useCreateProduct()
+    const { mutateAsync: uploadFile, isPending: isUploadingImage } =
+        useUploadFile()
+    const { mutateAsync: deleteFile, isPending: isDeletingImage } =
+        useDeleteFile()
+    const navigate = useNavigate()
+    // console.log(isPending)
+    const [errors, setErrors] = useState<Record<string, string>>({})
+    const [stepIndex, setStepIndex] = useState(0)
+    const [imageFile, setImageFile] = useState<File>()
+    const [imagePreviewUrl, setImagePreviewUrl] = useState<string>()
+
+    const [body, setBody] = useState<ProductFormBody>({
+        name: '',
+        category: '',
+        brand: '',
+        cost_price: 0,
+        selling_price: 0,
+        units: [
+            {
+                unit_name: 'Piece',
+                conversion_factor: 1,
+                is_base_unit: true,
+            },
+        ],
+        variants: [
+            {
+                cost_price: 0,
+                selling_price: 0,
+                attributes: {},
+            },
+        ],
+    })
+
+    const currentStep = steps[stepIndex]
+
+    const changeBody = ({
+        name,
+        value,
+    }: {
+        name: string
+        value: string | number
+    }) => {
+        setBody((b) => ({ ...b, [name]: value }))
+    }
+
+    const handleChange = (
+        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+        const { name, value, type } = event.target
+        const parsedValue = type === 'number' ? (Number(value) ?? 0) : value
+
+        changeBody({ name, value: parsedValue })
+        setErrors((e) => ({ ...e, [name]: '' }))
+    }
+
+    const nextStep = async () => {
+        if (stepIndex === 0) {
+            const required = ['name', 'category', 'brand']
+            const missing = required.filter(
+                (field) =>
+                    !String(body[field as keyof ProductFormBody] ?? '').trim()
+            )
+
+            if (missing.length) {
+                const nextErrors = Object.fromEntries(
+                    missing.map((field) => [
+                        field,
+                        `${field.replace('_', ' ')} is required`,
+                    ])
+                )
+                setErrors((e) => ({ ...e, ...nextErrors }))
+                return
+            }
+        }
+
+        if (stepIndex === 1) {
+            if (body.cost_price <= 0) {
+                setErrors((e) => ({
+                    ...e,
+                    cost_price: 'Buying price must be greater than zero',
+                }))
+                return
+            }
+
+            if (body.selling_price <= 0) {
+                setErrors((e) => ({
+                    ...e,
+                    selling_price: 'Selling price must be greater than zero',
+                }))
+                return
+            }
+        }
+
+        if (stepIndex === 4 && imageFile && !body.image_key) {
+            try {
+                const image = await uploadFile({ file: imageFile })
+                setBody((current) => ({
+                    ...current,
+                    image_url: image.url,
+                    image_key: image.key,
+                }))
+            } catch (error) {
+                const message = (error as ApiError)?.message
+                setErrors((current) => ({
+                    ...current,
+                    image: message || 'Unable to upload the image',
+                }))
+                return
+            }
+        }
+
+        setErrors({})
+        setStepIndex((prev) => Math.min(prev + 1, steps.length - 1))
+    }
+
+    const previousStep = () => {
+        setErrors({})
+        setStepIndex((prev) => Math.max(prev - 1, 0))
+    }
+
+    const handleUnitChange = (
+        index: number,
+        field: 'unit_name' | 'conversion_factor',
+        value: string | number
+    ) => {
+        setBody((prev) => ({
+            ...prev,
+            units: (prev.units ?? []).map((unit, unitIndex) =>
+                unitIndex === index
+                    ? {
+                          ...unit,
+                          [field]:
+                              field === 'conversion_factor'
+                                  ? Number(value)
+                                  : String(value),
+                      }
+                    : unit
+            ),
+        }))
+    }
+
+    const handleAddUnit = () => {
+        setBody((prev) => ({
+            ...prev,
+            units: [
+                ...(prev.units ?? []),
+                {
+                    unit_name: 'New unit',
+                    conversion_factor: 1,
+                    is_base_unit: false,
+                },
+            ],
+        }))
+    }
+
+    const handleRemoveUnit = (index: number) => {
+        setBody((prev) => ({
+            ...prev,
+            units: (prev.units ?? []).filter(
+                (_, unitIndex) => unitIndex !== index
+            ),
+        }))
+    }
+
+    // variants
+
+    const handleVariantChange = (
+        index: number,
+        field: 'selling_price' | 'cost_price' | 'attributes',
+        value: string | number | Record<string, string[]>
+    ) => {
+        setBody((prev) => ({
+            ...prev,
+            variants: (prev.variants ?? []).map((variant, variantIndex) =>
+                variantIndex === index
+                    ? {
+                          ...variant,
+                          [field]:
+                              field === 'attributes' ? value : Number(value),
+                      }
+                    : variant
+            ),
+        }))
+    }
+
+    const handleAddVariant = () => {
+        setBody((prev) => ({
+            ...prev,
+            variants: [
+                ...(prev.variants ?? []),
+                {
+                    cost_price: 0,
+                    selling_price: 0,
+                    attributes: {},
+                },
+            ],
+        }))
+    }
+
+    const handleRemoveVariant = (index: number) => {
+        setBody((prev) => ({
+            ...prev,
+            variants: (prev.variants ?? []).filter(
+                (_, variantIndex) => variantIndex !== index
+            ),
+        }))
+    }
+
+
+    const handleAddVariantAttribute = (
+        variantIndex: number,
+        name: string,
+        value: string
+    ) => {
+        const attributeName = name.trim()
+        const attributeValue = value.trim()
+
+        if (!attributeName || !attributeValue) return
+
+        setBody((prev) => ({
+            ...prev,
+            variants: (prev.variants ?? []).map((variant, index) => {
+                if (index !== variantIndex) return variant
+
+                const currentValues = variant.attributes[attributeName] ?? []
+
+                if (currentValues.includes(attributeValue)) {
+                    return variant
+                }
+
+                return {
+                    ...variant,
+                    attributes: {
+                        ...variant.attributes,
+                        [attributeName]: [...currentValues, attributeValue],
+                    },
+                }
+            }),
+        }))
+    }
+
+    const handleRemoveVariantAttribute = (
+        variantIndex: number,
+        attributeName: string,
+        value?: string
+    ) => {
+        setBody((prev) => ({
+            ...prev,
+            variants: (prev.variants ?? []).map((variant, index) => {
+                if (index !== variantIndex) return variant
+
+                const attributes = { ...variant.attributes }
+
+                // Remove the entire attribute
+                if (value === undefined) {
+                    delete attributes[attributeName]
+
+                    return {
+                        ...variant,
+                        attributes,
+                    }
+                }
+
+                // Remove only one value
+                const values = attributes[attributeName] ?? []
+                const remainingValues = values.filter((item) => item !== value)
+
+                if (remainingValues.length === 0) {
+                    delete attributes[attributeName]
+                } else {
+                    attributes[attributeName] = remainingValues
+                }
+
+                return {
+                    ...variant,
+                    attributes,
+                }
+            }),
+        }))
+    }
+    const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
+        event.preventDefault()
+        try {
+            const payload: IProductCreatePayload = {
+                name: body.name,
+                category: body.category,
+                brand: body.brand,
+                cost_price: body.cost_price,
+                selling_price: body.selling_price,
+                units: body.units,
+                variants: body.variants,
+                image_url: body.image_url,
+                image_key: body.image_key,
+            }
+            // console.log(payload)
+            await mutateAsync(payload)
+            navigate({ to: '/products' })
+        } catch (error) {
+            console.error(error)
+            const err = (error as ApiError)?.errors
+            if (err) {
+                setErrors(err)
+            }
+        }
+    }
+
+    const handleImageChange = (file?: File) => {
+        if (!file) return
+
+        if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
+            setErrors((current) => ({
+                ...current,
+                image: 'Select a PNG, JPEG, or WebP image',
+            }))
+            return
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            setErrors((current) => ({
+                ...current,
+                image: 'Image size must be 5 MB or less',
+            }))
+            return
+        }
+
+        setImageFile(file)
+        setImagePreviewUrl(URL.createObjectURL(file))
+        setBody((current) => ({
+            ...current,
+            image_url: undefined,
+            image_key: undefined,
+        }))
+        setErrors((current) => ({ ...current, image: '' }))
+    }
+
+    const handleRemoveImage = async () => {
+        if (body.image_key) {
+            try {
+                await deleteFile(body.image_key)
+            } catch (error) {
+                const message = (error as ApiError)?.message
+                setErrors((current) => ({
+                    ...current,
+                    image: message || 'Unable to remove the image',
+                }))
+                return
+            }
+        }
+
+        setImageFile(undefined)
+        setImagePreviewUrl(undefined)
+        setBody((current) => ({
+            ...current,
+            image_url: undefined,
+            image_key: undefined,
+        }))
+        setErrors((current) => ({ ...current, image: '' }))
+    }
+
+    const handleCancel = async () => {
+        if (body.image_key) {
+            try {
+                await deleteFile(body.image_key)
+            } catch (error) {
+                const message = (error as ApiError)?.message
+                setErrors((current) => ({
+                    ...current,
+                    image: message || 'Unable to remove the uploaded image',
+                }))
+                return
+            }
+        }
+
+        navigate({ to: '/products' })
+    }
+
+    return (
+        <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="flex items-center justify-between">
+                <div>
+                    <h2 className="text-lg font-semibold text-heading dark:text-slate-300">
+                        Create Product ({stepIndex + 1} of {steps.length})
+                    </h2>
+                    <p className="text-sm text-muted dark:text-slate-500">
+                        {currentStep}
+                    </p>
+                </div>
+                <BackButton
+                    label="Cancel"
+                    onClick={handleCancel}
+                    disabled={isUploadingImage || isDeletingImage}
+                />
+            </div>
+
+            <AddProductStepper stepIndex={stepIndex} />
+
+            {stepIndex === 0 ? (
+                <ProductBasicStep
+                    body={body}
+                    errors={errors}
+                    onChange={handleChange}
+                />
+            ) : null}
+
+            {stepIndex === 1 ? (
+                <ProductPricingStep
+                    body={body}
+                    errors={errors}
+                    onChange={handleChange}
+                />
+            ) : null}
+
+            {stepIndex === 2 ? (
+                <ProductVariantsStep
+                    body={body}
+                    onAddVariant={handleAddVariant}
+                    onRemoveVariant={handleRemoveVariant}
+                    onVariantChange={handleVariantChange}
+                    onAddAttribute={handleAddVariantAttribute}
+                    onRemoveAttribute={handleRemoveVariantAttribute}
+                />
+            ) : null}
+
+            {stepIndex === 3 ? (
+                <ProductUnitsStep
+                    body={body}
+                    onUnitChange={handleUnitChange}
+                    onAddUnit={handleAddUnit}
+                    onRemoveUnit={handleRemoveUnit}
+                />
+            ) : null}
+
+            {stepIndex === 4 ? (
+                <ProductImageStep
+                    previewUrl={imagePreviewUrl}
+                    error={errors.image}
+                    isRemoving={isDeletingImage}
+                    onChange={handleImageChange}
+                    onRemove={handleRemoveImage}
+                />
+            ) : null}
+
+            {stepIndex === 5 && <ProductReviewStep body={body} />}
+
+            <ProductStepFooter
+                stepIndex={stepIndex}
+                stepCount={steps.length}
+                isPending={isPending || isUploadingImage || isDeletingImage}
+                onPrevious={previousStep}
+                onNext={nextStep}
+            />
+        </form>
+    )
+}
+
+export default AddProductForm

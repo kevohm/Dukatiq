@@ -1,16 +1,26 @@
 {
-    "name": "dukatiq",
+    "name": "@dukatiq/server",
+    "private": true,
     "version": "1.0.0",
-    "type": "module",
     "description": "Backend API for Shop Profit Booster",
     "main": "src/server.js",
+    "type": "module",
     "scripts": {
-        "start": "node src/server.js",
-        "dev": "nodemon src/server.js",
-        "db:init": "node src/config/init.config.js",
-        "db:seed": "node src/config/seed.js",
-        "test": "vitest",
-        "test:coverage": "vitest run --coverage"
+        "dev": "cross-env NODE_ENV=development nodemon src/server.js",
+        "start": "cross-env NODE_ENV=production node src/server.js",
+        "db:migrate": "cross-env NODE_ENV=production drizzle-kit migrate",
+        
+        "db:dev:pull": "cross-env NODE_ENV=development drizzle-kit pull",
+        "db:dev:studio": "cross-env NODE_ENV=development drizzle-kit studio",
+        "db:dev:reset": "cross-env NODE_ENV=development drizzle-kit drop && drizzle-kit push",
+        "db:dev:generate": "cross-env NODE_ENV=development drizzle-kit generate",
+        "db:dev:migrate": "cross-env NODE_ENV=development drizzle-kit migrate",
+        "db:dev:run": "cross-env NODE_ENV=development docker compose --env-file .env.development -f docker-compose.yml -f docker-compose.dev.yml up dukatiq-postgres",
+        
+        "db:test:migrate": "cross-env NODE_ENV=test drizzle-kit migrate",
+        "db:test:run": "cross-env NODE_ENV=test docker compose --env-file .env.test -f docker-compose.test.yml up dukatiq-test-postgres",
+        "test": "cross-env NODE_ENV=test vitest",
+        "test:coverage": "cross-env NODE_ENV=test vitest run --coverage"
     },
     "keywords": [
         "shop",
@@ -29,22 +39,25 @@
         "cors": "^2.8.6",
         "dayjs": "^1.11.21",
         "dotenv": "^17.4.2",
+        "drizzle-orm": "^1.0.0-rc.4",
         "express": "^5.2.1",
         "helmet": "^8.2.0",
         "http-status-codes": "^2.3.0",
         "jsonwebtoken": "^9.0.3",
         "multer": "^2.2.0",
+        "pg": "^8.22.0",
         "pino": "^10.3.1",
         "pino-http": "^11.0.0",
-        "sequelize": "^6.37.8",
-        "sqlite3": "^6.0.1",
+        "ulid": "^3.0.2",
+        "uuidv4": "^6.2.13",
         "zod": "^4.4.3"
     },
     "devDependencies": {
         "@vitest/coverage-v8": "^4.1.9",
+        "cross-env": "^10.1.0",
+        "drizzle-kit": "^1.0.0-rc.4",
         "nodemon": "^3.1.14",
         "pino-pretty": "^13.1.3",
-        "sequelize-cli": "^6.6.5",
         "supertest": "^7.2.2",
         "vitest": "^4.1.9"
     }

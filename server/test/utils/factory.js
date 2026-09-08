@@ -32,6 +32,15 @@ export const productFactory = (overrides = {}) => {
         // IMPORTANT: matches ProductRepository.create()
         // It expects `category` as a string name
         category: `Category-${unique}`,
+        brand: `Brand-${unique}`,
+
+        units: [
+            {
+                conversion_factor: 1,
+                is_base_unit: true,
+                unit_name: `Unit-${unique}`,
+            },
+        ],
 
         ...overrides,
     }

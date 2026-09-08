@@ -7,18 +7,42 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import crypto from 'crypto'
 import { s3 } from '../../config/b2.js'
 import { config } from '../../config/env.config.js'
+import { StatusCodes } from 'http-status-codes'
+import { success } from 'zod'
+import { FileValidator } from './file.validator.js'
+import { generateFileKey } from '../../utils/file/index.js'
+import { AppError, ERROR_CODES } from '../../errors/app.error.js'
 
 export class FileService {
-    static async upload(file, folder = config.b2.defaultFolder) {
-        if (!file || !file.buffer) {
-            throw new Error('Invalid file upload')
+    static async upload(body) {
+        if (!body.file) {
+            throw new AppError({
+                message: 'No file provided',
+                code: ERROR_CODES.FILE.NO_FILE_PROVIDED,
+                status: StatusCodes.BAD_REQUEST,
+                meta: { resource: 'file' },
+            })
+        }
+        const data = await FileValidator.uploadSchema.safeParseAsync(body)
+        if (!data.success) {
+            throw new AppError({
+                message: 'Invalid file upload',
+                code: ERROR_CODES.FILE.INVALID_UPLOAD,
+                status: StatusCodes.BAD_REQUEST,
+                meta: { resource: 'file' },
+            })
+        }
+        const { file, folder } = data.data
+        if (file?.buffer?.length === 0) {
+            throw new AppError({
+                message: 'Empty file buffer',
+                code: ERROR_CODES.FILE.EMPTY_FILE_BUFFER,
+                status: StatusCodes.BAD_REQUEST,
+                meta: { resource: 'file' },
+            })
         }
 
-        if (file.buffer.length === 0) {
-            throw new Error('Empty file buffer')
-        }
-
-        const key = `${folder}/${crypto.randomUUID()}-${file.originalname}`
+        const key = generateFileKey(folder, file?.originalname)
 
         await s3.send(
             new PutObjectCommand({
@@ -29,24 +53,61 @@ export class FileService {
                 ContentLength: file.buffer.length,
             })
         )
+        const response = await FileService.getSignedFileUrl({ key })
 
-        return key
+        if (!response.success) {
+            return response
+        }
+
+        return {
+            status: StatusCodes.CREATED,
+            success: true,
+            message: 'file uploaded',
+            data: {
+                ...response.data,
+                key,
+            },
+        }
     }
-    static async deleteFile(key) {
-        if (!key) throw new Error('File key is required')
+    static async deleteFile(body) {
+        const parsedData = await FileValidator.deleteSchema.safeParseAsync(body)
+        if (!parsedData.success) {
+            throw new AppError({
+                message: 'key is required',
+                code: ERROR_CODES.FILE.KEY_REQUIRED,
+                status: StatusCodes.BAD_REQUEST,
+                meta: { resource: 'file' },
+            })
+        }
 
-        await s3.send(
+        const { key } = parsedData.data
+
+        const data = await s3.send(
             new DeleteObjectCommand({
                 Bucket: config.b2.bucket,
                 Key: key,
             })
         )
 
-        return true
+        return {
+            status: StatusCodes.NO_CONTENT,
+            success: true,
+            message: 'File deleted',
+            data,
+        }
     }
 
-    static async getSignedFileUrl(key, expiresIn = config.b2.signedUrl.expiresIn) {
-        if (!key) throw new Error('File key is required')
+    static async getSignedFileUrl(body) {
+        const data = await FileValidator.signedUrlSchema.safeParseAsync(body)
+        if (!data.success) {
+            throw new AppError({
+                message: 'key is required',
+                code: ERROR_CODES.FILE.KEY_REQUIRED,
+                status: StatusCodes.BAD_REQUEST,
+                meta: { resource: 'file' },
+            })
+        }
+        const { key, expiresIn } = data.data
 
         const command = new GetObjectCommand({
             Bucket: config.b2.bucket,
@@ -57,6 +118,11 @@ export class FileService {
             expiresIn, // seconds (default 1 hour)
         })
 
-        return signedUrl
+        return {
+            status: StatusCodes.OK,
+            success: true,
+            message: 'Url generated',
+            data: { url: signedUrl, expires_in: expiresIn },
+        }
     }
 }

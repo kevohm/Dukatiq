@@ -1,38 +1,65 @@
-import { Category } from './product.category.model.js'
+import { eq } from 'drizzle-orm'
+import { db } from '../../../config/database.js'
+import { productCategories } from '../../../db/schema.js'
+import { AppError, ERROR_CODES } from '../../../errors/app.error.js'
 
 export class ProductCategoryRepository {
-    // Get all products
     static async getAll() {
-        return Category.findAll()
+        return db.select().from(productCategories)
     }
-
-    // Get product by ID
     static async getById(id) {
-        return await Category.findByPk(id)
+        const [row] = await db
+            .select()
+            .from(productCategories)
+            .where(eq(productCategories.id, id))
+        if (!row)
+            throw new AppError({
+                message: 'Category not found',
+                code: ERROR_CODES.PRODUCT_CATEGORY.NOT_FOUND,
+                status: 404,
+                meta: { resource: 'product_category', id },
+            })
+        return row
     }
-
-    static async getByName(name, transaction=null) {
-        return await Category.findOne({where:{name}, transaction})
+    static async getByName(name, client = db) {
+        const [row] = await client
+            .select()
+            .from(productCategories)
+            .where(eq(productCategories.name, name))
+        return row
     }
-    // Create new product
-    static async create(data, transaction = null) {
-        return await Category.create(data, { transaction })
+    static async create(data, client = db) {
+        const [row] = await client
+            .insert(productCategories)
+            .values(data)
+            .returning()
+        return row
     }
-
-    static async findOrCreate(data, transaction = null) {
-        const category = await this.getByName(data?.name, transaction);
-        if (!category) {
-            return await this.create(data, transaction)
-        }
-        return category
+    static async findOrCreate(data, client = db) {
+        return (
+            (await this.getByName(data.name, client)) ??
+            this.create(data, client)
+        )
     }
-
-    // Update product
     static async update(id, data) {
-        const product = await Category.update(data, { where: { id } })
-        return product
+        await db
+            .update(productCategories)
+            .set({ ...data, updated_at: new Date() })
+            .where(eq(productCategories.id, id))
+        return this.getById(id)
     }
     static async delete(id) {
-        return await Category.destroy({ where: { id } })
+        const row = await db
+            .delete(productCategories)
+            .where(eq(productCategories.id, id))
+            .returning({ id: productCategories.id })
+        if (!row.length)
+            throw new AppError({
+                message: 'Failed to delete category',
+                code: ERROR_CODES.PRODUCT_CATEGORY.DELETE_FAILED,
+                status: 500,
+                meta: { resource: 'product_category', id },
+            })
+        return row[0]
     }
 }

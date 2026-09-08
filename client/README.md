@@ -1,73 +1,53 @@
-# React + TypeScript + Vite
+# Dukatiq client
+# Structure
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+src/
+├── app/                    # App setup (providers, router, config)
+│   ├── App.tsx
+│   ├── router.tsx
+│   └── providers/         # global wrappers (query, theme, auth, etc.)
+│
+├── routes/                # Pages / route entry points
+│   ├── __root.tsx         # layout (navbar/sidebar)
+│   ├── index.tsx          # home / redirect
+│   └── <feature>/         # feature-based routing
+│       ├── index.tsx
+│       ├── $id.tsx
+│       └── -components/   # route-specific components only
+│
+├── features/              # 🔥 CORE pattern (domain-based)
+│   └── <feature-name>/
+│       ├── api.ts         # server/offline calls
+│       ├── types.ts       # types/interfaces
+│       ├── hooks.ts       # business logic hooks
+│       ├── utils.ts       # feature-specific helpers
+│       └── components/    # feature UI (NOT global)
+│
+├── components/            # reusable UI (design system)
+│   ├── ui/               # buttons, inputs, badges
+│   ├── layout/           # navbar, sidebar, wrappers
+│   └── shared/           # cross-feature components
+│
+├── lib/                  # infrastructure / core utilities
+│   ├── api-client.ts     # HTTP client
+│   ├── config.ts         # env/config
+│   ├── constants.ts
+│   ├── utils.ts          # generic helpers
+│   └── cn.ts             # className helper
+│
+├── hooks/                # global reusable hooks
+│   ├── useDebounce.ts
+│   ├── useToggle.ts
+│   └── useSomething.ts
+│
+├── store/ (optional)     # global state (Zustand/Redux)
+│   └── index.ts
+│
+├── types/                # global shared types
+│   └── index.ts
+│
+├── services/ (optional)  # external integrations (if not feature-specific)
+│   └── <service>.ts
+│
+└── styles/
+    └── globals.css
