@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { networkEvents } from '../../lib/network-events'
-import { apiClient } from '../../lib/api-client'
+import { apiClient, BASE_URL } from '../../lib/api-client'
 
 type OnlineContextType = {
     isOnline: boolean
@@ -20,7 +20,10 @@ export const OnlineProvider = ({ children }: { children: React.ReactNode }) => {
 
     const checkApi = async () => {
         try {
-            await apiClient.get('/health')
+            // reset from v1 to base
+            await apiClient.get('/health', {
+                baseURL: BASE_URL
+            })
             setIsApiAvailable(true)
         } catch (error: any) {
             if (error?.message?.includes('You seem to be offline')) {

@@ -5,7 +5,7 @@ import { config } from '../config/env.config.js'
 import { AppError } from '../errors/app.error.js'
 
 export function errorHandler(err, req, res, next) {
-    if (!config.env.isProd) {
+    if (config.env.isDev) {
         console.log(
             err instanceof ZodError
                 ? `(Zod Error) ${err?.issues[0]?.path} => ${err?.issues[0]?.message}`

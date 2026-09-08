@@ -12,9 +12,16 @@ import { ProductStepFooter } from './ProductStepFooter'
 import { ProductUnitsStep } from './ProductUnitsStep'
 import { ProductReviewStep } from './ProductReviewStep'
 import { ProductImageStep } from './ProductImageStep'
+import { ProductVariantsStep } from './ProductVariantStep'
 
-
-const steps = ['Basic info', 'Pricing', 'Units', 'Image', 'Review'] as const
+const steps = [
+    'Basic info',
+    'Pricing',
+    'Variants',
+    'Units',
+    'Image',
+    'Review',
+] as const
 
 type ProductFormBody = IProductCreatePayload & {
     description?: string
@@ -26,14 +33,22 @@ type ProductFormBody = IProductCreatePayload & {
         conversion_factor: number
         is_base_unit: boolean
     }>
+    variants?: Array<{
+        cost_price: number
+        selling_price: number
+        attributes: Record<string, string[]>
+    }>
+
     image_url?: string
     image_key?: string
 }
 
 const AddProductForm = () => {
     const { mutateAsync, isPending } = useCreateProduct()
-    const { mutateAsync: uploadFile, isPending: isUploadingImage } = useUploadFile()
-    const { mutateAsync: deleteFile, isPending: isDeletingImage } = useDeleteFile()
+    const { mutateAsync: uploadFile, isPending: isUploadingImage } =
+        useUploadFile()
+    const { mutateAsync: deleteFile, isPending: isDeletingImage } =
+        useDeleteFile()
     const navigate = useNavigate()
     // console.log(isPending)
     const [errors, setErrors] = useState<Record<string, string>>({})
@@ -54,6 +69,13 @@ const AddProductForm = () => {
                 is_base_unit: true,
             },
         ],
+        variants: [
+            {
+                cost_price: 0,
+                selling_price: 0,
+                attributes: {},
+            },
+        ],
     })
 
     const currentStep = steps[stepIndex]
@@ -68,7 +90,9 @@ const AddProductForm = () => {
         setBody((b) => ({ ...b, [name]: value }))
     }
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleChange = (
+        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
         const { name, value, type } = event.target
         const parsedValue = type === 'number' ? (Number(value) ?? 0) : value
 
@@ -114,7 +138,7 @@ const AddProductForm = () => {
             }
         }
 
-        if (stepIndex === 3 && imageFile && !body.image_key) {
+        if (stepIndex === 4 && imageFile && !body.image_key) {
             try {
                 const image = await uploadFile({ file: imageFile })
                 setBody((current) => ({
@@ -185,6 +209,122 @@ const AddProductForm = () => {
         }))
     }
 
+    // variants
+
+    const handleVariantChange = (
+        index: number,
+        field: 'selling_price' | 'cost_price' | 'attributes',
+        value: string | number | Record<string, string[]>
+    ) => {
+        setBody((prev) => ({
+            ...prev,
+            variants: (prev.variants ?? []).map((variant, variantIndex) =>
+                variantIndex === index
+                    ? {
+                          ...variant,
+                          [field]:
+                              field === 'attributes' ? value : Number(value),
+                      }
+                    : variant
+            ),
+        }))
+    }
+
+    const handleAddVariant = () => {
+        setBody((prev) => ({
+            ...prev,
+            variants: [
+                ...(prev.variants ?? []),
+                {
+                    cost_price: 0,
+                    selling_price: 0,
+                    attributes: {},
+                },
+            ],
+        }))
+    }
+
+    const handleRemoveVariant = (index: number) => {
+        setBody((prev) => ({
+            ...prev,
+            variants: (prev.variants ?? []).filter(
+                (_, variantIndex) => variantIndex !== index
+            ),
+        }))
+    }
+
+
+    const handleAddVariantAttribute = (
+        variantIndex: number,
+        name: string,
+        value: string
+    ) => {
+        const attributeName = name.trim()
+        const attributeValue = value.trim()
+
+        if (!attributeName || !attributeValue) return
+
+        setBody((prev) => ({
+            ...prev,
+            variants: (prev.variants ?? []).map((variant, index) => {
+                if (index !== variantIndex) return variant
+
+                const currentValues = variant.attributes[attributeName] ?? []
+
+                if (currentValues.includes(attributeValue)) {
+                    return variant
+                }
+
+                return {
+                    ...variant,
+                    attributes: {
+                        ...variant.attributes,
+                        [attributeName]: [...currentValues, attributeValue],
+                    },
+                }
+            }),
+        }))
+    }
+
+    const handleRemoveVariantAttribute = (
+        variantIndex: number,
+        attributeName: string,
+        value?: string
+    ) => {
+        setBody((prev) => ({
+            ...prev,
+            variants: (prev.variants ?? []).map((variant, index) => {
+                if (index !== variantIndex) return variant
+
+                const attributes = { ...variant.attributes }
+
+                // Remove the entire attribute
+                if (value === undefined) {
+                    delete attributes[attributeName]
+
+                    return {
+                        ...variant,
+                        attributes,
+                    }
+                }
+
+                // Remove only one value
+                const values = attributes[attributeName] ?? []
+                const remainingValues = values.filter((item) => item !== value)
+
+                if (remainingValues.length === 0) {
+                    delete attributes[attributeName]
+                } else {
+                    attributes[attributeName] = remainingValues
+                }
+
+                return {
+                    ...variant,
+                    attributes,
+                }
+            }),
+        }))
+    }
     const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
         event.preventDefault()
         try {
@@ -195,6 +335,7 @@ const AddProductForm = () => {
                 cost_price: body.cost_price,
                 selling_price: body.selling_price,
                 units: body.units,
+                variants: body.variants,
                 image_url: body.image_url,
                 image_key: body.image_key,
             }
@@ -202,6 +343,7 @@ const AddProductForm = () => {
             await mutateAsync(payload)
             navigate({ to: '/products' })
         } catch (error) {
+            console.error(error)
             const err = (error as ApiError)?.errors
             if (err) {
                 setErrors(err)
@@ -316,6 +458,17 @@ const AddProductForm = () => {
             ) : null}
 
             {stepIndex === 2 ? (
+                <ProductVariantsStep
+                    body={body}
+                    onAddVariant={handleAddVariant}
+                    onRemoveVariant={handleRemoveVariant}
+                    onVariantChange={handleVariantChange}
+                    onAddAttribute={handleAddVariantAttribute}
+                    onRemoveAttribute={handleRemoveVariantAttribute}
+                />
+            ) : null}
+
+            {stepIndex === 3 ? (
                 <ProductUnitsStep
                     body={body}
                     onUnitChange={handleUnitChange}
@@ -324,7 +477,7 @@ const AddProductForm = () => {
                 />
             ) : null}
 
-            {stepIndex === 3 ? (
+            {stepIndex === 4 ? (
                 <ProductImageStep
                     previewUrl={imagePreviewUrl}
                     error={errors.image}
@@ -334,7 +487,7 @@ const AddProductForm = () => {
                 />
             ) : null}
 
-            {stepIndex === 4 && <ProductReviewStep body={body} />}
+            {stepIndex === 5 && <ProductReviewStep body={body} />}
 
             <ProductStepFooter
                 stepIndex={stepIndex}

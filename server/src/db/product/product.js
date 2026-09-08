@@ -9,6 +9,7 @@ import { units } from "./unit.js"
 export const products = pgTable('product', {
     ...audit,
     name: varchar('name').notNull(),
+    
     cost_price: doublePrecision('cost_price').notNull(),
     selling_price: doublePrecision('selling_price').notNull(),
     stock_quantity: doublePrecision('stock_quantity').default(0).notNull(),
@@ -41,18 +42,4 @@ export const productsRelations = relations(products, ({ one, many }) => ({
     productUnits: many(productUnits),
 }))
 
-export const unitsRelations = relations(units, ({ many }) => ({
-    productUnits: many(productUnits),
-}))
 
-export const productUnitsRelations = relations(productUnits, ({ one }) => ({
-    product: one(products, {
-        fields: [productUnits.product_id],
-        references: [products.id],
-    }),
-
-    unit: one(units, {
-        fields: [productUnits.unit_id],
-        references: [units.id],
-    }),
-}))

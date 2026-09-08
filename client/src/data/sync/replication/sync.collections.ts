@@ -1,5 +1,6 @@
 export const SyncCollections = {
     PRODUCT: 'product',
+    PRODUCT_VARIANT: 'product-variant',
     BRAND: 'brand',
     UNIT: 'unit',
     CATEGORY: 'product-category',

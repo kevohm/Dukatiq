@@ -17,6 +17,7 @@ import { expenses } from '../models/expense/expense'
 import { expenseCategories } from '../models/expense/expense.category'
 import { localAccess } from '../models/sessions/local-access'
 import { localSessions } from '../models/sessions/local-session'
+import { productVariants } from '../models/product/variants/product.variant'
 
 addRxPlugin(RxDBDevModePlugin)
 
@@ -27,6 +28,7 @@ const storage = wrappedValidateAjvStorage({
 export const collections = {
     users,
     products,
+    productVariants,
     productUnits,
     units,
     productCategories,
@@ -38,9 +40,11 @@ export const collections = {
     expenseCategories,
     localAccess,
     localSessions,
+
 } as const
 
 let dbPromise: Promise<BusinessDatabase> | null = null
+
 
 export function getDatabase(): Promise<BusinessDatabase> {
     if (dbPromise) {
@@ -60,3 +64,6 @@ export function getDatabase(): Promise<BusinessDatabase> {
 
     return dbPromise
 }
+
+Object.assign(window,{getDatabase})
+

@@ -3,6 +3,7 @@ import { doublePrecision, pgTable, unique, boolean, uuid } from "drizzle-orm/pg-
 import { audit } from '../base.js'
 import { products } from "./product.js";
 import { units } from "./unit.js";
+import { relations } from "drizzle-orm/_relations";
 
 export const productUnits = pgTable(
     'product_unit',
@@ -16,6 +17,13 @@ export const productUnits = pgTable(
                 onDelete: 'cascade',
                 onUpdate: 'cascade',
             }),
+        // Linked to the specific variant, NOT the parent product
+        // variant_id: uuid('variant_id')
+        //     .notNull()
+        //     .references(() => productVariants.id, {
+        //         onDelete: 'cascade',
+        //         onUpdate: 'cascade',
+        //     }),
         unit_id: uuid('unit_id')
             .notNull()
             .references(() => units.id, {
@@ -30,3 +38,23 @@ export const productUnits = pgTable(
         ),
     ]
 )
+
+
+export const productUnitsRelations = relations(productUnits, ({ one }) => ({
+    product: one(products, {
+        fields: [productUnits.product_id],
+        references: [products.id],
+    }),
+
+    // variant: one(productVariants, {
+    //     fields: [productUnits.variant_id],
+    //     references: [productVariants.id],
+    // }),
+
+    unit: one(units, {
+        fields: [productUnits.unit_id],
+        references: [units.id],
+    }),
+}))
+
+

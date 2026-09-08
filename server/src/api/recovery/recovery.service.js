@@ -2,7 +2,6 @@ import { StatusCodes } from 'http-status-codes'
 
 import { RecoverySerializer } from './recovery.serializer.js'
 import { RecoveryValidator } from './recovery.validator.js'
-import { AuthRepository } from '../auth/auth.repository.js'
 import { RecoveryRepository } from './recovery.repository.js'
 import { db } from '../../config/database.js'
 

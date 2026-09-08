@@ -15,7 +15,6 @@ export class SyncService {
             startCatalogSync(),
             replicateInventory(db),
             replicateProducts(db),
-
             replicateSale(db),
             replicateSaleItem(db),
         ])

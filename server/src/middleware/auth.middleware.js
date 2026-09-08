@@ -1,7 +1,7 @@
 import { verifyAccessToken } from '../utils/auth/jwt.js'
 import { COOKIE_KEYS } from '../utils/cookie/cookie.keys.js'
 import { StatusCodes } from 'http-status-codes'
-import { AuthRepository } from '../api/auth/auth.repository.js'
+import { AuthRepository } from '../api/v1/auth/auth.repository.js'
 
 export const requireAuth = async (req, res, next) => {
     try {

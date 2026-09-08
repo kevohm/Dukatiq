@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest'
 import { ExpenseCategoryRepository } from '../../../../src/api/expense/category/expense.category.repository'
-import { ExpenseCategory } from '../../../../src/api/expense/category/expense.category.model'
+import { db } from '../../../../src/config/database'
+import { expenseCategories } from '../../../../src/db/expense'
+import { eq } from 'drizzle-orm'
 
 describe('ExpenseCategoryRepository', () => {
     it('should create category', async () => {
@@ -25,7 +27,8 @@ describe('ExpenseCategoryRepository', () => {
         }
 
         expect(error).toBeDefined()
-        expect(error.name).toBe('SequelizeUniqueConstraintError')
+         expect(error.name).toBe('AppError')
+        expect(error.message).toBe('Category name already exists')
     })
 
     it('should find category by name', async () => {
@@ -48,9 +51,10 @@ describe('ExpenseCategoryRepository', () => {
 
         expect(c1.id).toBe(c2.id)
 
-        const all = await ExpenseCategory.findAll({
-            where: { name: 'Health' },
-        })
+        const all = await db
+            .select()
+            .from(expenseCategories)
+            .where(eq(expenseCategories.name, 'Health'))
 
         expect(all.length).toBe(1) // 🔥 critical integrity check
     })
@@ -64,7 +68,7 @@ describe('ExpenseCategoryRepository', () => {
             name: 'NewName',
         })
 
-        const updated = await ExpenseCategory.findByPk(category.id)
+        const updated = await ExpenseCategoryRepository.getById(category.id)
 
         expect(updated.name).toBe('NewName')
     })
@@ -76,7 +80,7 @@ describe('ExpenseCategoryRepository', () => {
 
         await ExpenseCategoryRepository.delete(category.id)
 
-        const found = await ExpenseCategory.findByPk(category.id)
+        const found = await ExpenseCategoryRepository.getById(category.id)
 
         expect(found).toBeNull()
     })

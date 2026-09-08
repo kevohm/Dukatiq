@@ -19,7 +19,7 @@ export function replicateCollection<T=unknown, CheckpointType=unknown>({
     return replicateRxCollection<T, CheckpointType>({
         collection,
 
-        replicationIdentifier: `catalog/${name}`,
+        replicationIdentifier: `${name}`,
         ...baseConfig,
 
         deletedField: 'is_deleted',

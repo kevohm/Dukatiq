@@ -7,6 +7,7 @@ import type { LocalAccessRepository } from '../../repositories/sessions/local.ac
 import { BaseService } from '../base.service.js'
 import { hashPassword, verifyPassword } from '@/utils/password.js'
 import { localSessionService, userService } from '../index.js'
+import { passwordSchema } from '@/app/validators/base.js'
 
 /**
  * provides offline authentication and verification albeit dependant on previous login session
@@ -24,8 +25,20 @@ export class LocalAccessService extends BaseService<LocalAccessRepository> {
         const { localAccessRepository } = await getRepositories()
         const repository = localAccessRepository
         // 1. Hash password using PBKDF2
-        const { password_hash, password_salt, iterations } = await hashPassword(
+        const parsedPassword = await passwordSchema.safeParseAsync(
             data.password
+        )
+        if (!parsedPassword.success) {
+            throw new Error(
+                parsedPassword?.error?.issues[0]?.message ?? 'Invalid password',
+                {
+                    cause: 'local offline access',
+                }
+            )
+        }
+
+        const { password_hash, password_salt, iterations } = await hashPassword(
+            parsedPassword.data
         )
 
         // console.log(data, password_hash, password_salt, iterations)

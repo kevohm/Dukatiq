@@ -2,10 +2,10 @@ import axios from 'axios'
 import { networkEvents } from './network-events'
 import { parseError } from '../errors/error'
 
-const BASE_URL = import.meta.env.VITE_API_URL
+export const BASE_URL = import.meta.env.VITE_API_URL
 
 export const apiClient = axios.create({
-    baseURL: BASE_URL,
+    baseURL: `${BASE_URL}/v1`,
     headers: {
         'Content-Type': 'application/json',
     },

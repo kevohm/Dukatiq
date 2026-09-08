@@ -4,6 +4,7 @@ import { replicateBrands } from '@/data/sync/replication/catalog/brands'
 import { replicateProductUnits } from '@/data/sync/replication/catalog/product.units'
 import { replicateCategory } from '@/data/sync/replication/catalog/category'
 import { replicateUnits } from '@/data/sync/replication/catalog/units'
+import { replicateProductVariants } from './product.variant'
 
 export async function startCatalogSync() {
     const db = await getDatabase()
@@ -15,6 +16,8 @@ export async function startCatalogSync() {
     await replicateUnits(db)
 
     await replicateProducts(db)
+    
+    await replicateProductVariants(db)
 
     await replicateProductUnits(db)
 }

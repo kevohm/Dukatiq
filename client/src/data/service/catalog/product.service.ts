@@ -20,7 +20,7 @@ export class ProductService {
         const mangoQuery: MangoQuery<ProductDoc> = {
             selector: {},
         }
-        mangoQuery['selector']  = baseQueryBuilder(query, {
+        mangoQuery['selector'] = baseQueryBuilder(query, {
             search: {
                 key: 'search',
                 value: 'name.$regex',
@@ -51,9 +51,8 @@ export class ProductService {
         // Fetch product units
         const productIds = products.map((product) => product.id)
 
-        const productUnits = await productUnitRepository.findByProductIds(
-            productIds
-        )
+        const productUnits =
+            await productUnitRepository.findByProductIds(productIds)
 
         // Fetch units
         const unitIds = [
@@ -73,9 +72,8 @@ export class ProductService {
             ),
         ]
 
-        const categories = await productCategoryRepository.findByIds(
-            categoryIds
-        )
+        const categories =
+            await productCategoryRepository.findByIds(categoryIds)
 
         const categoryMap = new Map(
             categories.map((category) => [
@@ -119,11 +117,11 @@ export class ProductService {
         const results = products.map((product) => ({
             ...product,
             category: product.category_id
-                ? categoryMap.get(product.category_id) ?? null
+                ? (categoryMap.get(product.category_id) ?? null)
                 : null,
 
             brand: product.brand_id
-                ? brandMap.get(product.brand_id) ?? null
+                ? (brandMap.get(product.brand_id) ?? null)
                 : null,
             productUnits: productUnitMap.get(product.id) ?? [],
         }))
@@ -148,18 +146,19 @@ export class ProductService {
             brandRepository,
             unitRepository,
             productUnitRepository,
+            productVariantRepository,
         } = await getRepositories()
 
         const {
             category: categoryName,
             brand: brandName,
             units,
+            variants,
             ...data
         } = payload
 
-        const category = await productCategoryRepository.findOrCreate(
-            categoryName
-        )
+        const category =
+            await productCategoryRepository.findOrCreate(categoryName)
 
         const brand = await brandRepository.findOrCreate(brandName)
 
@@ -192,7 +191,17 @@ export class ProductService {
             })
         }
 
-        // console.log(product)
+        for (const variant of variants) {
+            try {
+                
+                await productVariantRepository.create({
+                    product_id: product.id,
+                    selling_price: variant.selling_price,
+                    cost_price: variant.cost_price,
+                    attributes: variant.attributes,
+                })
+            } catch{}
+        }
 
         return product
     }

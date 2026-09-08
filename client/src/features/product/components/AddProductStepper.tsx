@@ -17,6 +17,10 @@ const steps = [
         icon: BadgeDollarSign,
     },
     {
+        label: 'Variants',
+        icon: CircleDollarSign,
+    },
+    {
         label: 'Units',
         icon: CircleDollarSign,
     },

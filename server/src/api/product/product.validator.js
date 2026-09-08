@@ -48,8 +48,7 @@ export class ProductValidator {
 
         image_key: z.string().min(1, 'Image key is required').optional(),
 
-        units: z
-            .array(
+        units: z.array(
                 z.object({
                     conversion_factor: z.number({
                         error: 'Conversion factor is required',

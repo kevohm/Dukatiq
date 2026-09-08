@@ -18,10 +18,13 @@ import type { ExpenseDoc } from '../models/expense/expense'
 import type { ExpenseCategoryDoc } from '../models/expense/expense.category'
 import type { LocalAccessDoc } from '../models/sessions/local-access'
 import type { LocalSessionDoc } from '../models/sessions/local-session'
+import type { ProductVariantDoc } from '../models/product/variants/product.variant'
+
 
 export interface BusinessCollections {
     users: RxCollection<UserDoc>
     products: RxCollection<ProductDoc>
+    productVariants: RxCollection<ProductVariantDoc>
     productUnits: RxCollection<ProductUnitDoc>
     productCategories: RxCollection<ProductCategoryDoc>
     brands: RxCollection<BrandDoc>

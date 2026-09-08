@@ -108,7 +108,8 @@ export class ProductUnitService {
                 meta: { resource: 'product_unit', id },
             })
         }
-        return response?.data?.toJSON()
+        // console.log(response.data)
+        return response?.data
     }
     static async add(body) {
         const data = await ProductUnitValidator.createSchema.parseAsync(body)

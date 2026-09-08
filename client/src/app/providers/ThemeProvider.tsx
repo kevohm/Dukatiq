@@ -1,60 +1,109 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
-type ThemeOptions = 'light' | 'dark'
-interface ITheme {
-    theme: ThemeOptions,
-    toogleTheme: ()=>void
-}
-const ThemeContext = createContext<ITheme>({ theme: 'dark', toogleTheme:()=>{} })
+import {
+    createContext,
+    useContext,
+    useEffect,
+    useState,
+    type ReactNode,
+} from 'react'
 
-const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
-    children,
-}) => {
-    const [theme, setTheme] = useState<ThemeOptions>(() => {
-        const theme = localStorage.getItem('theme')
-        return theme === 'dark' ? 'dark' : 'light'
-    })
+type Theme = 'light' | 'dark' | 'system'
+
+interface ThemeContextValue {
+    theme: Theme
+    resolvedTheme: 'light' | 'dark'
+    toggleTheme: () => void
+    setTheme: (theme: Theme) => void
+}
+
+const ThemeContext = createContext<ThemeContextValue | undefined>(undefined)
+
+const STORAGE_KEY = 'theme'
+
+function getSystemTheme(): 'light' | 'dark' {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light'
+}
+
+function resolveTheme(theme: Theme): 'light' | 'dark' {
+    return theme === 'system' ? getSystemTheme() : theme
+}
+
+export default function ThemeProvider({ children }: { children: ReactNode }) {
+    const [theme, setThemeState] = useState<Theme>('system')
+
+    const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>(
+        'light'
+    )
 
     useEffect(() => {
-        const root = document.body
-        if (theme === 'dark') {
-            root.classList.add('dark')
-            localStorage.setItem('theme', 'dark')
-        } else {
-            root.classList.remove('dark')
-            localStorage.setItem('theme', 'light')
+        const savedTheme = sessionStorage.getItem(STORAGE_KEY)
+
+        const initialTheme: Theme =
+            savedTheme === 'light' ||
+            savedTheme === 'dark' ||
+            savedTheme === 'system'
+                ? savedTheme
+                : 'system'
+
+        setThemeState(initialTheme)
+        setResolvedTheme(resolveTheme(initialTheme))
+    }, [])
+
+    useEffect(() => {
+        const root = document.documentElement
+
+        const applyTheme = () => {
+            const resolved = resolveTheme(theme)
+
+            root.classList.toggle('dark', resolved === 'dark')
+            setResolvedTheme(resolved)
+        }
+
+        applyTheme()
+
+        if (theme !== 'system') {
+            return
+        }
+
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+
+        mediaQuery.addEventListener('change', applyTheme)
+
+        return () => {
+            mediaQuery.removeEventListener('change', applyTheme)
         }
     }, [theme])
 
-    useEffect(() => {
-        const saved = localStorage.getItem('theme')
-        if (saved) {
-            setTheme((prev) => {
-                if (prev !== saved) {
-                    return saved === 'dark' ? 'dark' : 'light'
-                }
-                return prev
-            })
-        }
-    }, [])
+    const setTheme = (newTheme: Theme) => {
+        setThemeState(newTheme)
+        sessionStorage.setItem(STORAGE_KEY, newTheme)
+    }
 
-
-    const toogleTheme = ()=>{
-        setTheme(prev=> prev === "dark" ? "light" : "dark")
+    const toggleTheme = () => {
+        setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
     }
 
     return (
-        <ThemeContext.Provider value={{ theme, toogleTheme }}>
+        <ThemeContext.Provider
+            value={{
+                theme,
+                resolvedTheme,
+                toggleTheme,
+                setTheme,
+            }}
+        >
             {children}
         </ThemeContext.Provider>
     )
 }
 
-export default ThemeProvider
-
-
-
 export function useTheme() {
     const context = useContext(ThemeContext)
-    if (!context) throw new Error('useTheme must be used inside ThemeProvider')
+
+    if (!context) {
+        throw new Error('useTheme must be used inside ThemeProvider')
+    }
+
     return context
 }

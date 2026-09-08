@@ -10,10 +10,10 @@ if (!['development', 'test', 'production'].includes(nodeEnv)) {
 
 const fileName = nodeEnv === 'production' ? '.env' : `.env.${nodeEnv}`
 
-
 dotenv.config({
     path: path.resolve(process.cwd(), fileName),
     override: true,
+    quiet: nodeEnv === 'test',
 })
 
 /**
@@ -42,7 +42,6 @@ const requiredEnv = (key) => {
  * Core environment flags
  */
 
-
 export const env = {
     isProd: nodeEnv === 'production',
     isDev: nodeEnv === 'development',
@@ -55,7 +54,7 @@ export const env = {
  */
 export const dbConfig = {
     url: requiredEnv('DATABASE_URL'),
-    testUrl: env.isTest ? requiredEnv('DATABASE_URL_TEST') : undefined,
+    // testUrl: env.isTest ? requiredEnv('DATABASE_URL_TEST') : undefined,
 }
 
 /**
@@ -127,5 +126,5 @@ export const config = {
     cookie: cookieConfig,
     server: serverConfig,
     b2: b2Config,
-    auth:authConfig,
+    auth: authConfig,
 }

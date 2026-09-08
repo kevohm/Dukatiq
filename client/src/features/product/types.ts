@@ -50,7 +50,27 @@ interface UnitPayload {
     conversion_factor: number
     is_base_unit: boolean
 }
-    
+
+export type IProductVariantCreatePayload = {
+    product_id: string
+    cost_price: number
+    selling_price: number
+    attributes: Record<string, string[]>
+    // optional
+    stock_quantity?: number
+    sku?: string
+    low_stock_threshold?: number
+    image_url?: string | null
+    image_key?: string | null
+}
+
+
+type ProductVariantPayload = {
+    cost_price: number
+    selling_price: number
+    attributes: Record<string, string[]>
+}
+
 
 export interface IProductCreatePayload {
     name: string
@@ -59,6 +79,7 @@ export interface IProductCreatePayload {
     cost_price: number
     selling_price: number
     units:  UnitPayload[]
+    variants: ProductVariantPayload[]
     image_url?: string
     image_key?: string
 }

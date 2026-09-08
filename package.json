@@ -1,5 +1,5 @@
 {
-    "name":"@dukatiq",
+    "name":"dukatiq",
     "private": true,
     "scripts": {
         "build":"npm run build --prefix client",

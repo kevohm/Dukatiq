@@ -1,25 +1,25 @@
 {
     "name": "@dukatiq/server",
-    "private":true,
+    "private": true,
     "version": "1.0.0",
-    "type": "module",
     "description": "Backend API for Shop Profit Booster",
     "main": "src/server.js",
+    "type": "module",
     "scripts": {
         "dev": "cross-env NODE_ENV=development nodemon src/server.js",
-        
         "start": "cross-env NODE_ENV=production node src/server.js",
-        
-        
-        "db:generate": "cross-env NODE_ENV=development drizzle-kit generate",
         "db:migrate": "cross-env NODE_ENV=production drizzle-kit migrate",
-        "db:pull": "cross-env NODE_ENV=development drizzle-kit pull",
-        "db:studio": "cross-env NODE_ENV=development drizzle-kit studio",
-        "db:reset": "cross-env NODE_ENV=development drizzle-kit drop && drizzle-kit push",
         
-        "db:run": "cross-env NODE_ENV=development docker compose --env-file .env.development -f docker-compose.yml -f docker-compose.dev.yml up dukatiq-postgres",
-
-          "test": "cross-env NODE_ENV=test vitest",
+        "db:dev:pull": "cross-env NODE_ENV=development drizzle-kit pull",
+        "db:dev:studio": "cross-env NODE_ENV=development drizzle-kit studio",
+        "db:dev:reset": "cross-env NODE_ENV=development drizzle-kit drop && drizzle-kit push",
+        "db:dev:generate": "cross-env NODE_ENV=development drizzle-kit generate",
+        "db:dev:migrate": "cross-env NODE_ENV=development drizzle-kit migrate",
+        "db:dev:run": "cross-env NODE_ENV=development docker compose --env-file .env.development -f docker-compose.yml -f docker-compose.dev.yml up dukatiq-postgres",
+        
+        "db:test:migrate": "cross-env NODE_ENV=test drizzle-kit migrate",
+        "db:test:run": "cross-env NODE_ENV=test docker compose --env-file .env.test -f docker-compose.test.yml up dukatiq-test-postgres",
+        "test": "cross-env NODE_ENV=test vitest",
         "test:coverage": "cross-env NODE_ENV=test vitest run --coverage"
     },
     "keywords": [

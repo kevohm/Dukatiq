@@ -13,11 +13,13 @@ import { ExpenseCategoryRepository } from './expense/expense.category.repository
 import { UserRepository } from './sessions/user.repository'
 import { LocalAccessRepository } from './sessions/local.access.repository'
 import { LocalSessionRepository } from './sessions/local.session.repository'
+import { ProductVariantRepository } from './catalog/product.variant.repository'
 
 export async function getRepositories() {
     const db = await getDatabase()
     return {
         productRepository: new ProductRepository(db.products),
+        productVariantRepository: new ProductVariantRepository(db.productVariants),
         productCategoryRepository: new ProductCategoryRepository(
             db.productCategories
         ),

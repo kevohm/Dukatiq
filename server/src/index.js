@@ -10,8 +10,6 @@ import { httpLogger } from './middleware/logger.middleware.js'
 import { logger } from './config/logger.config.js'
 import cookieParser from 'cookie-parser'
 
-
-
 export const createApp = () => {
     // Create app
     const app = express()
@@ -29,6 +27,7 @@ export const createApp = () => {
     app.use(cors(config.cors))
     app.use(express.json())
     app.use(express.urlencoded({ extended: true }))
+    
 
     // ─────────────────────
     // Routes
@@ -39,7 +38,7 @@ export const createApp = () => {
     app.get('/api/health', (req, res) => {
         // logger.info('Health check called')
         res.json({
-            app:config.server.name,
+            app: config.server.name,
             status: 'OK',
             timestamp: new Date().toISOString(),
             uptime: process.uptime(),
@@ -59,15 +58,16 @@ export const createApp = () => {
 
     // Error handler
     app.use((err, req, res, next) => {
-        logger.error(
-            {
-                err,
-                path: req.path,
-                method: req.method,
-            },
-            'Unhandled error'
-        )
-
+        // if (config.env.isDev) {
+        //     logger.error(
+        //         {
+        //             err,
+        //             path: req.path,
+        //             method: req.method,
+        //         },
+        //         'Unhandled error'
+        //     )
+        // }
         errorHandler(err, req, res, next)
     })
 
