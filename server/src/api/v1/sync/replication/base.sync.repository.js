@@ -146,9 +146,7 @@ export function createSyncRepository({
                     // Scenario 3: Unique key match (e.g., duplicate 'name' or duplicate 'product_id + unit_id'),
                     // but Primary Keys differ!
                     // This is a Natural Conflict -> Return server state so RxDB handles it cleanly.
-                    if (uniqueKeys?.length > 0) {
-                        continue
-                    }
+                  
                     conflicts.push(current)
                 }
             })
