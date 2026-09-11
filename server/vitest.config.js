@@ -10,6 +10,8 @@ export default defineConfig({
         setupFiles: './test/setup.js',
         exclude: ['node_modules', 'dist', 'build'],
 
+        fileParallelism: false,
+
         coverage: {
             provider: 'v8', // fastest
             reporter: ['text', 'html', 'json'],

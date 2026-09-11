@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { ProductCategoryRepository } from '../../../../src/api/product/category/product.category.repository'
-import { Category } from '../../../../src/api/product/category/product.category.model'
 
 
 
@@ -25,7 +24,7 @@ describe('ProductCategory', () => {
             name: 'Electronics',
         })
 
-        const all = await Category.findAll()
+        const all = await ProductCategoryRepository.getAll()
 
         expect(first.id).toBe(second.id)
         expect(all.length).toBe(1)
@@ -64,7 +63,7 @@ describe('ProductCategory', () => {
             name: 'New Name',
         })
 
-        const updated = await Category.findByPk(created.id)
+        const updated = await ProductCategoryRepository.getById(created.id)
 
         expect(updated.name).toBe('New Name')
     })
@@ -75,9 +74,17 @@ describe('ProductCategory', () => {
         })
 
         await ProductCategoryRepository.delete(created.id)
+        let err
 
-        const deleted = await Category.findByPk(created.id)
+        try {
+            
+            await ProductCategoryRepository.getById(created.id)
+        } catch (error) {
+            err = error
+        }
 
-        expect(deleted).toBeNull()
+         expect(err).toBeDefined()
+         expect(err.name).toBe('AppError')
+         expect(err.message).toBe('Category not found')
     })
 })

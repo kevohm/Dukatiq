@@ -1,12 +1,12 @@
-// utils/jwt.js
 import jwt from 'jsonwebtoken'
+import { config } from '../../config/env.config.js'
 
-const ACCESS_SECRET = process.env.ACCESS_TOKEN_SECRET
 
 export const signAccessToken = (user) => {
-    return jwt.sign({ sub: user.id }, ACCESS_SECRET, { expiresIn: '15m' })
+    return jwt.sign({ sub: user.id }, config.auth.accessToken.secret, { expiresIn: config.auth.accessToken.duration })
 }
 
-export const verifyAccessToken = (token) => jwt.verify(token, ACCESS_SECRET)
+export const verifyAccessToken = (token) =>
+    jwt.verify(token, config.auth.accessToken.secret)
 
 

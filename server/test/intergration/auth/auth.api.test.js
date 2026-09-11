@@ -20,7 +20,7 @@ const createPayload = (
         email: overrides?.email || `${unique}@test.com`,
         first_name: 'Kevin',
         last_name: 'Kibet',
-        password: 'Kevin123',
+        password: '#Kevin124',
     }
 }
 
@@ -30,7 +30,7 @@ let paths = {
     signup: basePath + '/signup',
     me: basePath + '/me',
     refresh: basePath + '/refresh',
-    logout: basePath + "/logout"
+    logout: basePath + '/logout',
 }
 
 describe('Auth API', () => {
@@ -86,7 +86,7 @@ describe('Auth API', () => {
         it('should fail with invalid credentials', async () => {
             const res = await request(app).post(paths.login).send({
                 email: 'wrong@test.com',
-                password: 'wrong',
+                password: '#Wrongpassword1234', // must pass validation check
             })
 
             expect(res.status).toBe(401)

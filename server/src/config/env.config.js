@@ -1,6 +1,20 @@
-import 'dotenv/config'
+import dotenv from 'dotenv'
 import path from 'path'
 import { fileURLToPath } from 'url'
+
+const nodeEnv = process.env.NODE_ENV ?? 'development'
+
+if (!['development', 'test', 'production'].includes(nodeEnv)) {
+    throw new Error(`Invalid NODE_ENV: ${nodeEnv}`)
+}
+
+const fileName = nodeEnv === 'production' ? '.env' : `.env.${nodeEnv}`
+
+dotenv.config({
+    path: path.resolve(process.cwd(), fileName),
+    override: true,
+    quiet: nodeEnv === 'test',
+})
 
 /**
  * __dirname equivalent for ES modules
@@ -28,7 +42,6 @@ const requiredEnv = (key) => {
  * Core environment flags
  */
 
-const nodeEnv = getEnv('NODE_ENV', 'development')
 export const env = {
     isProd: nodeEnv === 'production',
     isDev: nodeEnv === 'development',
@@ -40,17 +53,21 @@ export const env = {
  * Database config
  */
 export const dbConfig = {
-    path: getEnv('DB_PATH', path.join(__dirname, '../database/shop.sqlite')),
+    url: requiredEnv('DATABASE_URL'),
+    // testUrl: env.isTest ? requiredEnv('DATABASE_URL_TEST') : undefined,
 }
 
 /**
  * CORS config
  */
+const origins = getEnv('CORS_ORIGIN', '*')
+    .split(',')
+    .map((origin) => origin.trim())
+
 export const corsConfig = {
-    origin: getEnv('CORS_ORIGIN', '*'),
+    origin: origins,
     credentials: true,
 }
-
 /**
  * Cookie/session config
  */
@@ -73,6 +90,16 @@ export const serverConfig = {
     name: getEnv(process.env.APP_NAME, 'Dukatiq'),
 }
 
+export const authConfig = {
+    accessToken: {
+        secret: requiredEnv('ACCESS_TOKEN_SECRET'),
+        duration: requiredEnv('ACCESS_TOKEN_DURATION'),
+    },
+    refreshToken: {
+        duration: getEnv('REFRESH_TOKEN_DURATION', 7),
+    },
+}
+
 export const b2Config = {
     endpoint: requiredEnv('B2_ENDPOINT'),
     region: requiredEnv('B2_REGION'),
@@ -82,8 +109,8 @@ export const b2Config = {
         accessKeyId: requiredEnv('B2_KEY_ID'),
         secretAccessKey: requiredEnv('B2_APP_KEY'),
     },
-    defaultFolder: getEnv('B2_DEFAULT_FOLDER', 'uploads'),
-    
+    defaultFolder: getEnv('B2_DEFAULT_FOLDER', 'files'),
+
     signedUrl: {
         expiresIn: Number(getEnv('B2_SIGNED_URL_EXPIRES', 3600)), // seconds
     },
@@ -99,4 +126,5 @@ export const config = {
     cookie: cookieConfig,
     server: serverConfig,
     b2: b2Config,
+    auth: authConfig,
 }

@@ -1,18 +1,17 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { Product } from '../../../src/api/product/product.model.js'
-import { Category } from '../../../src/api/product/category/product.category.model.js'
 import { ProductRepository } from '../../../src/api/product/product.repository.js'
 import { productFactory } from '../../utils/factory.js'
+import { ProductCategoryRepository } from '../../../src/api/product/category/product.category.repository.js'
 
 describe('ProductRepository', () => {
-
-
     it('should create product and auto-create category', async () => {
         const input = productFactory({ category: 'Food' })
 
         const product = await ProductRepository.create(input)
 
-        const category = await Category.findByPk(product.category_id)
+        const category = await ProductCategoryRepository.getById(
+            product.category_id
+        )
 
         expect(product).toBeDefined()
         expect(product.name).toBe(input.name)
@@ -22,7 +21,9 @@ describe('ProductRepository', () => {
     })
 
     it('should link product to existing category or reuse it', async () => {
-        const category = await Category.create({ name: 'Drinks' })
+        const category = await ProductCategoryRepository.create({
+            name: 'Drinks',
+        })
 
         const product = await ProductRepository.create(
             productFactory({ category: 'Drinks' })
@@ -62,7 +63,7 @@ describe('ProductRepository', () => {
             selling_price: 999,
         })
 
-        const updated = await Product.findByPk(created.id)
+        const updated = await ProductRepository.getById(created.id)
 
         expect(updated.name).toBe('Updated Name')
         expect(updated.selling_price).toBe(999)
@@ -70,13 +71,22 @@ describe('ProductRepository', () => {
 
     it('should delete product', async () => {
         const created = await ProductRepository.create(
-            productFactory({ category: 'Home' })
-        )
+                productFactory({ category: 'Home', brand: 'Cocacola' })
+            )
+     
 
         await ProductRepository.delete(created.id)
 
-        const deleted = await Product.findByPk(created.id)
+        let err
 
-        expect(deleted).toBeNull()
+        try {
+            await ProductRepository.getById(created.id)
+        } catch (error) {
+            err = error
+        }
+        
+        expect(err).toBeDefined()
+        expect(err.name).toBe("AppError")
+        expect(err.message).toBe("Product not found")
     })
 })
