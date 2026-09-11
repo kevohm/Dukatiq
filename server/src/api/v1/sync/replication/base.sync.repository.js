@@ -11,6 +11,7 @@ export function createSyncRepository({
     beforePush = () => null,
     afterPush,
 }) {
+
     // Helper to build unique lookup queries dynamically
     function buildUniqueCondition(doc) {
         const conditions = []
@@ -20,6 +21,7 @@ export function createSyncRepository({
             conditions.push(eq(table[primaryKey], doc[primaryKey]))
         }
 
+  
         // 2. Natural composite / unique key conditions
         if (uniqueKeys.length > 0) {
             const matchAllKeys = uniqueKeys
@@ -83,7 +85,7 @@ export function createSyncRepository({
 
             await db.transaction(async (tx) => {
                 for (const docState of docs) {
-                    let data = { msg: '[TEST]:Data not available' }
+                    let data = null
                     // console.log(docState)
                     let doc = docState.newDocumentState
                     if (!doc) continue
@@ -94,7 +96,7 @@ export function createSyncRepository({
 
                         if (resp) {
                             const { data: _data, ...newDoc } = resp
-                            if(_data){
+                            if (_data) {
                                 data = _data
                             }
                             doc = newDoc
@@ -117,7 +119,7 @@ export function createSyncRepository({
                             ...doc,
                             updated_at: new Date(doc.updated_at || Date.now()),
                         })
-                    }else if (current[primaryKey] === doc[primaryKey]) {
+                    } else if (current[primaryKey] === doc[primaryKey]) {
                         if (doc.is_deleted || doc._deleted) {
                             await tx
                                 .update(table)
@@ -137,12 +139,15 @@ export function createSyncRepository({
                         }
                     }
 
-                    // Scenario 3: Unique key match (e.g., duplicate 'name' or duplicate 'product_id + unit_id'),
-                    // but Primary Keys differ!
-                    // This is a Natural Conflict -> Return server state so RxDB handles it cleanly.
                     // console.log("-------------AFTERPUSH---------------")
                     if (afterPush) {
                         await afterPush(tx, doc, data)
+                    }
+                    // Scenario 3: Unique key match (e.g., duplicate 'name' or duplicate 'product_id + unit_id'),
+                    // but Primary Keys differ!
+                    // This is a Natural Conflict -> Return server state so RxDB handles it cleanly.
+                    if (uniqueKeys?.length > 0) {
+                        continue
                     }
                     conflicts.push(current)
                 }

@@ -1,5 +1,4 @@
 import express from 'express'
-import productRoutes from '../api/product/product.route.js'
 import attributeRoutes from '../api/v2/product/variant/attribute/attribute.route.js'
 import attributeValueRoutes from '../api/v2/product/variant/attribute-value/attribute.value.route.js'
 

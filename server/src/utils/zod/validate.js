@@ -24,3 +24,9 @@ export const validateDataAndReturn = async (schema, body) => {
         message: 'Validation error',
     }
 }
+
+
+
+export const isObject = (value) => {
+    return typeof value === 'object' && value !== null && !Array.isArray(value)
+}   

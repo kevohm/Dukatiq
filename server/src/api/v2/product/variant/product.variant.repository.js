@@ -12,6 +12,8 @@ import { AttributeRepository } from './attribute/attribute.repository.js'
 import { AttributeValueRepository } from './attribute-value/attribute.value.repository.js'
 
 import crypto from 'crypto'
+import { object } from 'zod'
+import { isObject } from '../../../../utils/zod/validate.js'
 
 export class ProductVariantRepository {
     static async getAll() {
@@ -82,8 +84,48 @@ export class ProductVariantRepository {
             .where(eq(productVariants.name, name))
         return row
     }
+
+    /**
+     * Serializes product attributes into a normalized array format.
+     *
+     * Accepts attributes either as an array of `{ name, value }` objects
+     * or as an object where each attribute name maps to an array of values.
+     *
+     * @param {Array<{name: string, value: string}> | Record<string, string[]>} attrs
+     * @returns {Array<{name: string, value: string}>}
+     */
+    static #serializeAttributes(attrs = []) {
+        /**
+         * [{ name, value }]
+         */
+        if (Array.isArray(attrs)) {
+            return attrs
+        }
+
+        /**
+         * { [name]: [...values] }
+         */
+        if (isObject(attrs)) {
+            return Object.entries(attrs).reduce((prev, [name, values]) => {
+                const normalizedValues = Array.isArray(values)
+                    ? values
+                    : [values]
+
+                return [
+                    ...prev,
+                    ...normalizedValues.map((value) => ({
+                        name,
+                        value,
+                    })),
+                ]
+            }, [])
+        }
+
+        return []
+    }
     static async generateSku(data, client = db) {
-        const attributes = data.attributes ?? []
+        const attrs = this.#serializeAttributes(data.attributes) ?? []
+
         let productName = data?.name
         if (!productName) {
             const [product] = await client
@@ -97,8 +139,8 @@ export class ProductVariantRepository {
             ?.slice(0, 10)
             ?.trim()
             ?.replaceAll(' ', '-')
-
-        attributes?.slice(0, 3)?.forEach((a, idx) => {
+        console.log('Attributes', attrs)
+        attrs?.slice(0, 3)?.forEach((a, idx) => {
             if (idx < 2) {
                 sku += '-'
             }

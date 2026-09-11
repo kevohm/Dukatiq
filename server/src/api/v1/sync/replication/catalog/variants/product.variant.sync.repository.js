@@ -8,14 +8,9 @@ import {
 import { SyncCollections } from '../../../sync.collections.js'
 import { createSyncRepository } from '../../base.sync.repository.js'
 import { db } from '../../../../../../config/database.js'
+import { ProductVariantRepository } from '../../../../../v2/product/variant/product.variant.repository.js'
 
-function normalizeAttributeName(name) {
-    return name.trim().toLowerCase()
-}
 
-function normalizeAttributeValue(value) {
-    return value.trim().toLowerCase()
-}
 
 function normalizeAttributes(attrs = {}) {
     return Object.fromEntries(
@@ -100,7 +95,7 @@ async function beforePush(tx, doc) {
         }
     }
 
-    return { ...rest, data: attrValues }
+    return { ...rest, data: { attributes: attrs, attrValues } }
 }
 
 export const ProductVariantSyncRepository = createSyncRepository({
@@ -108,11 +103,36 @@ export const ProductVariantSyncRepository = createSyncRepository({
     collection: SyncCollections.PRODUCT_VARIANT,
     beforePush,
     afterPush: async (tx, doc, data) => {
-        for (const attributeValueId of data) {
-            await tx.insert(variantAttributeValues).values({
-                variant_id: doc.id,
-                attribute_value_id: attributeValueId
-            })
+        const { attributes: attrs = [], attrValues = [] } = data
+        for (const attributeValueId of attrValues) {
+            const [existing] = await tx
+                .select()
+                .from(variantAttributeValues)
+                .where(
+                    and(
+                        eq(variantAttributeValues.variant_id, doc.id),
+                        eq(
+                            variantAttributeValues.attribute_value_id,
+                            attributeValueId
+                        )
+                    )
+                )
+            if (!existing) {
+                await tx.insert(variantAttributeValues).values({
+                    variant_id: doc.id,
+                    attribute_value_id: attributeValueId,
+                })
+            }
+
+            const sku = await ProductVariantRepository.generateSku(
+                { ...doc, attributes: attrs },
+                tx
+            )
+
+            await tx
+                .update(productVariants)
+                .set({ sku, updated_at: new Date() })
+                .where(eq(productVariants.id, doc.id))
         }
     },
 })
